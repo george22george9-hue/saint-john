@@ -15,14 +15,55 @@ export default function Footer() {
         </div>
 
         <div className="footer-social mt-4 gsap-fade-up">
-          <a href="#" className="hover-magnet" aria-label="Facebook">
+          <a
+            href="#"
+            className="hover-magnet"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Facebook"
+            title="فيسبوك"
+          >
             <i className="fab fa-facebook-f"></i>
           </a>
-          <a href="#" className="hover-magnet" aria-label="YouTube">
+          <a
+            href="https://www.tiktok.com/@stjohnmeeting?_r=1&_t=ZS-98fBl2ThvFK"
+            className="hover-magnet"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="TikTok"
+            title="تيك توك"
+          >
+            <i className="fab fa-tiktok"></i>
+          </a>
+          <a
+            href="#"
+            className="hover-magnet"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="YouTube"
+            title="يوتيوب"
+          >
             <i className="fab fa-youtube"></i>
           </a>
-          <a href="#" className="hover-magnet" aria-label="Instagram">
+          <a
+            href="#"
+            className="hover-magnet"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Instagram"
+            title="إنستغرام"
+          >
             <i className="fab fa-instagram"></i>
+          </a>
+          <a
+            href="https://drive.google.com/drive/folders/1Khsi7gv1mcFDEBuB2uLfoFil6Ppk8OVU"
+            className="hover-magnet"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="تطبيق اجتماعنا"
+            title="تطبيق اجتماعنا"
+          >
+            <i className="fas fa-mobile-alt"></i>
           </a>
         </div>
 

@@ -8,7 +8,7 @@ export default function Navbar() {
 
   return (
     <nav className="navbar navbar-expand-lg fixed-top gsap-nav">
-      <div className="container">
+      <div className="container d-flex justify-content-between align-items-center">
         <Link className="navbar-brand d-flex align-items-center" href="/#hero">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
@@ -26,13 +26,14 @@ export default function Navbar() {
         </Link>
 
         <button
-          className="navbar-toggler border-0"
+          className="navbar-toggler border-0 p-2"
           type="button"
           onClick={() => setIsOpen(!isOpen)}
           aria-expanded={isOpen}
           aria-label="Toggle navigation"
+          style={{ color: 'var(--accent)' }}
         >
-          <i className="fas fa-bars fs-3 text-primary"></i>
+          <i className="fas fa-bars fs-3" style={{ color: 'var(--accent)' }}></i>
         </button>
 
         <div className={`collapse navbar-collapse ${isOpen ? 'show' : ''}`} id="navbarNav">
