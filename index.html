@@ -16,16 +16,28 @@
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     
-    <!-- AOS Animation CSS -->
-    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
-    
     <!-- Custom CSS -->
     <link rel="stylesheet" href="css/style.css">
 </head>
-<body>
+<body class="cinematic-theme">
+
+    <!-- Custom Cursor -->
+    <div id="custom-cursor"></div>
+    <div id="custom-cursor-follower"></div>
+
+    <!-- Scroll Progress Indicator -->
+    <div id="scroll-progress"></div>
+
+    <!-- 3D WebGL Background Canvas -->
+    <canvas id="bg-canvas"></canvas>
+
+    <!-- Floating Meeting Logo -->
+    <div id="floating-logo">
+        <img src="logo.png" alt="الشعار">
+    </div>
 
     <!-- Navigation Bar -->
-    <nav class="navbar navbar-expand-lg fixed-top" data-aos="fade-down" data-aos-duration="1000">
+    <nav class="navbar navbar-expand-lg fixed-top gsap-nav">
         <div class="container">
             <a class="navbar-brand d-flex align-items-center" href="#">
                 <img src="logo.png" alt="شعار" width="45" height="45" class="me-2 rounded-circle" style="object-fit: cover; border: 2px solid var(--accent);">
@@ -41,12 +53,12 @@
                     <li class="nav-item"><a class="nav-link" href="#programs">برامجنا</a></li>
                     <li class="nav-item"><a class="nav-link" href="#news">أحدث الفعاليات</a></li>
                     <li class="nav-item">
-                        <a class="nav-link text-danger fw-bold" href="https://george22george9-hue.github.io/eftqad/" target="_blank">
+                        <a class="nav-link text-danger fw-bold hover-magnet" href="https://george22george9-hue.github.io/eftqad/" target="_blank">
                             <i class="fas fa-heart"></i> وحشتنا
                         </a>
                     </li>
                     <li class="nav-item ms-lg-3 mt-2 mt-lg-0">
-                        <a class="btn btn-outline-primary btn-sm rounded-pill px-4 fw-bold" href="admin.html">
+                        <a class="btn btn-outline-primary btn-sm rounded-pill px-4 fw-bold hover-magnet" href="admin.html">
                             <i class="fas fa-shield-alt me-1"></i> دخول الخدام
                         </a>
                     </li>
@@ -57,19 +69,19 @@
 
     <!-- Hero Section -->
     <section id="hero" class="hero-section">
-        <div class="container">
+        <div class="container relative-z">
             <div class="row justify-content-center">
-                <div class="col-lg-10" data-aos="zoom-in" data-aos-duration="1200">
-                    <span class="hashtag-badge mb-3"><i class="fas fa-cross me-1"></i> #عيلة_واحدة</span>
-                    <h1 class="hero-title mt-2">اجتماع القديس يوحنا الحبيب للشباب</h1>
-                    <h2 class="hero-subtitle">كنيسة الشهيد العظيم مارجرجس بسندبيس</h2>
-                    <p class="lead text-white-50 mb-4 fw-bold">
+                <div class="col-lg-10 gsap-hero-content">
+                    <span class="hashtag-badge mb-3 gsap-fade-up"><i class="fas fa-cross me-1"></i> #عيلة_واحدة</span>
+                    <h1 class="hero-title mt-2 gsap-title">اجتماع القديس يوحنا الحبيب للشباب</h1>
+                    <h2 class="hero-subtitle gsap-subtitle">كنيسة الشهيد العظيم مارجرجس بسندبيس</h2>
+                    <p class="lead text-white-50 mb-4 fw-bold gsap-fade-up">
                         بنمو روحي، معرفي، ومهاري في محبة المسيح وكنيسته الأرثوذكسية.<br>
                         <span class="text-white">#متتأخرش_وهات_صاحبك_في_إيدك!</span>
                     </p>
                     
                     <!-- Countdown Timer -->
-                    <div class="countdown-wrapper" id="countdown-timer">
+                    <div class="countdown-wrapper gsap-fade-up" id="countdown-timer">
                         <div class="countdown-item">
                             <span class="countdown-number" id="cd-days">00</span>
                             <span class="countdown-label">يوم</span>
@@ -87,11 +99,11 @@
                             <span class="countdown-label">ثانية</span>
                         </div>
                     </div>
-                    <div class="text-white-50 small mb-4 mt-n2">باقي على اجتماع الجمعة (الساعة 7:00 مساءً)</div>
+                    <div class="text-white-50 small mb-4 mt-n2 gsap-fade-up">باقي على اجتماع الجمعة (الساعة 7:00 مساءً)</div>
 
-                    <div class="hero-buttons">
-                        <a href="#programs" class="btn btn-primary-custom me-2 mb-2"><i class="far fa-calendar-alt me-2"></i>جدول المواعيد</a>
-                        <button class="btn btn-accent-custom mb-2" data-bs-toggle="modal" data-bs-target="#qaModal"><i class="far fa-envelope me-2"></i>شاركونا أسئلتكم</button>
+                    <div class="hero-buttons gsap-fade-up">
+                        <a href="#programs" class="btn btn-primary-custom me-2 mb-2 hover-magnet"><i class="far fa-calendar-alt me-2"></i>جدول المواعيد</a>
+                        <button class="btn btn-accent-custom mb-2 hover-magnet" data-bs-toggle="modal" data-bs-target="#qaModal"><i class="far fa-envelope me-2"></i>شاركونا أسئلتكم</button>
                     </div>
                 </div>
             </div>
@@ -99,17 +111,17 @@
     </section>
 
     <!-- About Section -->
-    <section id="about" class="section-padding bg-warm-white overflow-hidden">
+    <section id="about" class="section-padding bg-warm-white overflow-hidden relative-z">
         <div class="container">
-            <h2 class="section-title" data-aos="fade-up">عن الاجتماع ورؤيتنا</h2>
+            <h2 class="section-title gsap-fade-up">عن الاجتماع ورؤيتنا</h2>
             <div class="row align-items-center">
-                <div class="col-md-5 text-center mb-5 mb-md-0" data-aos="fade-left">
+                <div class="col-md-5 text-center mb-5 mb-md-0 gsap-fade-left">
                     <div class="position-relative d-inline-block">
                         <i class="fas fa-church text-primary" style="font-size: 8rem; opacity: 0.1;"></i>
                         <img src="logo.png" alt="الشعار" class="position-absolute top-50 start-50 translate-middle rounded-circle shadow-lg" width="120" style="border: 4px solid #fff;">
                     </div>
                 </div>
-                <div class="col-md-7" data-aos="fade-right">
+                <div class="col-md-7 gsap-fade-right">
                     <div class="glass-card">
                         <h3 class="mb-4 text-primary d-flex align-items-center">
                             <i class="fas fa-heart text-accent ms-3 fs-2"></i> بيت روحي وعيلة واحدة
@@ -127,11 +139,11 @@
     </section>
 
     <!-- Interactive Programs Section (Tabs) -->
-    <section id="programs" class="section-padding bg-light-gray">
+    <section id="programs" class="section-padding bg-light-gray relative-z">
         <div class="container">
-            <h2 class="section-title" data-aos="fade-up">برامجنا ومواعيدنا</h2>
+            <h2 class="section-title gsap-fade-up">برامجنا ومواعيدنا</h2>
             
-            <div class="row justify-content-center" data-aos="fade-up" data-aos-delay="200">
+            <div class="row justify-content-center gsap-fade-up">
                 <div class="col-lg-10">
                     <div class="glass-card p-0 overflow-hidden">
                         <!-- Tabs Navigation -->
@@ -159,10 +171,10 @@
                                     <p class="text-muted">وقت مخصص للنمو الروحي والشركة المحبة.. مستنيينك!</p>
                                 </div>
                                 <div class="row g-4 mt-2">
-                                    <div class="col-md-6"><div class="d-flex"><div class="text-accent fs-2 ms-3"><i class="fas fa-music"></i></div><div><h5 class="fw-bold">صلاة وترانيم</h5><p class="text-muted mb-0">أوقات صلاة عميقة وترانيم ترفع القلب.</p></div></div></div>
-                                    <div class="col-md-6"><div class="d-flex"><div class="text-accent fs-2 ms-3"><i class="fas fa-book-open"></i></div><div><h5 class="fw-bold">كلمة روحية</h5><p class="text-muted mb-0">كلمة تمس واقع وتحديات الشباب.</p></div></div></div>
-                                    <div class="col-md-6"><div class="d-flex"><div class="text-accent fs-2 ms-3"><i class="fas fa-gamepad"></i></div><div><h5 class="fw-bold">مسابقات وتفاعل</h5><p class="text-muted mb-0">ألعاب تفاعلية وجوائز مميزة.</p></div></div></div>
-                                    <div class="col-md-6"><div class="d-flex"><div class="text-accent fs-2 ms-3"><i class="fas fa-users"></i></div><div><h5 class="fw-bold">أنشطة وأمسيات</h5><p class="text-muted mb-0">فقرات اجتماعية وأيام روحية وحفلات.</p></div></div></div>
+                                    <div class="col-md-6"><div class="d-flex hover-lift"><div class="text-accent fs-2 ms-3"><i class="fas fa-music"></i></div><div><h5 class="fw-bold">صلاة وترانيم</h5><p class="text-muted mb-0">أوقات صلاة عميقة وترانيم ترفع القلب.</p></div></div></div>
+                                    <div class="col-md-6"><div class="d-flex hover-lift"><div class="text-accent fs-2 ms-3"><i class="fas fa-book-open"></i></div><div><h5 class="fw-bold">كلمة روحية</h5><p class="text-muted mb-0">كلمة تمس واقع وتحديات الشباب.</p></div></div></div>
+                                    <div class="col-md-6"><div class="d-flex hover-lift"><div class="text-accent fs-2 ms-3"><i class="fas fa-gamepad"></i></div><div><h5 class="fw-bold">مسابقات وتفاعل</h5><p class="text-muted mb-0">ألعاب تفاعلية وجوائز مميزة.</p></div></div></div>
+                                    <div class="col-md-6"><div class="d-flex hover-lift"><div class="text-accent fs-2 ms-3"><i class="fas fa-users"></i></div><div><h5 class="fw-bold">أنشطة وأمسيات</h5><p class="text-muted mb-0">فقرات اجتماعية وأيام روحية وحفلات.</p></div></div></div>
                                 </div>
                             </div>
                             
@@ -188,10 +200,10 @@
     </section>
 
     <!-- News & Announcements Section -->
-    <section id="news" class="section-padding news-section">
+    <section id="news" class="section-padding news-section relative-z">
         <div class="container">
-            <h2 class="section-title" data-aos="fade-up">أحدث الإعلانات والنشاطات</h2>
-            <p class="text-center text-white-50 mb-5" data-aos="fade-up" data-aos-delay="100">عيش معانا لحظة بلحظة</p>
+            <h2 class="section-title gsap-fade-up">أحدث الإعلانات والنشاطات</h2>
+            <p class="text-center text-white-50 mb-5 gsap-fade-up">عيش معانا لحظة بلحظة</p>
             
             <div class="row g-4" id="dynamic-updates">
                 <!-- Dynamically populated -->
@@ -203,41 +215,41 @@
     </section>
 
     <!-- Wahshatna Banner Section -->
-    <section class="wahshatna-banner text-center py-5" style="background-color: var(--primary); color: white;" data-aos="fade-up">
+    <section class="wahshatna-banner text-center py-5 relative-z gsap-fade-up" style="background-color: var(--primary-dark); color: white;">
         <div class="container">
             <h3 class="mb-3 text-white fw-bold">مفتقدينك معانا! ❤️</h3>
             <p class="mb-4 text-white-50">رسالة حب دافية مستنياك.. اللمة مش بتكمل غير بيك.</p>
-            <a href="https://george22george9-hue.github.io/eftqad/" target="_blank" class="btn btn-danger btn-lg w-100 py-3 rounded-3 fw-bold" style="max-width: 800px; font-size: 1.2rem; box-shadow: 0 4px 15px rgba(220, 53, 69, 0.4); transition: all 0.3s ease;">
+            <a href="https://george22george9-hue.github.io/eftqad/" target="_blank" class="btn btn-danger btn-lg w-100 py-3 rounded-3 fw-bold hover-magnet" style="max-width: 800px; font-size: 1.2rem; box-shadow: 0 4px 15px rgba(220, 53, 69, 0.4); transition: all 0.3s ease;">
                 <i class="fas fa-heart me-2"></i> شوف رسالتك دلوقتي
             </a>
         </div>
     </section>
 
     <!-- Footer -->
-    <footer class="footer">
+    <footer class="footer relative-z">
         <div class="container">
-            <h4 class="mb-3 text-white fw-bold">اجتماع القديس يوحنا الحبيب</h4>
-            <p class="mb-4 text-white-50">كنيسة الشهيد العظيم مارجرجس بسندبيس</p>
+            <h4 class="mb-3 text-white fw-bold gsap-fade-up">اجتماع القديس يوحنا الحبيب</h4>
+            <p class="mb-4 text-white-50 gsap-fade-up">كنيسة الشهيد العظيم مارجرجس بسندبيس</p>
             
-            <div class="footer-hashtags">
+            <div class="footer-hashtags gsap-fade-up">
                 #عيلة_واحدة <span class="mx-2 text-white-50">|</span> #متتأخرش_وهات_صاحبك_في_إيدك
             </div>
             
-            <div class="footer-social mt-4">
-                <a href="#"><i class="fab fa-facebook-f"></i></a>
-                <a href="#"><i class="fab fa-youtube"></i></a>
-                <a href="#"><i class="fab fa-instagram"></i></a>
+            <div class="footer-social mt-4 gsap-fade-up">
+                <a href="#" class="hover-magnet"><i class="fab fa-facebook-f"></i></a>
+                <a href="#" class="hover-magnet"><i class="fab fa-youtube"></i></a>
+                <a href="#" class="hover-magnet"><i class="fab fa-instagram"></i></a>
             </div>
             
-            <div class="copyright">
+            <div class="copyright gsap-fade-up">
                 &copy; 2026 اجتماع القديس يوحنا الحبيب للشباب. مبني بمحبة ✝️
             </div>
         </div>
     </footer>
 
     <!-- Floating Action Button (FAB) -->
-    <div class="fab-container" data-aos="zoom-in" data-aos-delay="1000">
-        <button class="fab-btn" data-bs-toggle="modal" data-bs-target="#qaModal" title="شاركونا أسئلتكم">
+    <div class="fab-container gsap-scale">
+        <button class="fab-btn hover-magnet" data-bs-toggle="modal" data-bs-target="#qaModal" title="شاركونا أسئلتكم">
             <i class="fas fa-comment-dots"></i>
         </button>
     </div>
@@ -248,7 +260,7 @@
             <div class="modal-content border-0 p-2">
                 <div class="modal-header border-0 pb-0">
                     <h4 class="modal-title fw-bold text-primary" id="qaModalLabel"><i class="fas fa-envelope-open-text me-2 text-accent"></i> شاركونا أسئلتكم واقتراحاتكم</h4>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close hover-magnet" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body px-4 pb-4 pt-3">
                     <p class="text-muted mb-4">في سرية تامة، اترك سؤالك الروحي، العقيدي، أو اقتراح للخدمة، وسنجيب عليه بحب.</p>
@@ -268,7 +280,7 @@
                         </div>
                         
                         <div class="d-grid">
-                            <button type="submit" class="btn btn-primary-custom py-3 fs-5">إرسال <i class="fas fa-paper-plane ms-2"></i></button>
+                            <button type="submit" class="btn btn-primary-custom py-3 fs-5 hover-magnet">إرسال <i class="fas fa-paper-plane ms-2"></i></button>
                         </div>
                     </form>
                     
@@ -282,9 +294,16 @@
         </div>
     </div>
 
-    <!-- Scripts -->
+    <!-- External Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    
+    <!-- Three.js & GSAP -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+
+    <!-- Custom Scripts -->
+    <script src="js/cinematic.js"></script>
     <script src="js/main.js"></script>
 </body>
 </html>

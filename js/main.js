@@ -2,14 +2,6 @@
 const API_URL = '/api';
 
 document.addEventListener('DOMContentLoaded', () => {
-    // Initialize AOS Animation Library
-    AOS.init({
-        once: true,
-        offset: 50,
-        duration: 800,
-        easing: 'ease-in-out-cubic',
-    });
-
     // Initialize core functions
     startCountdown();
     loadSettings();
