@@ -232,12 +232,12 @@ a {
 }
 
 .update-card {
-    background: white;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 15px;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
     transition: transform 0.3s ease;
     overflow: hidden;
-    color: var(--primary-color);
 }
 .update-card:hover {
     transform: translateY(-5px);

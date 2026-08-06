@@ -66,8 +66,8 @@ document.addEventListener('DOMContentLoaded', function() {
                                 <span class="badge bg-secondary">${data.date}</span>
                                 <span class="badge bg-primary">نشاط</span>
                             </div>
-                            <h5 class="card-title fw-bold">${data.title}</h5>
-                            <p class="card-text text-muted">${data.description}</p>
+                            <h5 class="card-title fw-bold text-white">${data.title}</h5>
+                            <p class="card-text text-white-50">${data.description}</p>
                         </div>
                     </div>
                 `;
