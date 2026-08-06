@@ -19,11 +19,70 @@
 }
 
 [data-bs-theme="dark"] {
-  --bg-warm-white: #121212;
-  --bg-light-gray: #1e1e1e;
-  --primary: #5c8ae6;
-  --text-main: #e0e0e0;
-  --text-muted: #a0a0a0;
+  --bs-body-bg: #0f172a;
+  --bs-body-color: #f8fafc;
+  --bs-primary: #8b5cf6;
+  --primary: #8b5cf6;
+  --primary-light: #a78bfa;
+  --bg-warm-white: transparent;
+  --bg-light-gray: transparent;
+  --text-main: #f8fafc;
+  --text-muted: #94a3b8;
+}
+
+[data-bs-theme="dark"] body {
+    background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%) !important;
+    background-attachment: fixed !important;
+    color: var(--text-main);
+}
+
+/* Premium Dark Mode Tables & Cards */
+[data-bs-theme="dark"] .table {
+    --bs-table-bg: rgba(255, 255, 255, 0.03);
+    --bs-table-striped-bg: rgba(255, 255, 255, 0.02);
+    --bs-table-hover-bg: rgba(255, 255, 255, 0.08);
+    --bs-table-color: #f8fafc;
+    border-color: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border-radius: 12px;
+    overflow: hidden;
+}
+[data-bs-theme="dark"] .table thead th {
+    background-color: rgba(139, 92, 246, 0.15);
+    color: #fff;
+    border-bottom: 2px solid rgba(139, 92, 246, 0.4);
+}
+[data-bs-theme="dark"] .table td, [data-bs-theme="dark"] .table th {
+    border-color: rgba(255, 255, 255, 0.05);
+}
+[data-bs-theme="dark"] .about-card,
+[data-bs-theme="dark"] .highlight-item,
+[data-bs-theme="dark"] .contact-card,
+[data-bs-theme="dark"] .navbar {
+    background: rgba(255, 255, 255, 0.03) !important;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+}
+[data-bs-theme="dark"] .update-card {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(12px);
+}
+[data-bs-theme="dark"] .form-control {
+    background-color: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.1);
+    color: white;
+}
+[data-bs-theme="dark"] .form-control:focus {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-color: var(--bs-primary);
+    box-shadow: 0 0 0 0.25rem rgba(139, 92, 246, 0.25);
+}
+[data-bs-theme="dark"] .updates-section, 
+[data-bs-theme="dark"] .hero-section {
+    background: transparent !important;
 }
 
 /* --- Floating Button --- */
