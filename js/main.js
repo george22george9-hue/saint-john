@@ -18,35 +18,6 @@ const db = getFirestore(app);
 
 document.addEventListener('DOMContentLoaded', function() {
     
-    // --- Dark Mode Toggle ---
-    const themeToggleBtn = document.getElementById('theme-toggle');
-    if (themeToggleBtn) {
-        const themeIcon = themeToggleBtn.querySelector('i');
-        const currentTheme = localStorage.getItem('theme') || 'light';
-        
-        // Apply saved theme on load
-        if (currentTheme === 'dark') {
-            document.documentElement.setAttribute('data-bs-theme', 'dark');
-            themeIcon.classList.remove('fa-moon');
-            themeIcon.classList.add('fa-sun');
-        }
-        
-        themeToggleBtn.addEventListener('click', () => {
-            const isDark = document.documentElement.getAttribute('data-bs-theme') === 'dark';
-            if (isDark) {
-                document.documentElement.removeAttribute('data-bs-theme');
-                localStorage.setItem('theme', 'light');
-                themeIcon.classList.remove('fa-sun');
-                themeIcon.classList.add('fa-moon');
-            } else {
-                document.documentElement.setAttribute('data-bs-theme', 'dark');
-                localStorage.setItem('theme', 'dark');
-                themeIcon.classList.remove('fa-moon');
-                themeIcon.classList.add('fa-sun');
-            }
-        });
-    }
-    
     // --- Navbar Scroll Effect ---
     const navbar = document.querySelector('.navbar');
     
