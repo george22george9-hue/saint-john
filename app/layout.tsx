@@ -1,16 +1,56 @@
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import './globals.css';
 
+export const viewport: Viewport = {
+  themeColor: '#0f172a',
+  width: 'device-width',
+  initialScale: 1,
+};
+
 export const metadata: Metadata = {
-  title: 'اجتماع القديس يوحنا الحبيب - كنيسة مارجرجس بسندبيس',
+  metadataBase: new URL('https://saint-john.vercel.app'),
+  title: 'اجتماع القديس يوحنا الحبيب للشباب',
   description:
-    'اجتماع القديس يوحنا الحبيب للشباب بكنيسة الشهيد العظيم مارجرجس بسندبيس - بنمو روحي، معرفي، ومهاري في محبة المسيح وكنيسته الأرثوذكسية.',
+    'الموقع الرسمي لاجتماع القديس يوحنا الحبيب للشباب، يحتوي على الأخبار، المواعيد، الإعلانات، والتواصل مع الخدمة.',
+  applicationName: 'Saint John Youth Meeting',
+  category: 'Church',
+  robots: {
+    index: true,
+    follow: true,
+  },
+  alternates: {
+    canonical: 'https://saint-john.vercel.app',
+  },
+  icons: {
+    icon: [
+      { url: '/favicon.ico' },
+      { url: '/icon.png', type: 'image/png' },
+    ],
+    apple: [{ url: '/apple-icon.png', type: 'image/png' }],
+  },
   openGraph: {
     title: 'اجتماع القديس يوحنا الحبيب للشباب',
     description:
-      'بنمو روحي، معرفي، ومهاري في محبة المسيح وكنيسته الأرثوذكسية - #عيلة_واحدة',
+      'الموقع الرسمي لاجتماع القديس يوحنا الحبيب للشباب، يحتوي على الأخبار، المواعيد، الإعلانات، والتواصل مع الخدمة.',
+    url: 'https://saint-john.vercel.app',
+    siteName: 'Saint John Youth Meeting',
     locale: 'ar_EG',
     type: 'website',
+    images: [
+      {
+        url: '/logo.png',
+        width: 800,
+        height: 800,
+        alt: 'اجتماع القديس يوحنا الحبيب',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'اجتماع القديس يوحنا الحبيب للشباب',
+    description:
+      'الموقع الرسمي لاجتماع القديس يوحنا الحبيب للشباب، يحتوي على الأخبار، المواعيد، الإعلانات، والتواصل مع الخدمة.',
+    images: ['/logo.png'],
   },
 };
 
