@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const db = require('../db/database');
+const supabase = require('../db/database');
 const { verifyToken, JWT_SECRET } = require('../middleware/auth');
 
 // ==========================================
@@ -10,17 +10,23 @@ const { verifyToken, JWT_SECRET } = require('../middleware/auth');
 // ==========================================
 
 // Get Announcements
-router.get('/announcements', (req, res) => {
+router.get('/announcements', async (req, res) => {
   try {
-    const announcements = db.prepare('SELECT * FROM announcements ORDER BY createdAt DESC').all();
+    const { data: announcements, error } = await supabase
+      .from('announcements')
+      .select('*')
+      .order('createdAt', { ascending: false });
+      
+    if (error) throw error;
     res.json(announcements);
   } catch (error) {
+    console.error(error);
     res.status(500).json({ error: 'Database error while fetching announcements' });
   }
 });
 
 // Submit Inquiry/Feedback
-router.post('/inquiries', (req, res) => {
+router.post('/inquiries', async (req, res) => {
   const { name, hymnRequest, message } = req.body;
   
   if (!message) {
@@ -28,30 +34,41 @@ router.post('/inquiries', (req, res) => {
   }
 
   try {
-    const stmt = db.prepare('INSERT INTO inquiries (name, hymnRequest, message) VALUES (?, ?, ?)');
-    const result = stmt.run(name || null, hymnRequest || null, message);
-    res.status(201).json({ id: result.lastInsertRowid, message: 'Inquiry submitted successfully!' });
+    const { data, error } = await supabase
+      .from('inquiries')
+      .insert([{ name: name || null, hymnRequest: hymnRequest || null, message }])
+      .select();
+      
+    if (error) throw error;
+    res.status(201).json({ id: data[0].id, message: 'Inquiry submitted successfully!' });
   } catch (error) {
+    console.error(error);
     res.status(500).json({ error: 'Database error while submitting inquiry' });
   }
 });
 
 // Get Settings (Friday Time, Sunday Schedule)
-router.get('/settings', (req, res) => {
+router.get('/settings', async (req, res) => {
   try {
-    const settingsRows = db.prepare('SELECT * FROM settings').all();
+    const { data: settingsRows, error } = await supabase
+      .from('settings')
+      .select('*');
+      
+    if (error) throw error;
+    
     const settings = {};
     settingsRows.forEach(row => {
       settings[row.key] = row.value;
     });
     res.json(settings);
   } catch (error) {
+    console.error(error);
     res.status(500).json({ error: 'Database error while fetching settings' });
   }
 });
 
 // Admin Login
-router.post('/auth/login', (req, res) => {
+router.post('/auth/login', async (req, res) => {
   const { email, password } = req.body;
 
   if (!email || !password) {
@@ -59,7 +76,15 @@ router.post('/auth/login', (req, res) => {
   }
 
   try {
-    const user = db.prepare('SELECT * FROM users WHERE email = ?').get(email);
+    const { data: users, error } = await supabase
+      .from('users')
+      .select('*')
+      .eq('email', email)
+      .limit(1);
+      
+    if (error) throw error;
+    
+    const user = users[0];
     if (!user) {
       return res.status(401).json({ error: 'Invalid email or password' });
     }
@@ -77,6 +102,7 @@ router.post('/auth/login', (req, res) => {
 
     res.json({ token, email: user.email });
   } catch (error) {
+    console.error(error);
     res.status(500).json({ error: 'Server error during login' });
   }
 });
@@ -87,7 +113,7 @@ router.post('/auth/login', (req, res) => {
 // ==========================================
 
 // Add Announcement
-router.post('/admin/announcements', verifyToken, (req, res) => {
+router.post('/admin/announcements', verifyToken, async (req, res) => {
   const { title, date, description } = req.body;
 
   if (!title || !date) {
@@ -95,55 +121,68 @@ router.post('/admin/announcements', verifyToken, (req, res) => {
   }
 
   try {
-    const stmt = db.prepare('INSERT INTO announcements (title, date, description) VALUES (?, ?, ?)');
-    const result = stmt.run(title, date, description || '');
-    res.status(201).json({ id: result.lastInsertRowid, message: 'Announcement created successfully' });
+    const { data, error } = await supabase
+      .from('announcements')
+      .insert([{ title, date, description: description || '' }])
+      .select();
+      
+    if (error) throw error;
+    res.status(201).json({ id: data[0].id, message: 'Announcement created successfully' });
   } catch (error) {
+    console.error(error);
     res.status(500).json({ error: 'Failed to create announcement' });
   }
 });
 
 // Delete Announcement
-router.delete('/admin/announcements/:id', verifyToken, (req, res) => {
+router.delete('/admin/announcements/:id', verifyToken, async (req, res) => {
   const { id } = req.params;
   
   try {
-    const result = db.prepare('DELETE FROM announcements WHERE id = ?').run(id);
-    if (result.changes === 0) {
-      return res.status(404).json({ error: 'Announcement not found' });
-    }
+    const { error } = await supabase
+      .from('announcements')
+      .delete()
+      .eq('id', id);
+      
+    if (error) throw error;
     res.json({ message: 'Announcement deleted successfully' });
   } catch (error) {
+    console.error(error);
     res.status(500).json({ error: 'Failed to delete announcement' });
   }
 });
 
 // Get All Inquiries
-router.get('/admin/inquiries', verifyToken, (req, res) => {
+router.get('/admin/inquiries', verifyToken, async (req, res) => {
   try {
-    const inquiries = db.prepare('SELECT * FROM inquiries ORDER BY createdAt DESC').all();
+    const { data: inquiries, error } = await supabase
+      .from('inquiries')
+      .select('*')
+      .order('createdAt', { ascending: false });
+      
+    if (error) throw error;
     res.json(inquiries);
   } catch (error) {
+    console.error(error);
     res.status(500).json({ error: 'Failed to fetch inquiries' });
   }
 });
 
 // Update Settings
-router.post('/admin/settings', verifyToken, (req, res) => {
+router.post('/admin/settings', verifyToken, async (req, res) => {
   const { friday_time, sunday_schedule } = req.body;
 
   try {
-    const stmt = db.prepare('UPDATE settings SET value = ? WHERE key = ?');
-    
     if (friday_time) {
-      stmt.run(friday_time, 'friday_time');
+      await supabase.from('settings').update({ value: friday_time }).eq('key', 'friday_time');
     }
     if (sunday_schedule) {
-      stmt.run(sunday_schedule, 'sunday_schedule');
+      await supabase.from('settings').update({ value: sunday_schedule }).eq('key', 'sunday_schedule');
     }
 
     res.json({ message: 'Settings updated successfully' });
   } catch (error) {
+    console.error(error);
     res.status(500).json({ error: 'Failed to update settings' });
   }
 });
