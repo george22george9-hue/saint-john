@@ -18,6 +18,19 @@
   --shadow-gold: 0 4px 15px rgba(212, 175, 55, 0.3);
 }
 
+[data-theme="dark"] {
+  --primary: #5c8ae6;
+  --primary-light: #7c9fed;
+  --primary-dark: #3a5c9f;
+  --bg-warm-white: #121212;
+  --bg-light-gray: #1e1e1e;
+  --text-main: #e0e0e0;
+  --text-muted: #a0a0a0;
+  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.5);
+  --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.6);
+  --shadow-lg: 0 10px 20px rgba(0, 0, 0, 0.7);
+}
+
 /* --- Global Resets & Typography --- */
 body {
   font-family: var(--font-cairo);
