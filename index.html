@@ -6,104 +6,119 @@
     <title>اجتماع القديس يوحنا الحبيب - كنيسة مارجرجس بسندبيس</title>
     
     <!-- Bootstrap 5 RTL CSS -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.rtl.min.css" integrity="sha384-nU14brUcp6StFntEOOEBvcJm4huWjB0OcIeQ3fltAfSmuZFrkAif0T+UtNGlKKQv" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.rtl.min.css">
     
     <!-- Google Fonts: Cairo -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
     
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    
+    <!-- AOS Animation CSS -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
     
     <!-- Custom CSS -->
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 
-    <!-- Section 1: Sticky Header & Navigation Bar -->
-    <nav class="navbar navbar-expand-lg fixed-top">
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg fixed-top" data-aos="fade-down" data-aos-duration="1000">
         <div class="container">
             <a class="navbar-brand d-flex align-items-center" href="#">
-                <img src="logo.png" alt="شعار يوحنا الحبيب" width="40" height="40" class="me-2 rounded-circle" style="object-fit: cover;">
+                <img src="logo.png" alt="شعار" width="45" height="45" class="me-2 rounded-circle" style="object-fit: cover; border: 2px solid var(--accent);">
                 <span><span class="text-primary">يوحنا</span> <span class="text-accent">الحبيب</span></span>
             </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
+            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <i class="fas fa-bars fs-3 text-primary"></i>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
-                    <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="#hero">الرئيسية</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#about">عن الاجتماع</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#friday">اجتماع الجمعة</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#sunday">النشاط الصيفي</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#news">آخر النشاطات</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#contact">تواصل معنا</a>
-                    </li>
+                <ul class="navbar-nav ms-auto mb-2 mb-lg-0 align-items-center">
+                    <li class="nav-item"><a class="nav-link active" href="#hero">الرئيسية</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#about">من نحن</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#programs">برامجنا</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#news">أحدث الفعاليات</a></li>
                     <li class="nav-item">
                         <a class="nav-link text-danger fw-bold" href="https://george22george9-hue.github.io/eftqad/" target="_blank">
                             <i class="fas fa-heart"></i> وحشتنا
                         </a>
                     </li>
-                    <li class="nav-item ms-lg-3 mt-2 mt-lg-0 d-flex align-items-center">
-                        <a class="btn btn-outline-primary btn-sm rounded-pill px-3" href="admin.html"><i class="fas fa-user-shield me-1"></i> أدمن</a>
+                    <li class="nav-item ms-lg-3 mt-2 mt-lg-0">
+                        <a class="btn btn-outline-primary btn-sm rounded-pill px-4 fw-bold" href="admin.html">
+                            <i class="fas fa-shield-alt me-1"></i> دخول الخدام
+                        </a>
                     </li>
                 </ul>
             </div>
         </div>
     </nav>
 
-    <!-- Section 2: Hero Banner -->
+    <!-- Hero Section -->
     <section id="hero" class="hero-section">
         <div class="container">
             <div class="row justify-content-center">
-                <div class="col-lg-9">
-                    <img src="logo.png" alt="شعار الاجتماع" class="mb-4" style="max-width: 150px; filter: drop-shadow(0px 10px 15px rgba(0,0,0,0.3));">
-                    <br>
-                    <span class="hashtag-badge">#عيلة_واحدة</span>
-                    <h1 class="hero-title mt-3">اجتماع القديس يوحنا الحبيب للشباب</h1>
+                <div class="col-lg-10" data-aos="zoom-in" data-aos-duration="1200">
+                    <span class="hashtag-badge mb-3"><i class="fas fa-cross me-1"></i> #عيلة_واحدة</span>
+                    <h1 class="hero-title mt-2">اجتماع القديس يوحنا الحبيب للشباب</h1>
                     <h2 class="hero-subtitle">كنيسة الشهيد العظيم مارجرجس بسندبيس</h2>
-                    <p class="hero-tagline">
-                        بنمو روحي، معرفي، ومهاري في محبة المسيح وكنيسته الأرثوذكسية.. 
-                        <br><strong>#متتأخرش_وهات_صاحبك_في_إيدك!</strong>
+                    <p class="lead text-white-50 mb-4 fw-bold">
+                        بنمو روحي، معرفي، ومهاري في محبة المسيح وكنيسته الأرثوذكسية.<br>
+                        <span class="text-white">#متتأخرش_وهات_صاحبك_في_إيدك!</span>
                     </p>
+                    
+                    <!-- Countdown Timer -->
+                    <div class="countdown-wrapper" id="countdown-timer">
+                        <div class="countdown-item">
+                            <span class="countdown-number" id="cd-days">00</span>
+                            <span class="countdown-label">يوم</span>
+                        </div>
+                        <div class="countdown-item">
+                            <span class="countdown-number" id="cd-hours">00</span>
+                            <span class="countdown-label">ساعة</span>
+                        </div>
+                        <div class="countdown-item">
+                            <span class="countdown-number" id="cd-minutes">00</span>
+                            <span class="countdown-label">دقيقة</span>
+                        </div>
+                        <div class="countdown-item">
+                            <span class="countdown-number" id="cd-seconds">00</span>
+                            <span class="countdown-label">ثانية</span>
+                        </div>
+                    </div>
+                    <div class="text-white-50 small mb-4 mt-n2">باقي على اجتماع الجمعة (الساعة 7:00 مساءً)</div>
+
                     <div class="hero-buttons">
-                        <a href="#friday" class="btn btn-primary-custom me-2 mb-2">جدول مواعيدنا</a>
-                        <a href="#contact" class="btn btn-accent-custom mb-2">أسئلتكم واقتراحاتكم</a>
+                        <a href="#programs" class="btn btn-primary-custom me-2 mb-2"><i class="far fa-calendar-alt me-2"></i>جدول المواعيد</a>
+                        <button class="btn btn-accent-custom mb-2" data-bs-toggle="modal" data-bs-target="#qaModal"><i class="far fa-envelope me-2"></i>شاركونا أسئلتكم</button>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Section 3: About Us & Vision -->
-    <section id="about" class="about-section section-padding">
+    <!-- About Section -->
+    <section id="about" class="section-padding bg-warm-white overflow-hidden">
         <div class="container">
-            <h2 class="section-title">عن الاجتماع ورؤيتنا</h2>
+            <h2 class="section-title" data-aos="fade-up">عن الاجتماع ورؤيتنا</h2>
             <div class="row align-items-center">
-                <div class="col-md-6 mb-4 mb-md-0 text-center">
-                    <i class="fas fa-church text-primary mb-3" style="font-size: 5rem;"></i>
-                    <i class="fas fa-heart text-accent ms-3" style="font-size: 3rem;"></i>
+                <div class="col-md-5 text-center mb-5 mb-md-0" data-aos="fade-left">
+                    <div class="position-relative d-inline-block">
+                        <i class="fas fa-church text-primary" style="font-size: 8rem; opacity: 0.1;"></i>
+                        <img src="logo.png" alt="الشعار" class="position-absolute top-50 start-50 translate-middle rounded-circle shadow-lg" width="120" style="border: 4px solid #fff;">
+                    </div>
                 </div>
-                <div class="col-md-6">
-                    <div class="about-card">
-                        <h3 class="mb-3">بيت روحي وعيلة واحدة</h3>
-                        <p class="text-muted mb-4">
-                            اجتماع القديس يوحنا الحبيب للشباب هو أكتر من مجرد لقاء أسبوعي، هو <strong>#عيلة_واحدة</strong> بنجتمع فيها على محبة المسيح.
+                <div class="col-md-7" data-aos="fade-right">
+                    <div class="glass-card">
+                        <h3 class="mb-4 text-primary d-flex align-items-center">
+                            <i class="fas fa-heart text-accent ms-3 fs-2"></i> بيت روحي وعيلة واحدة
+                        </h3>
+                        <p class="text-muted fs-5 mb-3">
+                            اجتماع القديس يوحنا الحبيب للشباب هو أكتر من مجرد لقاء أسبوعي، هو <strong>#عيلة_واحدة</strong> بنجتمع فيها على محبة المسيح لتشجيع بعضنا البعض.
                         </p>
-                        <p class="text-muted mb-0">
-                            رؤيتنا إن كل شاب وشابة ينمو روحياً من خلال كلمة ربنا، ويبني صداقات مسيحية حقيقية، ويطور من مهاراته الشخصية والعملية عشان يكون نور وملح في مجتمعه. بنؤمن إن كل حد فينا ليه دور ومكان محجوز باسمه.
+                        <p class="text-muted fs-5 mb-0">
+                            رؤيتنا إن كل شاب وشابة ينمو روحياً من خلال كلمة ربنا، ويبني صداقات مسيحية حقيقية، ويطور من مهاراته عشان يكون نور وملح في مجتمعه.
                         </p>
                     </div>
                 </div>
@@ -111,49 +126,60 @@
         </div>
     </section>
 
-    <!-- Section 4: Main Friday Meeting -->
-    <section id="friday" class="friday-section section-padding">
+    <!-- Interactive Programs Section (Tabs) -->
+    <section id="programs" class="section-padding bg-light-gray">
         <div class="container">
-            <h2 class="section-title">اجتماع يوم الجمعة</h2>
-            <div class="text-center mb-5">
-                <h4 id="friday-time" class="text-accent mb-3"><i class="far fa-clock ms-2"></i>جاري تحميل الميعاد...</h4>
-                <p class="text-muted max-w-700 mx-auto">وقت مخصص للنمو الروحي والشركة المحبة.. مستنيينك!</p>
-            </div>
+            <h2 class="section-title" data-aos="fade-up">برامجنا ومواعيدنا</h2>
             
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="highlight-item">
-                        <div class="highlight-icon"><i class="fas fa-music"></i></div>
-                        <div>
-                            <h5>صلاة وترانيم</h5>
-                            <p class="text-muted mb-0">أوقات صلاة عميقة وترانيم روحية وفرايحي ترفع القلب.</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="highlight-item">
-                        <div class="highlight-icon"><i class="fas fa-book-open"></i></div>
-                        <div>
-                            <h5>كلمة روحية</h5>
-                            <p class="text-muted mb-0">كلمة روحية وعصرية تمس واقع وتحديات الشباب اليومية.</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="highlight-item">
-                        <div class="highlight-icon"><i class="fas fa-gamepad"></i></div>
-                        <div>
-                            <h5>مسابقات وتفاعل</h5>
-                            <p class="text-muted mb-0">مسابقات وألعاب تفاعلية إلكترونية وجوائز مميزة.</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="highlight-item">
-                        <div class="highlight-icon"><i class="fas fa-users"></i></div>
-                        <div>
-                            <h5>أنشطة وأمسيات</h5>
-                            <p class="text-muted mb-0">فقرات اجتماعية، أنشطة، أمسيات، أيام روحية وحفلات.</p>
+            <div class="row justify-content-center" data-aos="fade-up" data-aos-delay="200">
+                <div class="col-lg-10">
+                    <div class="glass-card p-0 overflow-hidden">
+                        <!-- Tabs Navigation -->
+                        <ul class="nav nav-tabs custom-tabs nav-fill" id="programTabs" role="tablist">
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link active" id="friday-tab" data-bs-toggle="tab" data-bs-target="#friday-pane" type="button" role="tab">
+                                    <i class="fas fa-cross me-2 text-accent"></i> اجتماع يوم الجمعة
+                                </button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="sunday-tab" data-bs-toggle="tab" data-bs-target="#sunday-pane" type="button" role="tab">
+                                    <i class="fas fa-sun me-2 text-accent"></i> النشاط الصيفي (الأحد)
+                                </button>
+                            </li>
+                        </ul>
+                        
+                        <!-- Tabs Content -->
+                        <div class="tab-content p-4 p-md-5" id="programTabsContent">
+                            <!-- Friday Tab -->
+                            <div class="tab-pane fade show active" id="friday-pane" role="tabpanel" tabindex="0">
+                                <div class="text-center mb-4">
+                                    <h4 class="text-primary fw-bold" id="friday-time">
+                                        <div class="spinner-border spinner-border-sm text-primary" role="status"></div> جاري التحميل...
+                                    </h4>
+                                    <p class="text-muted">وقت مخصص للنمو الروحي والشركة المحبة.. مستنيينك!</p>
+                                </div>
+                                <div class="row g-4 mt-2">
+                                    <div class="col-md-6"><div class="d-flex"><div class="text-accent fs-2 ms-3"><i class="fas fa-music"></i></div><div><h5 class="fw-bold">صلاة وترانيم</h5><p class="text-muted mb-0">أوقات صلاة عميقة وترانيم ترفع القلب.</p></div></div></div>
+                                    <div class="col-md-6"><div class="d-flex"><div class="text-accent fs-2 ms-3"><i class="fas fa-book-open"></i></div><div><h5 class="fw-bold">كلمة روحية</h5><p class="text-muted mb-0">كلمة تمس واقع وتحديات الشباب.</p></div></div></div>
+                                    <div class="col-md-6"><div class="d-flex"><div class="text-accent fs-2 ms-3"><i class="fas fa-gamepad"></i></div><div><h5 class="fw-bold">مسابقات وتفاعل</h5><p class="text-muted mb-0">ألعاب تفاعلية وجوائز مميزة.</p></div></div></div>
+                                    <div class="col-md-6"><div class="d-flex"><div class="text-accent fs-2 ms-3"><i class="fas fa-users"></i></div><div><h5 class="fw-bold">أنشطة وأمسيات</h5><p class="text-muted mb-0">فقرات اجتماعية وأيام روحية وحفلات.</p></div></div></div>
+                                </div>
+                            </div>
+                            
+                            <!-- Sunday Tab -->
+                            <div class="tab-pane fade" id="sunday-pane" role="tabpanel" tabindex="0">
+                                <div class="text-center mb-4">
+                                    <h4 class="text-primary fw-bold">النشاط الصيفي التكاملي (170 دقيقة)</h4>
+                                    <p class="text-muted">برنامج يجمع بين المعرفة اللاهوتية وتطوير المهارات.</p>
+                                </div>
+                                <div class="table-responsive rounded-3 border">
+                                    <table class="table table-custom mb-0 text-center">
+                                        <tbody id="sunday-schedule">
+                                            <tr><td colspan="3" class="text-muted text-center py-4"><div class="spinner-border spinner-border-sm text-primary"></div> جاري تحميل الجدول...</td></tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -161,121 +187,104 @@
         </div>
     </section>
 
-    <!-- Section 5: Sunday Summer Activity -->
-    <section id="sunday" class="sunday-section section-padding">
+    <!-- News & Announcements Section -->
+    <section id="news" class="section-padding news-section">
         <div class="container">
-            <h2 class="section-title">النشاط الصيفي - يوم الأحد</h2>
-            <div class="text-center mb-5">
-                <p class="text-muted mb-0">برنامج متكامل لمدة 170 دقيقة يجمع بين المعرفة اللاهوتية وتطوير المهارات.</p>
-            </div>
+            <h2 class="section-title" data-aos="fade-up">أحدث الإعلانات والنشاطات</h2>
+            <p class="text-center text-white-50 mb-5" data-aos="fade-up" data-aos-delay="100">عيش معانا لحظة بلحظة</p>
             
-            <div class="table-responsive">
-                <table class="table agenda-table text-center">
-                    <thead>
-                        <tr>
-                            <th width="15%">الوقت</th>
-                            <th width="25%">الفقرة</th>
-                            <th width="60%">التفاصيل</th>
-                        </tr>
-                    </thead>
-                    <tbody id="sunday-schedule">
-                        <tr>
-                            <td colspan="3" class="text-center text-muted">جاري تحميل الجدول...</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </section>
-
-    <!-- Section 6: Latest News & Activities (Dynamic updates via Google Sheets) -->
-    <section id="news" class="updates-section section-padding">
-        <div class="container">
-            <h2 class="section-title">أحدث الأخبار والنشاطات</h2>
-            <p class="text-center mb-5 opacity-75">تابع أحدث إعلاناتنا ونشاطاتنا الأسبوعية أولاً بأول.</p>
-            
-            <div class="row" id="dynamic-updates">
-                <!-- Dynamically populated via main.js -->
-                <div class="col-12 text-center">
-                    <div class="spinner-border text-light" role="status">
-                        <span class="visually-hidden">جاري التحميل...</span>
-                    </div>
+            <div class="row g-4" id="dynamic-updates">
+                <!-- Dynamically populated -->
+                <div class="col-12 text-center py-5">
+                    <div class="spinner-border text-accent" style="width: 3rem; height: 3rem;" role="status"></div>
                 </div>
             </div>
         </div>
     </section>
 
     <!-- Wahshatna Banner Section -->
-    <section class="wahshatna-banner text-center py-5" style="background-color: var(--primary); color: white;">
+    <section class="wahshatna-banner text-center py-5" style="background-color: var(--primary); color: white;" data-aos="fade-up">
         <div class="container">
             <h3 class="mb-3 text-white fw-bold">مفتقدينك معانا! ❤️</h3>
             <p class="mb-4 text-white-50">رسالة حب دافية مستنياك.. اللمة مش بتكمل غير بيك.</p>
-            <a href="https://george22george9-hue.github.io/eftqad/" target="_blank" class="btn btn-danger btn-lg w-100 py-3 rounded-3 fw-bold" style="max-width: 800px; font-size: 1.2rem; box-shadow: 0 4px 15px rgba(220, 53, 69, 0.4);">
+            <a href="https://george22george9-hue.github.io/eftqad/" target="_blank" class="btn btn-danger btn-lg w-100 py-3 rounded-3 fw-bold" style="max-width: 800px; font-size: 1.2rem; box-shadow: 0 4px 15px rgba(220, 53, 69, 0.4); transition: all 0.3s ease;">
                 <i class="fas fa-heart me-2"></i> شوف رسالتك دلوقتي
             </a>
         </div>
     </section>
 
-    <!-- Section 7: Q&A & Hymn Requests Form -->
-    <section id="contact" class="qa-section section-padding">
-        <div class="container">
-            <h2 class="section-title">شاركونا أسئلتكم واقتراحاتكم</h2>
-            
-            <div class="row justify-content-center">
-                <div class="col-lg-8">
-                    <div class="form-container">
-                        <form id="contact-form">
-                            <div class="mb-4">
-                                <label for="name" class="form-label">الاسم (اختياري للسرية)</label>
-                                <input type="text" class="form-control" id="name" placeholder="اسمك الكريم">
-                            </div>
-                            
-                            <div class="mb-4">
-                                <label for="hymn" class="form-label">تحب نقول ترنيمة إيه سوا؟</label>
-                                <input type="text" class="form-control" id="hymn" placeholder="اسم الترنيمة اللي بتحبها">
-                            </div>
-                            
-                            <div class="mb-4">
-                                <label for="message" class="form-label">عندك سؤال عقيدي أو شخصي أو اقتراح للخدمة؟</label>
-                                <textarea class="form-control" id="message" rows="5" placeholder="اكتب سؤالك أو اقتراحك هنا بكل حرية..." required></textarea>
-                            </div>
-                            
-                            <div class="text-center">
-                                <button type="submit" class="btn btn-primary-custom w-100 py-3 fs-5">إرسال <i class="fas fa-paper-plane ms-2"></i></button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Section 8: Footer -->
+    <!-- Footer -->
     <footer class="footer">
         <div class="container">
-            <h4 class="mb-3">اجتماع القديس يوحنا الحبيب</h4>
-            <p class="mb-3">كنيسة الشهيد العظيم مارجرجس بسندبيس</p>
+            <h4 class="mb-3 text-white fw-bold">اجتماع القديس يوحنا الحبيب</h4>
+            <p class="mb-4 text-white-50">كنيسة الشهيد العظيم مارجرجس بسندبيس</p>
             
             <div class="footer-hashtags">
-                #عيلة_واحدة &nbsp; | &nbsp; #متتأخرش_وهات_صاحبك_في_إيدك
+                #عيلة_واحدة <span class="mx-2 text-white-50">|</span> #متتأخرش_وهات_صاحبك_في_إيدك
             </div>
             
-            <div class="footer-social">
+            <div class="footer-social mt-4">
                 <a href="#"><i class="fab fa-facebook-f"></i></a>
                 <a href="#"><i class="fab fa-youtube"></i></a>
                 <a href="#"><i class="fab fa-instagram"></i></a>
             </div>
             
             <div class="copyright">
-                &copy; 2026 اجتماع القديس يوحنا الحبيب للشباب. جميع الحقوق محفوظة.
+                &copy; 2026 اجتماع القديس يوحنا الحبيب للشباب. مبني بمحبة ✝️
             </div>
         </div>
     </footer>
 
-    <!-- Bootstrap 5 JS Bundle with Popper -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
-    
-    <!-- Custom JS (Now a module for Firebase) -->
-    <script type="module" src="js/main.js"></script>
+    <!-- Floating Action Button (FAB) -->
+    <div class="fab-container" data-aos="zoom-in" data-aos-delay="1000">
+        <button class="fab-btn" data-bs-toggle="modal" data-bs-target="#qaModal" title="شاركونا أسئلتكم">
+            <i class="fas fa-comment-dots"></i>
+        </button>
+    </div>
+
+    <!-- Q&A Modal -->
+    <div class="modal fade" id="qaModal" tabindex="-1" aria-labelledby="qaModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content border-0 p-2">
+                <div class="modal-header border-0 pb-0">
+                    <h4 class="modal-title fw-bold text-primary" id="qaModalLabel"><i class="fas fa-envelope-open-text me-2 text-accent"></i> شاركونا أسئلتكم واقتراحاتكم</h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body px-4 pb-4 pt-3">
+                    <p class="text-muted mb-4">في سرية تامة، اترك سؤالك الروحي، العقيدي، أو اقتراح للخدمة، وسنجيب عليه بحب.</p>
+                    
+                    <form id="contact-form">
+                        <div class="form-floating mb-3">
+                            <input type="text" class="form-control" id="name" placeholder="الاسم">
+                            <label for="name">الاسم (اختياري للسرية)</label>
+                        </div>
+                        <div class="form-floating mb-3">
+                            <input type="text" class="form-control" id="hymn" placeholder="ترنيمة">
+                            <label for="hymn">تحب نقول ترنيمة إيه سوا؟</label>
+                        </div>
+                        <div class="form-floating mb-4">
+                            <textarea class="form-control" id="message" placeholder="السؤال" style="height: 120px" required></textarea>
+                            <label for="message">عندك سؤال عقيدي أو شخصي أو اقتراح للخدمة؟ *</label>
+                        </div>
+                        
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary-custom py-3 fs-5">إرسال <i class="fas fa-paper-plane ms-2"></i></button>
+                        </div>
+                    </form>
+                    
+                    <!-- Success Alert (Hidden by default) -->
+                    <div id="success-alert" class="alert alert-success mt-4 d-none text-center rounded-3 border-0 shadow-sm" role="alert">
+                        <i class="fas fa-check-circle fs-2 mb-2"></i><br>
+                        <strong>تم إرسال رسالتك بنجاح!</strong><br> شكراً لتواصلك معانا.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="js/main.js"></script>
 </body>
 </html>

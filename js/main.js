@@ -1,189 +1,220 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-import { getFirestore, collection, getDocs, query, orderBy, addDoc, serverTimestamp, getDoc, doc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+// main.js - Public facing logic with REST API & UI Enhancements
+const API_URL = '/api';
 
-// TODO: Replace with your actual Firebase config object (must match admin.js)
-const firebaseConfig = {
-  apiKey: "AIzaSyCBjTPMq7Fqrl0xxEgguDu7v5qO5b_JTTY",
-  authDomain: "saint-john-meeting.firebaseapp.com",
-  projectId: "saint-john-meeting",
-  storageBucket: "saint-john-meeting.firebasestorage.app",
-  messagingSenderId: "530031879944",
-  appId: "1:530031879944:web:9e06f7ab4ee3a0653f2ebd",
-  measurementId: "G-QTP71DBPFK"
-};
-
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-
-document.addEventListener('DOMContentLoaded', function() {
-    
-    // --- Navbar Scroll Effect ---
-    const navbar = document.querySelector('.navbar');
-    
-    window.addEventListener('scroll', () => {
-        if (window.scrollY > 50) {
-            navbar.style.padding = '10px 0';
-            navbar.style.boxShadow = '0 4px 10px rgba(27, 59, 111, 0.1)';
-        } else {
-            navbar.style.padding = '15px 0';
-            navbar.style.boxShadow = '0 2px 4px rgba(27, 59, 111, 0.05)';
-        }
+document.addEventListener('DOMContentLoaded', () => {
+    // Initialize AOS Animation Library
+    AOS.init({
+        once: true,
+        offset: 50,
+        duration: 800,
+        easing: 'ease-in-out-cubic',
     });
 
-    // --- Dynamic Updates from Firebase Firestore ---
-    const updatesContainer = document.getElementById('dynamic-updates');
-    
-    async function loadPublicActivities() {
-        if (!updatesContainer) return;
+    // Initialize core functions
+    startCountdown();
+    loadSettings();
+    loadAnnouncements();
+    setupContactForm();
+});
+
+// --- Countdown Timer Logic ---
+function startCountdown() {
+    // Set target day to next Friday at 19:00 (7 PM) Cairo time
+    function getNextFriday() {
+        const now = new Date();
+        const resultDate = new Date(now);
         
-        try {
-            const q = query(collection(db, "activities"), orderBy("createdAt", "desc"));
-            const querySnapshot = await getDocs(q);
+        resultDate.setHours(19, 0, 0, 0); // 7:00 PM
+
+        // Calculate days to next Friday (Friday is 5)
+        let daysToFriday = (5 - now.getDay() + 7) % 7;
+        
+        // If today is Friday but past 7 PM, target next week's Friday
+        if (daysToFriday === 0 && now.getHours() >= 19) {
+            daysToFriday = 7;
+        }
+        
+        resultDate.setDate(now.getDate() + daysToFriday);
+        return resultDate;
+    }
+
+    const targetDate = getNextFriday().getTime();
+
+    const updateTimer = setInterval(() => {
+        const now = new Date().getTime();
+        const distance = targetDate - now;
+
+        if (distance < 0) {
+            // Meeting is happening now or we miscalculated slightly, reset for next week
+            clearInterval(updateTimer);
+            document.getElementById("cd-days").innerText = "00";
+            document.getElementById("cd-hours").innerText = "00";
+            document.getElementById("cd-minutes").innerText = "00";
+            document.getElementById("cd-seconds").innerText = "00";
+            setTimeout(startCountdown, 60000); // Restart calculation after 1 minute
+            return;
+        }
+
+        const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+        // Pad with zero
+        document.getElementById("cd-days").innerText = days < 10 ? '0' + days : days;
+        document.getElementById("cd-hours").innerText = hours < 10 ? '0' + hours : hours;
+        document.getElementById("cd-minutes").innerText = minutes < 10 ? '0' + minutes : minutes;
+        document.getElementById("cd-seconds").innerText = seconds < 10 ? '0' + seconds : seconds;
+        
+    }, 1000);
+}
+
+// --- Fetch Settings ---
+async function loadSettings() {
+    try {
+        const response = await fetch(`${API_URL}/settings`);
+        if (!response.ok) throw new Error('Failed to fetch settings');
+        
+        const settings = await response.json();
+        
+        // Update Friday Time
+        const fridayTimeEl = document.getElementById('friday-time');
+        if (fridayTimeEl && settings.friday_time) {
+            fridayTimeEl.innerHTML = `<i class="far fa-clock ms-2"></i>${settings.friday_time}`;
+        }
+        
+        // Update Sunday Schedule
+        const sundayScheduleEl = document.getElementById('sunday-schedule');
+        if (sundayScheduleEl && settings.sunday_schedule) {
+            const scheduleLines = settings.sunday_schedule.split('\\n');
+            let html = '';
             
-            if (querySnapshot.empty) {
-                updatesContainer.innerHTML = '<div class="col-12 text-center text-muted py-5">لا توجد أخبار أو نشاطات حديثة في الوقت الحالي.</div>';
-                return;
-            }
-            
-            updatesContainer.innerHTML = '';
-            querySnapshot.forEach((docSnap) => {
-                const data = docSnap.data();
-                
-                const col = document.createElement('div');
-                col.className = 'col-md-6 col-lg-4 mb-4';
-                
-                // Generate image HTML if exists
-                const imgHtml = data.imageUrl 
-                    ? `<img src="${data.imageUrl}" class="card-img-top activity-img" alt="${data.title}">` 
-                    : '';
-                
-                col.innerHTML = `
-                    <div class="card update-card h-100">
-                        ${imgHtml}
-                        <div class="card-body">
-                            <div class="d-flex justify-content-between mb-2">
-                                <span class="badge bg-secondary">${data.date}</span>
-                                <span class="badge bg-primary">نشاط</span>
-                            </div>
-                            <h5 class="card-title fw-bold text-white">${data.title}</h5>
-                            <p class="card-text text-white-50">${data.description}</p>
-                        </div>
-                    </div>
-                `;
-                
-                updatesContainer.appendChild(col);
+            scheduleLines.forEach(line => {
+                const parts = line.split('-').map(p => p.trim());
+                if (parts.length >= 3) {
+                    html += `
+                        <tr>
+                            <td class="fw-bold fs-5">${parts[0]}</td>
+                            <td class="text-primary fw-bold fs-5">${parts[1]}</td>
+                            <td class="text-start text-muted">${parts.slice(2).join(' - ')}</td>
+                        </tr>
+                    `;
+                }
             });
-        } catch (error) {
-            console.error("Error fetching activities:", error);
-            // Fallback content or error message
-            updatesContainer.innerHTML = `
-                <div class="col-12 text-center text-white">
-                    <p>يرجى إعداد اتصال قاعدة البيانات Firebase في لوحة التحكم.</p>
+            
+            if (html) {
+                sundayScheduleEl.innerHTML = html;
+            } else {
+                sundayScheduleEl.innerHTML = `<tr><td colspan="3" class="text-center text-muted">لم يتم إضافة جدول بعد.</td></tr>`;
+            }
+        }
+    } catch (error) {
+        console.error('Error loading settings:', error);
+    }
+}
+
+// --- Fetch Announcements ---
+async function loadAnnouncements() {
+    try {
+        const response = await fetch(`${API_URL}/announcements`);
+        if (!response.ok) throw new Error('Failed to fetch announcements');
+        
+        const announcements = await response.json();
+        const container = document.getElementById('dynamic-updates');
+        
+        if (!container) return;
+        
+        if (announcements.length === 0) {
+            container.innerHTML = `
+                <div class="col-12 text-center text-white-50 py-5">
+                    <i class="far fa-calendar-times fs-1 mb-3"></i>
+                    <p>لا توجد أخبار أو نشاطات في الوقت الحالي.</p>
                 </div>
             `;
+            return;
         }
-    }
-
-    // --- Load Site Settings ---
-    async function loadSiteSettings() {
-        try {
-            const docRef = doc(db, "settings", "main");
-            const docSnap = await getDoc(docRef);
-            
-            const fridayTimeEl = document.getElementById('friday-time');
-            const sundayScheduleEl = document.getElementById('sunday-schedule');
-            
-            if (docSnap.exists()) {
-                const data = docSnap.data();
-                
-                // Update Friday Time
-                if (data.fridayTime && fridayTimeEl) {
-                    fridayTimeEl.innerHTML = `<i class="far fa-clock ms-2"></i>${data.fridayTime}`;
-                }
-                
-                // Update Sunday Schedule
-                if (data.sundaySchedule && sundayScheduleEl) {
-                    sundayScheduleEl.innerHTML = ''; // Clear loading
-                    const lines = data.sundaySchedule.split('\n');
-                    
-                    lines.forEach(line => {
-                        const parts = line.split('-').map(p => p.trim());
-                        if (parts.length >= 2) {
-                            const time = parts[0];
-                            const title = parts[1];
-                            const desc = parts[2] || '';
-                            
-                            const tr = document.createElement('tr');
-                            tr.innerHTML = `
-                                <td>${time}</td>
-                                <td>${title}</td>
-                                <td>${desc}</td>
-                            `;
-                            sundayScheduleEl.appendChild(tr);
-                        }
-                    });
-                    
-                    // Fallback if no valid lines
-                    if (sundayScheduleEl.innerHTML === '') {
-                         sundayScheduleEl.innerHTML = '<tr><td colspan="3" class="text-center text-muted">الجدول غير متوفر حالياً.</td></tr>';
-                    }
-                }
-            } else {
-                if (fridayTimeEl) fridayTimeEl.innerHTML = `<i class="far fa-clock ms-2"></i>كل يوم جمعة الساعة 7:00 مساءً`;
-                if (sundayScheduleEl) sundayScheduleEl.innerHTML = '<tr><td colspan="3" class="text-center text-muted">الجدول غير متوفر حالياً.</td></tr>';
-            }
-        } catch (error) {
-            console.error("Error loading settings:", error);
-        }
-    }
-
-    loadSiteSettings();
-    loadPublicActivities();
-
-    // --- Form Submission Handling (Saving to Firebase) ---
-    const contactForm = document.getElementById('contact-form');
-    
-    if (contactForm) {
-        contactForm.addEventListener('submit', async function(e) {
-            e.preventDefault();
-            
-            // Get form fields
-            const name = document.getElementById('name').value || 'فاعل خير';
-            const hymn = document.getElementById('hymn').value || 'لا يوجد ترنيمة';
-            const message = document.getElementById('message').value;
-            
-            // Get submit button
-            const submitBtn = contactForm.querySelector('button[type="submit"]');
-            const originalText = submitBtn.innerHTML;
-            
-            // Show loading state
-            submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> جاري الإرسال...';
-            submitBtn.disabled = true;
-            
-            try {
-                // Save to Firebase Firestore "feedbacks" collection
-                await addDoc(collection(db, "feedbacks"), {
-                    name: name,
-                    hymn: hymn,
-                    message: message,
-                    createdAt: serverTimestamp()
-                });
-                
-                // Hide form and show success message
-                contactForm.innerHTML = `
-                    <div class="alert alert-success text-center p-4 rounded-3" role="alert">
-                        <h4 class="alert-heading mb-3"><i class="fas fa-check-circle text-success" style="font-size: 2rem;"></i></h4>
-                        <h4 class="mb-2">تم استلام رسالتك بنجاح!</h4>
-                        <p class="mb-0">شكراً لمشاركتك.. بنهتم بكل كلمة بتوصلنا.</p>
+        
+        let html = '';
+        announcements.forEach((ann, index) => {
+            // Stagger animations based on index
+            const delay = (index % 3) * 150;
+            html += `
+                <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="${delay}">
+                    <div class="update-card text-start">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <span class="badge bg-accent text-dark rounded-pill px-3 py-2 fw-bold"><i class="far fa-calendar-alt me-1"></i> ${ann.date}</span>
+                        </div>
+                        <h4 class="mb-3 text-white fw-bold">${ann.title}</h4>
+                        <p class="text-white-50 mb-0" style="line-height: 1.8;">${ann.description}</p>
                     </div>
-                `;
-            } catch (error) {
-                console.error("Error adding feedback:", error);
-                submitBtn.innerHTML = originalText;
-                submitBtn.disabled = false;
-                alert("حدث خطأ أثناء الإرسال، يرجى المحاولة مرة أخرى.");
-            }
+                </div>
+            `;
         });
+        
+        container.innerHTML = html;
+        
+    } catch (error) {
+        console.error('Error loading announcements:', error);
+        const container = document.getElementById('dynamic-updates');
+        if (container) {
+            container.innerHTML = `<div class="col-12 text-center text-danger">حدث خطأ أثناء تحميل الأخبار. يرجى المحاولة لاحقاً.</div>`;
+        }
     }
-});
+}
+
+// --- Setup Contact Form with Success Modal Animation ---
+function setupContactForm() {
+    const form = document.getElementById('contact-form');
+    if (!form) return;
+    
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        const submitBtn = form.querySelector('button[type="submit"]');
+        const originalText = submitBtn.innerHTML;
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري الإرسال...';
+        submitBtn.disabled = true;
+        
+        const name = document.getElementById('name').value;
+        const hymnRequest = document.getElementById('hymn').value;
+        const message = document.getElementById('message').value;
+        
+        try {
+            const response = await fetch(`${API_URL}/inquiries`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name, hymnRequest, message })
+            });
+            
+            if (!response.ok) throw new Error('Failed to submit form');
+            
+            // Hide form and show success alert in the modal
+            form.classList.add('d-none');
+            const successAlert = document.getElementById('success-alert');
+            successAlert.classList.remove('d-none');
+            
+            // Optional: Auto close modal after 3 seconds
+            setTimeout(() => {
+                const qaModalEl = document.getElementById('qaModal');
+                const modal = bootstrap.Modal.getInstance(qaModalEl);
+                if (modal) {
+                    modal.hide();
+                }
+                
+                // Reset form for future opens
+                setTimeout(() => {
+                    form.reset();
+                    form.classList.remove('d-none');
+                    successAlert.classList.add('d-none');
+                }, 500);
+            }, 3000);
+            
+        } catch (error) {
+            console.error('Error submitting form:', error);
+            alert('عذراً، حدث خطأ أثناء إرسال الرسالة. يرجى المحاولة لاحقاً.');
+        } finally {
+            submitBtn.innerHTML = originalText;
+            submitBtn.disabled = false;
+        }
+    });
+}
