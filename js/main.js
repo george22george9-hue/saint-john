@@ -83,6 +83,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 </div>
             `;
         }
+    }
+
     // --- Load Site Settings ---
     async function loadSiteSettings() {
         try {
