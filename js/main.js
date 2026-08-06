@@ -26,20 +26,20 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Apply saved theme on load
         if (currentTheme === 'dark') {
-            document.body.setAttribute('data-theme', 'dark');
+            document.documentElement.setAttribute('data-bs-theme', 'dark');
             themeIcon.classList.remove('fa-moon');
             themeIcon.classList.add('fa-sun');
         }
         
         themeToggleBtn.addEventListener('click', () => {
-            const isDark = document.body.getAttribute('data-theme') === 'dark';
+            const isDark = document.documentElement.getAttribute('data-bs-theme') === 'dark';
             if (isDark) {
-                document.body.removeAttribute('data-theme');
+                document.documentElement.removeAttribute('data-bs-theme');
                 localStorage.setItem('theme', 'light');
                 themeIcon.classList.remove('fa-sun');
                 themeIcon.classList.add('fa-moon');
             } else {
-                document.body.setAttribute('data-theme', 'dark');
+                document.documentElement.setAttribute('data-bs-theme', 'dark');
                 localStorage.setItem('theme', 'dark');
                 themeIcon.classList.remove('fa-moon');
                 themeIcon.classList.add('fa-sun');
