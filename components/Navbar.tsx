@@ -167,41 +167,41 @@ export default function Navbar() {
 
           <div className="d-flex justify-content-center gap-2 mt-2">
             <a
-              href="#"
+              href="https://www.facebook.com/share/1ESrPMcJEC/"
               target="_blank"
               rel="noopener noreferrer"
-              className="footer-social-link"
-              aria-label="Facebook"
+              className="footer-social-link fb-link"
+              aria-label="فيسبوك"
               title="فيسبوك"
             >
               <i className="fab fa-facebook-f"></i>
             </a>
             <a
+              href="https://whatsapp.com/channel/0029VarbdqNCXC3T4BwPj90V"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="footer-social-link wa-link"
+              aria-label="واتساب"
+              title="واتساب"
+            >
+              <i className="fab fa-whatsapp"></i>
+            </a>
+            <a
               href="https://www.tiktok.com/@stjohnmeeting?_r=1&_t=ZS-98fBl2ThvFK"
               target="_blank"
               rel="noopener noreferrer"
-              className="footer-social-link"
-              aria-label="TikTok"
+              className="footer-social-link tt-link"
+              aria-label="تيك توك"
               title="تيك توك"
             >
               <i className="fab fa-tiktok"></i>
             </a>
             <a
-              href="#"
+              href="https://www.instagram.com/stjohnmeeting?igsh=ejNoNnIwaDlreWdv"
               target="_blank"
               rel="noopener noreferrer"
-              className="footer-social-link"
-              aria-label="YouTube"
-              title="يوتيوب"
-            >
-              <i className="fab fa-youtube"></i>
-            </a>
-            <a
-              href="#"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="footer-social-link"
-              aria-label="Instagram"
+              className="footer-social-link ig-link"
+              aria-label="إنستغرام"
               title="إنستغرام"
             >
               <i className="fab fa-instagram"></i>
@@ -210,7 +210,7 @@ export default function Navbar() {
               href="https://drive.google.com/drive/folders/1Khsi7gv1mcFDEBuB2uLfoFil6Ppk8OVU"
               target="_blank"
               rel="noopener noreferrer"
-              className="footer-social-link"
+              className="footer-social-link app-link"
               aria-label="تطبيق اجتماعنا"
               title="تطبيق اجتماعنا"
             >
