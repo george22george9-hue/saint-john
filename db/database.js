@@ -1,4 +1,5 @@
 const { createClient } = require('@supabase/supabase-js');
+const WebSocket = require('ws');
 
 // These must be set in the .env file or hosting environment variables
 const supabaseUrl = process.env.SUPABASE_URL;
@@ -9,6 +10,13 @@ if (!supabaseUrl || !supabaseKey) {
 }
 
 // Initialize Supabase Client
-const supabase = createClient(supabaseUrl || 'https://placeholder.supabase.co', supabaseKey || 'placeholder_key');
+const supabase = createClient(
+  supabaseUrl || 'https://placeholder.supabase.co', 
+  supabaseKey || 'placeholder_key',
+  {
+    auth: { persistSession: false },
+    realtime: { transport: WebSocket }
+  }
+);
 
 module.exports = supabase;
