@@ -21,15 +21,15 @@ export default function Hero({ onOpenModal }: HeroProps) {
             <h2 className="hero-subtitle gsap-subtitle">
               كنيسة الشهيد العظيم مارجرجس بسندبيس
             </h2>
-            <p className="lead text-white-50 mb-4 fw-bold gsap-fade-up">
+            <p className="lead text-muted mb-4 fw-bold gsap-fade-up">
               بنمو روحي، معرفي، ومهاري في محبة المسيح وكنيسته الأرثوذكسية.
               <br />
-              <span className="text-white">#متتأخرش_وهات_صاحبك_في_إيدك!</span>
+              <span className="text-accent fw-extrabold">#متتأخرش_وهات_صاحبك_في_إيدك!</span>
             </p>
 
             <CountdownTimer />
 
-            <div className="text-white-50 small mb-4 mt-n2 gsap-fade-up">
+            <div className="text-muted small mb-4 mt-n2 gsap-fade-up fw-semibold">
               باقي على اجتماع الجمعة (الساعة 7:00 مساءً)
             </div>
 

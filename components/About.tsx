@@ -19,7 +19,7 @@ export default function About() {
                 alt="الشعار"
                 className="position-absolute top-50 start-50 translate-middle rounded-circle shadow-lg"
                 width="120"
-                style={{ border: '4px solid #fff' }}
+                style={{ border: '4px solid var(--accent)' }}
               />
             </div>
           </div>

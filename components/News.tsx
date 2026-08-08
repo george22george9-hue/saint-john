@@ -37,7 +37,7 @@ export default function News({ initialAnnouncements }: NewsProps) {
     <section id="news" className="section-padding news-section relative-z">
       <div className="container">
         <h2 className="section-title gsap-fade-up">أحدث الإعلانات والنشاطات</h2>
-        <p className="text-center text-white-50 mb-5 gsap-fade-up">
+        <p className="text-center text-muted mb-5 gsap-fade-up">
           عيش معانا لحظة بلحظة
         </p>
 
@@ -55,7 +55,7 @@ export default function News({ initialAnnouncements }: NewsProps) {
               حدث خطأ أثناء تحميل الأخبار. يرجى المحاولة لاحقاً.
             </div>
           ) : announcements.length === 0 ? (
-            <div className="col-12 text-center text-white-50 py-5">
+            <div className="col-12 text-center text-muted py-5">
               <i className="far fa-calendar-times fs-1 mb-3"></i>
               <p>لا توجد أخبار أو نشاطات في الوقت الحالي.</p>
             </div>
@@ -75,9 +75,9 @@ export default function News({ initialAnnouncements }: NewsProps) {
                         <i className="far fa-calendar-alt me-1"></i> {ann.date}
                       </span>
                     </div>
-                    <h4 className="mb-3 text-white fw-bold">{ann.title}</h4>
+                    <h4 className="mb-3 fw-bold">{ann.title}</h4>
                     <p
-                      className="text-white-50 mb-0"
+                      className="text-muted mb-0"
                       style={{ lineHeight: '1.8' }}
                     >
                       {ann.description}
