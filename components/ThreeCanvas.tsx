@@ -16,7 +16,8 @@ export default function ThreeCanvas() {
 
     // Scene Setup
     const scene = new THREE.Scene();
-    scene.fog = new THREE.FogExp2(0x070e24, 0.002);
+    const isDarkInitial = document.documentElement.classList.contains('dark');
+    scene.fog = new THREE.FogExp2(isDarkInitial ? 0x070e24 : 0xf8fafc, 0.002);
 
     const camera = new THREE.PerspectiveCamera(
       75,
@@ -175,10 +176,19 @@ export default function ThreeCanvas() {
     };
     window.addEventListener('resize', handleResize);
 
+    // --- Theme Change Listener ---
+    const handleThemeChange = (e: Event) => {
+      const customEvent = e as CustomEvent;
+      const isDark = customEvent.detail === 'dark';
+      scene.fog = new THREE.FogExp2(isDark ? 0x070e24 : 0xf8fafc, 0.002);
+    };
+    window.addEventListener('themeChange', handleThemeChange);
+
     return () => {
       cancelAnimationFrame(animId);
       window.removeEventListener('mousemove', handleMouseMove);
       window.removeEventListener('resize', handleResize);
+      window.removeEventListener('themeChange', handleThemeChange);
       rotateTrigger.kill();
       moveTrigger.kill();
       scaleTrigger.kill();

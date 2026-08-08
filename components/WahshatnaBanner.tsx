@@ -6,7 +6,7 @@ export default function WahshatnaBanner() {
     >
       <div className="container">
         <h3 className="mb-3 text-white fw-bold">مفتقدينك معانا! ❤️</h3>
-        <p className="mb-4 text-white-50">
+        <p className="mb-4 text-white opacity-75">
           رسالة حب دافية مستنياك.. اللمة مش بتكمل غير بيك.
         </p>
         <a

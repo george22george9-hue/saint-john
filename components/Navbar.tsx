@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import ThemeToggle from './ThemeToggle';
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -40,9 +41,9 @@ export default function Navbar() {
             </span>
           </Link>
 
-          {/* Desktop Navigation Links */}
-          <div className="collapse navbar-collapse d-none d-lg-block" id="navbarNavDesktop">
-            <ul className="navbar-nav ms-auto mb-2 mb-lg-0 align-items-center">
+          {/* Desktop Navigation Links & Controls */}
+          <div className="d-none d-lg-flex align-items-center ms-auto" id="navbarNavDesktop">
+            <ul className="navbar-nav me-3 mb-0 align-items-center">
               <li className="nav-item">
                 <a className="nav-link active" href="#hero">
                   الرئيسية
@@ -73,7 +74,7 @@ export default function Navbar() {
                   <i className="fas fa-heart"></i> وحشتنا
                 </a>
               </li>
-              <li className="nav-item ms-lg-3 mt-2 mt-lg-0">
+              <li className="nav-item ms-lg-3">
                 <Link
                   className="btn btn-outline-primary btn-sm rounded-pill px-4 fw-bold hover-magnet"
                   href="/admin"
@@ -82,19 +83,25 @@ export default function Navbar() {
                 </Link>
               </li>
             </ul>
+
+            {/* Desktop Theme Toggle */}
+            <ThemeToggle className="ms-2" />
           </div>
 
-          {/* Mobile Toggler Button */}
-          <button
-            className="navbar-toggler border-0 p-2 d-lg-none"
-            type="button"
-            onClick={() => setIsOpen(!isOpen)}
-            aria-expanded={isOpen}
-            aria-label="Toggle navigation"
-            style={{ color: 'var(--accent)' }}
-          >
-            <i className={`fas ${isOpen ? 'fa-times' : 'fa-bars'} fs-3`} style={{ color: 'var(--accent)' }}></i>
-          </button>
+          {/* Mobile Right Controls (Theme Toggle + Toggler Button) */}
+          <div className="d-flex align-items-center gap-2 d-lg-none">
+            <ThemeToggle />
+            <button
+              className="navbar-toggler border-0 p-2"
+              type="button"
+              onClick={() => setIsOpen(!isOpen)}
+              aria-expanded={isOpen}
+              aria-label="قائمة الملاحة"
+              style={{ color: 'var(--accent)' }}
+            >
+              <i className={`fas ${isOpen ? 'fa-times' : 'fa-bars'} fs-3`} style={{ color: 'var(--accent)' }}></i>
+            </button>
+          </div>
         </div>
       </nav>
 
@@ -119,7 +126,7 @@ export default function Navbar() {
               style={{ objectFit: 'cover', border: '2px solid var(--accent)' }}
             />
             <span>
-              <span className="text-white fw-bold">يوحنا</span>{' '}
+              <span className="text-primary fw-bold">يوحنا</span>{' '}
               <span className="text-accent fw-bold">الحبيب</span>
             </span>
           </Link>
