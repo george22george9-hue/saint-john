@@ -90,7 +90,7 @@ export default function Programs({ initialSettings }: ProgramsProps) {
                           </>
                         )}
                       </h4>
-                      <p className="text-muted">
+                      <p className="text-muted dark:text-gray-300">
                         وقت مخصص للنمو الروحي والشركة المحبة.. مستنيينك!
                       </p>
                     </div>
@@ -102,7 +102,7 @@ export default function Programs({ initialSettings }: ProgramsProps) {
                           </div>
                           <div>
                             <h5 className="fw-bold">صلاة وترانيم</h5>
-                            <p className="text-muted mb-0">
+                            <p className="text-muted dark:text-gray-300 mb-0">
                               أوقات صلاة عميقة وترانيم ترفع القلب.
                             </p>
                           </div>
@@ -115,7 +115,7 @@ export default function Programs({ initialSettings }: ProgramsProps) {
                           </div>
                           <div>
                             <h5 className="fw-bold">كلمة روحية</h5>
-                            <p className="text-muted mb-0">
+                            <p className="text-muted dark:text-gray-300 mb-0">
                               كلمة تمس واقع وتحديات الشباب.
                             </p>
                           </div>
@@ -128,7 +128,7 @@ export default function Programs({ initialSettings }: ProgramsProps) {
                           </div>
                           <div>
                             <h5 className="fw-bold">مسابقات وتفاعل</h5>
-                            <p className="text-muted mb-0">
+                            <p className="text-muted dark:text-gray-300 mb-0">
                               ألعاب تفاعلية وجوائز مميزة.
                             </p>
                           </div>
@@ -141,7 +141,7 @@ export default function Programs({ initialSettings }: ProgramsProps) {
                           </div>
                           <div>
                             <h5 className="fw-bold">أنشطة وأمسيات</h5>
-                            <p className="text-muted mb-0">
+                            <p className="text-muted dark:text-gray-300 mb-0">
                               فقرات اجتماعية وأيام روحية وحفلات.
                             </p>
                           </div>
@@ -158,18 +158,19 @@ export default function Programs({ initialSettings }: ProgramsProps) {
                       <h4 className="text-primary fw-bold">
                         النشاط الصيفي التكاملي (170 دقيقة)
                       </h4>
-                      <p className="text-muted">
+                      <p className="text-muted dark:text-gray-300">
                         برنامج يجمع بين المعرفة اللاهوتية وتطوير المهارات.
                       </p>
                     </div>
-                    <div className="table-responsive rounded-3 border">
-                      <table className="table table-custom mb-0 text-center">
+                    <div className="table-responsive rounded-3 border bg-white">
+                      <table className="table table-custom mb-0 text-center bg-white">
                         <tbody id="sunday-schedule">
                           {loading ? (
                             <tr>
                               <td
                                 colSpan={3}
                                 className="text-muted text-center py-4"
+                                style={{ color: '#475569' }}
                               >
                                 <div className="spinner-border spinner-border-sm text-primary me-2"></div>
                                 جاري تحميل الجدول...
@@ -180,6 +181,7 @@ export default function Programs({ initialSettings }: ProgramsProps) {
                               <td
                                 colSpan={3}
                                 className="text-center text-muted py-4"
+                                style={{ color: '#475569' }}
                               >
                                 لم يتم إضافة جدول بعد.
                               </td>
@@ -191,12 +193,14 @@ export default function Programs({ initialSettings }: ProgramsProps) {
                                 .map((p) => p.trim());
                               if (parts.length < 3) return null;
                               return (
-                                <tr key={idx}>
-                                  <td className="fw-bold fs-5">{parts[0]}</td>
-                                  <td className="text-primary fw-bold fs-5">
+                                <tr key={idx} className="bg-white">
+                                  <td className="fw-bold fs-5" style={{ color: '#0f172a' }}>
+                                    {parts[0]}
+                                  </td>
+                                  <td className="fw-bold fs-5" style={{ color: '#0f1c3f' }}>
                                     {parts[1]}
                                   </td>
-                                  <td className="text-start text-muted">
+                                  <td className="text-start" style={{ color: '#475569' }}>
                                     {parts.slice(2).join(' - ')}
                                   </td>
                                 </tr>

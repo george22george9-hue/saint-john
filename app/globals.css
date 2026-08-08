@@ -53,7 +53,7 @@ html.dark {
   --bg-light-gray: rgba(7, 14, 36, 0.9);
   
   --text-main: #f8fafc;
-  --text-muted: #94a3b8;
+  --text-muted: #cbd5e1;
   --text-inverse: #0f1c3f;
   
   --shadow-sm: 0 4px 6px rgba(0, 0, 0, 0.3);
@@ -107,6 +107,25 @@ h1, h2, h3, h4, h5, h6 {
 a {
   text-decoration: none;
   transition: color 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.text-muted {
+  color: var(--text-muted) !important;
+}
+
+html.dark .text-muted,
+html.dark .dark\:text-gray-300,
+html.dark .dark\:text-slate-300 {
+  color: #cbd5e1 !important;
+}
+
+html.dark .dark\:text-gray-400,
+html.dark .dark\:text-slate-400 {
+  color: #94a3b8 !important;
+}
+
+html.dark .dark\:text-white {
+  color: #ffffff !important;
 }
 
 .text-primary { color: var(--primary) !important; }
@@ -307,6 +326,41 @@ html.dark .text-primary { color: #f8fafc !important; }
   box-shadow: var(--shadow-glow);
 }
 
+.btn-outline-primary,
+.btn-outline-primary * {
+  color: var(--primary) !important;
+  border-color: var(--primary) !important;
+  transition: all 0.3s ease;
+}
+
+.btn-outline-primary:hover,
+.btn-outline-primary:hover *,
+.btn-outline-primary:focus,
+.btn-outline-primary:focus *,
+.btn-outline-primary:active,
+.btn-outline-primary:active * {
+  background-color: var(--primary) !important;
+  border-color: var(--primary) !important;
+  color: #ffffff !important;
+}
+
+html.dark .btn-outline-primary,
+html.dark .btn-outline-primary * {
+  color: var(--accent) !important;
+  border-color: var(--accent) !important;
+}
+
+html.dark .btn-outline-primary:hover,
+html.dark .btn-outline-primary:hover *,
+html.dark .btn-outline-primary:focus,
+html.dark .btn-outline-primary:focus *,
+html.dark .btn-outline-primary:active,
+html.dark .btn-outline-primary:active * {
+  background-color: var(--accent) !important;
+  border-color: var(--accent) !important;
+  color: #070e24 !important;
+}
+
 /* --- Navigation Bar --- */
 .navbar {
   background: var(--navbar-bg);
@@ -327,16 +381,23 @@ html.dark .text-primary { color: #f8fafc !important; }
   color: var(--text-main) !important;
 }
 
+.navbar .nav-link,
+.navbar-nav .nav-link,
 .nav-link {
-  color: var(--navbar-link);
+  color: var(--navbar-link) !important;
   font-weight: 700;
   margin: 0 8px;
   position: relative;
   transition: color 0.3s ease;
 }
 
-.nav-link:hover, .nav-link.active {
-  color: var(--accent);
+.navbar .nav-link:hover,
+.navbar-nav .nav-link:hover,
+.navbar .nav-link.active,
+.navbar-nav .nav-link.active,
+.nav-link:hover,
+.nav-link.active {
+  color: var(--accent) !important;
 }
 
 .nav-link::after {
@@ -629,9 +690,9 @@ html.dark .news-section {
 
 /* --- Modal Styling --- */
 .modal-content {
-  background: var(--modal-bg);
+  background: var(--modal-bg) !important;
   backdrop-filter: blur(30px);
-  border: 1px solid var(--border-color);
+  border: 1px solid var(--border-color) !important;
   border-radius: 24px;
   box-shadow: var(--shadow-lg);
   color: var(--text-main);

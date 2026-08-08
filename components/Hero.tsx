@@ -21,7 +21,7 @@ export default function Hero({ onOpenModal }: HeroProps) {
             <h2 className="hero-subtitle gsap-subtitle">
               كنيسة الشهيد العظيم مارجرجس بسندبيس
             </h2>
-            <p className="lead text-muted mb-4 fw-bold gsap-fade-up">
+            <p className="lead text-muted dark:text-gray-300 mb-4 fw-bold gsap-fade-up">
               بنمو روحي، معرفي، ومهاري في محبة المسيح وكنيسته الأرثوذكسية.
               <br />
               <span className="text-accent fw-extrabold">#متتأخرش_وهات_صاحبك_في_إيدك!</span>
@@ -29,7 +29,7 @@ export default function Hero({ onOpenModal }: HeroProps) {
 
             <CountdownTimer />
 
-            <div className="text-muted small mb-4 mt-n2 gsap-fade-up fw-semibold">
+            <div className="text-muted dark:text-gray-400 small mb-4 mt-n2 gsap-fade-up fw-semibold">
               باقي على اجتماع الجمعة (الساعة 7:00 مساءً)
             </div>
 
