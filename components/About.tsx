@@ -29,12 +29,12 @@ export default function About() {
                 <i className="fas fa-heart text-accent ms-3 fs-2"></i> بيت روحي
                 وعيلة واحدة
               </h3>
-              <p className="text-muted fs-5 mb-3">
+              <p className="text-muted dark:text-gray-300 fs-5 mb-3">
                 اجتماع القديس يوحنا الحبيب للشباب هو أكتر من مجرد لقاء أسبوعي،
                 هو <strong>#عيلة_واحدة</strong> بنجتمع فيها على محبة المسيح لتشجيع
                 بعضنا البعض.
               </p>
-              <p className="text-muted fs-5 mb-0">
+              <p className="text-muted dark:text-gray-300 fs-5 mb-0">
                 رؤيتنا إن كل شاب وشابة ينمو روحياً من خلال كلمة ربنا، ويبني صداقات
                 مسيحية حقيقية، ويطور من مهاراته عشان يكون نور وملح في مجتمعه.
               </p>

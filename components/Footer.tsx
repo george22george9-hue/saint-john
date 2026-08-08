@@ -5,12 +5,12 @@ export default function Footer() {
         <h4 className="mb-3 text-primary fw-bold gsap-fade-up">
           اجتماع القديس يوحنا الحبيب
         </h4>
-        <p className="mb-4 text-muted gsap-fade-up">
+        <p className="mb-4 text-muted dark:text-gray-300 gsap-fade-up">
           كنيسة الشهيد العظيم مارجرجس بسندبيس
         </p>
 
         <div className="footer-hashtags text-accent fw-bold gsap-fade-up">
-          #عيلة_واحدة <span className="mx-2 text-muted">|</span>{' '}
+          #عيلة_واحدة <span className="mx-2 text-muted dark:text-gray-400">|</span>{' '}
           #متتأخرش_وهات_صاحبك_في_إيدك
         </div>
 
@@ -86,7 +86,7 @@ export default function Footer() {
           </a>
         </div>
 
-        <div className="copyright text-muted gsap-fade-up mt-4">
+        <div className="copyright text-muted dark:text-gray-400 gsap-fade-up mt-4">
           &copy; 2026 اجتماع القديس يوحنا الحبيب للشباب. مبني بمحبة ✝️
         </div>
       </div>

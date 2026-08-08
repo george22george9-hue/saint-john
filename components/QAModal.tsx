@@ -61,7 +61,7 @@ export default function QAModal({ isOpen, onClose }: QAModalProps) {
       <div className="modal-dialog modal-dialog-centered modal-lg">
         <div className="modal-content border-0 p-2">
           <div className="modal-header border-0 pb-0">
-            <h4 className="modal-title fw-bold text-primary">
+            <h4 className="modal-title fw-bold text-primary dark:text-white">
               <i className="fas fa-envelope-open-text me-2 text-accent"></i>{' '}
               شاركونا أسئلتكم واقتراحاتكم
             </h4>
@@ -73,7 +73,7 @@ export default function QAModal({ isOpen, onClose }: QAModalProps) {
             ></button>
           </div>
           <div className="modal-body px-4 pb-4 pt-3">
-            <p className="text-muted mb-4">
+            <p className="text-muted dark:text-gray-300 mb-4">
               في سرية تامة، اترك سؤالك الروحي، العقيدي، أو اقتراح للخدمة، وسنجيب
               عليه بحب.
             </p>
@@ -89,28 +89,32 @@ export default function QAModal({ isOpen, onClose }: QAModalProps) {
                 <div className="form-floating mb-3">
                   <input
                     type="text"
-                    className="form-control"
+                    className="form-control text-gray-900 dark:text-white placeholder:text-gray-500 dark:placeholder:text-gray-400"
                     id="name"
                     placeholder="الاسم"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                   />
-                  <label htmlFor="name">الاسم (اختياري للسرية)</label>
+                  <label htmlFor="name" className="text-gray-600 dark:text-gray-300">
+                    الاسم (اختياري للسرية)
+                  </label>
                 </div>
                 <div className="form-floating mb-3">
                   <input
                     type="text"
-                    className="form-control"
+                    className="form-control text-gray-900 dark:text-white placeholder:text-gray-500 dark:placeholder:text-gray-400"
                     id="hymn"
                     placeholder="ترنيمة"
                     value={hymnRequest}
                     onChange={(e) => setHymnRequest(e.target.value)}
                   />
-                  <label htmlFor="hymn">تحب نقول ترنيمة إيه سوا؟</label>
+                  <label htmlFor="hymn" className="text-gray-600 dark:text-gray-300">
+                    تحب نقول ترنيمة إيه سوا؟
+                  </label>
                 </div>
                 <div className="form-floating mb-4">
                   <textarea
-                    className="form-control"
+                    className="form-control text-gray-900 dark:text-white placeholder:text-gray-500 dark:placeholder:text-gray-400"
                     id="message"
                     placeholder="السؤال"
                     style={{ height: '120px' }}
@@ -118,7 +122,7 @@ export default function QAModal({ isOpen, onClose }: QAModalProps) {
                     value={message}
                     onChange={(e) => setMessage(e.target.value)}
                   ></textarea>
-                  <label htmlFor="message">
+                  <label htmlFor="message" className="text-gray-600 dark:text-gray-300">
                     عندك سؤال عقيدي أو شخصي أو اقتراح للخدمة؟ *
                   </label>
                 </div>
