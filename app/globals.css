@@ -326,6 +326,28 @@ html.dark .text-primary { color: #f8fafc !important; }
   box-shadow: var(--shadow-glow);
 }
 
+html.dark .btn-primary-custom {
+  background: var(--gradient-gold);
+  color: #070e24;
+}
+
+html.dark .btn-primary-custom:hover {
+  color: #070e24;
+  box-shadow: var(--shadow-gold);
+}
+
+html.dark .btn-accent-custom {
+  background: transparent;
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+html.dark .btn-accent-custom:hover {
+  background: var(--accent);
+  color: #070e24;
+  box-shadow: var(--shadow-glow);
+}
+
 .btn-outline-primary,
 .btn-outline-primary * {
   color: var(--primary) !important;
@@ -686,6 +708,9 @@ html.dark .news-section {
 .form-floating > label {
   color: var(--text-muted);
   font-weight: 600;
+}
+.form-floating > label::after {
+  background-color: transparent !important;
 }
 
 /* --- Modal Styling --- */
