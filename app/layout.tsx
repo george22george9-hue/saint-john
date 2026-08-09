@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from 'next';
 import { Cairo } from 'next/font/google';
+import { GoogleAnalytics } from '@next/third-parties/google';
 import './globals.css';
 import CustomCursor from '@/components/CustomCursor';
 
@@ -144,6 +145,7 @@ export default function RootLayout({
         <CustomCursor />
         {children}
       </body>
+      <GoogleAnalytics gaId="G-JD7BC4B6XB" />
     </html>
   );
 }
