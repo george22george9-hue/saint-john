@@ -8,11 +8,15 @@ export const viewport: Viewport = {
   initialScale: 1,
 };
 
+const siteTitle = 'اجتماع القديس يوحنا الحبيب للشباب | كنيسة مارجرجس سندبيس';
+const siteDescription =
+  'الموقع الرسمي لاجتماع القديس يوحنا الحبيب للشباب بكنيسة الشهيد العظيم مارجرجس بسندبيس. يضم الأخبار، والفعاليات، والإعلانات، وجدول المواعيد، والتواصل مع الخدمة.';
+const siteUrl = 'https://saint-john.vercel.app';
+
 export const metadata: Metadata = {
-  metadataBase: new URL('https://saint-john.vercel.app'),
-  title: 'اجتماع القديس يوحنا الحبيب للشباب',
-  description:
-    'الموقع الرسمي لاجتماع القديس يوحنا الحبيب للشباب، يحتوي على الأخبار، المواعيد، الإعلانات، والتواصل مع الخدمة.',
+  metadataBase: new URL(siteUrl),
+  title: siteTitle,
+  description: siteDescription,
   applicationName: 'Saint John Youth Meeting',
   category: 'Church',
   verification: {
@@ -23,7 +27,7 @@ export const metadata: Metadata = {
     follow: true,
   },
   alternates: {
-    canonical: 'https://saint-john.vercel.app',
+    canonical: `${siteUrl}/`,
   },
   icons: {
     icon: [
@@ -33,11 +37,10 @@ export const metadata: Metadata = {
     apple: [{ url: '/apple-icon.png', type: 'image/png' }],
   },
   openGraph: {
-    title: 'اجتماع القديس يوحنا الحبيب للشباب',
-    description:
-      'الموقع الرسمي لاجتماع القديس يوحنا الحبيب للشباب، يحتوي على الأخبار، المواعيد، الإعلانات، والتواصل مع الخدمة.',
-    url: 'https://saint-john.vercel.app',
-    siteName: 'Saint John Youth Meeting',
+    title: siteTitle,
+    description: siteDescription,
+    url: `${siteUrl}/`,
+    siteName: 'اجتماع القديس يوحنا الحبيب للشباب - كنيسة مارجرجس سندبيس',
     locale: 'ar_EG',
     type: 'website',
     images: [
@@ -51,11 +54,41 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'اجتماع القديس يوحنا الحبيب للشباب',
-    description:
-      'الموقع الرسمي لاجتماع القديس يوحنا الحبيب للشباب، يحتوي على الأخبار، المواعيد، الإعلانات، والتواصل مع الخدمة.',
+    title: siteTitle,
+    description: siteDescription,
     images: ['/logo.png'],
   },
+};
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'Organization',
+      '@id': `${siteUrl}/#organization`,
+      name: 'اجتماع القديس يوحنا الحبيب للشباب',
+      alternateName: 'اجتماع القديس يوحنا الحبيب للشباب بكنيسة مارجرجس سندبيس',
+      url: `${siteUrl}/`,
+      logo: `${siteUrl}/logo.png`,
+      sameAs: [
+        'https://www.facebook.com/share/1ESrPMcJEC/',
+        'https://whatsapp.com/channel/0029VarbdqNCXC3T4BwPj90V',
+        'https://www.tiktok.com/@stjohnmeeting?_r=1&_t=ZS-98fBl2ThvFK',
+        'https://www.instagram.com/stjohnmeeting?igsh=ejNoNnIwaDlreWdv',
+      ],
+    },
+    {
+      '@type': 'WebSite',
+      '@id': `${siteUrl}/#website`,
+      url: `${siteUrl}/`,
+      name: 'اجتماع القديس يوحنا الحبيب للشباب',
+      description: siteDescription,
+      publisher: {
+        '@id': `${siteUrl}/#organization`,
+      },
+      inLanguage: 'ar',
+    },
+  ],
 };
 
 export default function RootLayout({
@@ -84,6 +117,12 @@ export default function RootLayout({
             `,
           }}
         />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(jsonLd),
+          }}
+        />
         <link
           rel="stylesheet"
           href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.rtl.min.css"
@@ -110,3 +149,4 @@ export default function RootLayout({
     </html>
   );
 }
+
