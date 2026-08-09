@@ -91,10 +91,28 @@ body.cinematic-theme {
   transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-/* Hide default cursor on desktop for custom cursor */
+/* Hide default cursor on desktop for custom cursor while preserving text & disabled cursors */
 @media (min-width: 1024px) {
-  body.cinematic-theme, body.cinematic-theme a, body.cinematic-theme button {
+  body.cinematic-theme,
+  body.cinematic-theme a,
+  body.cinematic-theme button,
+  body.cinematic-theme .admin-card,
+  body.cinematic-theme .admin-header,
+  body.cinematic-theme .modal-content,
+  body.cinematic-theme .list-group-item {
     cursor: none !important;
+  }
+
+  body.cinematic-theme input[type="text"],
+  body.cinematic-theme input[type="email"],
+  body.cinematic-theme input[type="password"],
+  body.cinematic-theme textarea {
+    cursor: text !important;
+  }
+
+  body.cinematic-theme :disabled,
+  body.cinematic-theme [disabled] {
+    cursor: not-allowed !important;
   }
 }
 
@@ -239,7 +257,7 @@ html.dark .text-primary { color: #f8fafc !important; }
   background-color: var(--accent);
   border-radius: 50%;
   pointer-events: none;
-  z-index: 10000;
+  z-index: 100000;
   transform: translate(-50%, -50%);
   display: none;
 }
@@ -253,7 +271,7 @@ html.dark .text-primary { color: #f8fafc !important; }
   border: 1px solid rgba(212, 175, 55, 0.6);
   border-radius: 50%;
   pointer-events: none;
-  z-index: 9999;
+  z-index: 99999;
   transform: translate(-50%, -50%);
   transition: width 0.3s ease, height 0.3s ease, background-color 0.3s ease, border-color 0.3s ease;
   display: none;

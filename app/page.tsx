@@ -1,7 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import CustomCursor from '@/components/CustomCursor';
 import ScrollProgress from '@/components/ScrollProgress';
 import ThreeCanvas from '@/components/ThreeCanvas';
 import FloatingLogo from '@/components/FloatingLogo';
@@ -19,7 +18,6 @@ export default function Home() {
 
   return (
     <>
-      <CustomCursor />
       <ScrollProgress />
       <ThreeCanvas />
       <FloatingLogo />
