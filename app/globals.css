@@ -1058,3 +1058,274 @@ html, body {
     display: none !important;
   }
 }
+
+/* ============================================================================
+   ADMIN DASHBOARD DESIGN SYSTEM & DARK MODE OVERRIDES
+   ============================================================================ */
+
+.admin-header {
+  background-color: var(--primary);
+  border-bottom: 1px solid var(--border-color);
+  padding: 1rem 0;
+}
+
+/* Base Admin Card styling in Light Mode */
+.admin-card {
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 1rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+  color: var(--text-main);
+  transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+}
+
+/* Dark Mode Admin Card Styling */
+html.dark .admin-card {
+  background-color: rgba(15, 28, 63, 0.85) !important;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  color: #f8fafc !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5) !important;
+}
+
+/* Dark Mode Headings inside Admin Cards */
+html.dark .admin-card h3,
+html.dark .admin-card h5,
+html.dark .admin-card h6 {
+  color: #f8fafc !important;
+}
+
+/* Dark Mode Form Inputs and Textareas in Admin */
+html.dark .admin-card .form-control,
+html.dark .modal-content .form-control {
+  background-color: rgba(7, 14, 36, 0.8) !important;
+  color: #f8fafc !important;
+  border-color: rgba(255, 255, 255, 0.18) !important;
+}
+
+html.dark .admin-card .form-control::placeholder,
+html.dark .modal-content .form-control::placeholder {
+  color: #94a3b8 !important;
+  opacity: 1;
+}
+
+html.dark .admin-card .form-control:focus,
+html.dark .modal-content .form-control:focus {
+  background-color: rgba(7, 14, 36, 0.98) !important;
+  color: #ffffff !important;
+  border-color: var(--accent) !important;
+  box-shadow: 0 0 0 0.25rem rgba(212, 175, 55, 0.3) !important;
+}
+
+/* Dark Mode File Input Button */
+html.dark .admin-card .form-control[type="file"]::file-selector-button,
+html.dark .modal-content .form-control[type="file"]::file-selector-button {
+  background-color: #1e3a75 !important;
+  color: #f8fafc !important;
+  border-color: rgba(255, 255, 255, 0.2) !important;
+  padding: 0.375rem 0.75rem;
+  margin-inline-end: 0.75rem;
+  border-radius: 0.375rem;
+  transition: background-color 0.2s ease;
+}
+
+html.dark .admin-card .form-control[type="file"]::file-selector-button:hover,
+html.dark .modal-content .form-control[type="file"]::file-selector-button:hover {
+  background-color: #254b96 !important;
+  color: #ffffff !important;
+}
+
+/* Dark Mode Form Labels and Helper Text */
+html.dark .admin-card .form-label,
+html.dark .modal-content .form-label {
+  color: #e2e8f0 !important;
+}
+
+html.dark .admin-card .form-text,
+html.dark .modal-content .form-text {
+  color: #94a3b8 !important;
+}
+
+/* Dark Mode List Group Items (Posts List) */
+html.dark .admin-card .list-group-item {
+  background-color: rgba(7, 14, 36, 0.65) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  color: #f8fafc !important;
+  border-radius: 0.75rem !important;
+  margin-bottom: 0.5rem;
+}
+
+html.dark .admin-card .list-group-item h6 {
+  color: #f8fafc !important;
+}
+
+html.dark .admin-card .list-group-item small {
+  color: #cbd5e1 !important;
+}
+
+html.dark .admin-card .list-group-item .badge.bg-secondary {
+  background-color: rgba(30, 58, 117, 0.8) !important;
+  color: #f8fafc !important;
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
+}
+
+/* Dark Mode Feedback Table */
+html.dark .admin-card .table {
+  color: #f8fafc !important;
+  border-color: rgba(255, 255, 255, 0.12) !important;
+}
+
+html.dark .admin-card .table > :not(caption) > * > * {
+  background-color: rgba(15, 28, 63, 0.5) !important;
+  color: #f8fafc !important;
+  border-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+html.dark .admin-card .table-light,
+html.dark .admin-card .table-light > th,
+html.dark .admin-card .table-light > td {
+  background-color: rgba(30, 58, 117, 0.7) !important;
+  color: #f8fafc !important;
+  border-color: rgba(255, 255, 255, 0.15) !important;
+}
+
+html.dark .admin-card .table-hover > tbody > tr:hover > * {
+  background-color: rgba(212, 175, 55, 0.15) !important;
+  color: #ffffff !important;
+}
+
+/* Dark Mode Edit Post Modal */
+html.dark .modal-content {
+  background-color: #0f1c3f !important;
+  color: #f8fafc !important;
+  border: 1px solid rgba(255, 255, 255, 0.18) !important;
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.7) !important;
+}
+
+html.dark .modal-header,
+html.dark .modal-footer {
+  border-color: rgba(255, 255, 255, 0.12) !important;
+}
+
+html.dark .modal-title {
+  color: #f8fafc !important;
+}
+
+html.dark .modal-header .btn-close {
+  filter: invert(1) grayscale(100%) brightness(200%);
+}
+
+/* Dark Mode Alert Messages */
+html.dark .alert-danger {
+  background-color: rgba(220, 38, 38, 0.25) !important;
+  color: #fca5a5 !important;
+  border: 1px solid rgba(239, 68, 68, 0.4) !important;
+}
+
+html.dark .alert-warning {
+  background-color: rgba(217, 119, 6, 0.25) !important;
+  color: #fef08a !important;
+  border: 1px solid rgba(245, 158, 11, 0.4) !important;
+}
+
+html.dark .alert-success {
+  background-color: rgba(16, 185, 129, 0.25) !important;
+  color: #6ee7b7 !important;
+  border: 1px solid rgba(16, 185, 129, 0.4) !important;
+}
+
+/* Dark Mode Backgrounds for Previews & Badges */
+html.dark .bg-dark {
+  background-color: rgba(7, 14, 36, 0.95) !important;
+  border-color: rgba(255, 255, 255, 0.15) !important;
+}
+
+html.dark .bg-secondary {
+  background-color: #334155 !important;
+  color: #f8fafc !important;
+}
+
+html.dark .badge.bg-success {
+  background-color: #059669 !important;
+  color: #ffffff !important;
+}
+
+/* Dark Mode Admin Button Overrides */
+html.dark .admin-card .btn-primary,
+html.dark .modal-content .btn-primary {
+  background: var(--gradient-gold) !important;
+  color: #070e24 !important;
+  border: none !important;
+  font-weight: 700 !important;
+  box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3) !important;
+}
+
+html.dark .admin-card .btn-primary:hover,
+html.dark .admin-card .btn-primary:focus,
+html.dark .modal-content .btn-primary:hover,
+html.dark .modal-content .btn-primary:focus {
+  background: linear-gradient(135deg, #f5d470 0%, #d4af37 100%) !important;
+  color: #000000 !important;
+  box-shadow: 0 0 20px rgba(212, 175, 55, 0.6) !important;
+}
+
+html.dark .admin-card .btn-success {
+  background-color: #10b981 !important;
+  border-color: #059669 !important;
+  color: #ffffff !important;
+  font-weight: 700 !important;
+}
+
+html.dark .admin-card .btn-success:hover {
+  background-color: #059669 !important;
+  border-color: #047857 !important;
+  box-shadow: 0 0 15px rgba(16, 185, 129, 0.4) !important;
+}
+
+html.dark .admin-card .btn-danger,
+html.dark .modal-content .btn-danger {
+  background-color: #ef4444 !important;
+  border-color: #dc2626 !important;
+  color: #ffffff !important;
+}
+
+html.dark .admin-card .btn-danger:hover,
+html.dark .modal-content .btn-danger:hover {
+  background-color: #dc2626 !important;
+  border-color: #b91c1c !important;
+}
+
+html.dark .admin-card .btn-outline-primary {
+  color: #f5d470 !important;
+  border-color: #d4af37 !important;
+}
+
+html.dark .admin-card .btn-outline-primary:hover {
+  background: var(--gradient-gold) !important;
+  color: #070e24 !important;
+  border-color: #f5d470 !important;
+  box-shadow: 0 0 15px rgba(212, 175, 55, 0.4) !important;
+}
+
+html.dark .admin-card .btn-outline-light,
+html.dark .admin-header .btn-outline-light {
+  color: #f8fafc !important;
+  border-color: rgba(255, 255, 255, 0.4) !important;
+}
+
+html.dark .admin-card .btn-outline-light:hover,
+html.dark .admin-header .btn-outline-light:hover {
+  background-color: rgba(255, 255, 255, 0.15) !important;
+  color: #ffffff !important;
+}
+
+html.dark .modal-content .btn-secondary {
+  background-color: #334155 !important;
+  border-color: #475569 !important;
+  color: #f8fafc !important;
+}
+
+html.dark .modal-content .btn-secondary:hover {
+  background-color: #475569 !important;
+}
