@@ -1,8 +1,12 @@
 'use client';
 
-import { useState, useEffect, FormEvent } from 'react';
+import { useState, useEffect, FormEvent, ChangeEvent } from 'react';
 import Link from 'next/link';
 import { Announcement, Inquiry } from '@/types';
+import {
+  validateImageFile,
+  compressAndOptimizeImage,
+} from '@/lib/clientImageOptimizer';
 
 export default function AdminPage() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -17,11 +21,24 @@ export default function AdminPage() {
   const [fridayTime, setFridayTime] = useState('');
   const [sundaySchedule, setSundaySchedule] = useState('');
 
-  // Add activity form state
+  // Add post / activity form state
   const [actTitle, setActTitle] = useState('');
   const [actDate, setActDate] = useState('');
   const [actDesc, setActDesc] = useState('');
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [imageError, setImageError] = useState<string | null>(null);
   const [isAdding, setIsAdding] = useState(false);
+
+  // Edit Modal State
+  const [editingPost, setEditingPost] = useState<Announcement | null>(null);
+  const [editTitle, setEditTitle] = useState('');
+  const [editDate, setEditDate] = useState('');
+  const [editDesc, setEditDesc] = useState('');
+  const [editFile, setEditFile] = useState<File | null>(null);
+  const [editImagePreview, setEditImagePreview] = useState<string | null>(null);
+  const [removeExistingImage, setRemoveExistingImage] = useState(false);
+  const [isSavingEdit, setIsSavingEdit] = useState(false);
 
   // Settings form state
   const [isSavingSettings, setIsSavingSettings] = useState(false);
@@ -33,14 +50,12 @@ export default function AdminPage() {
 
   const loadDashboardData = async () => {
     try {
-      // Test fetching protected inquiries to check if user is authenticated via cookie
       const res = await fetch('/api/admin/inquiries');
       if (res.ok) {
         const inqData = await res.json();
         setInquiries(inqData);
         setIsLoggedIn(true);
 
-        // Fetch announcements & settings
         loadActivities();
         loadSettings();
       } else {
@@ -111,53 +126,184 @@ export default function AdminPage() {
     }
   };
 
+  // Image File Picker Change Handler
+  const handleImageSelect = (e: ChangeEvent<HTMLInputElement>) => {
+    setImageError(null);
+    const files = e.target.files;
+    if (!files || files.length === 0) return;
+
+    const file = files[0];
+    const validation = validateImageFile(file);
+    if (!validation.valid) {
+      setImageError(validation.error || 'صورة غير صالحة');
+      return;
+    }
+
+    setSelectedFile(file);
+    const objectUrl = URL.createObjectURL(file);
+    setImagePreview(objectUrl);
+  };
+
+  const handleRemoveSelectedImage = () => {
+    setSelectedFile(null);
+    if (imagePreview) {
+      URL.revokeObjectURL(imagePreview);
+      setImagePreview(null);
+    }
+    setImageError(null);
+  };
+
   const handleAddActivity = async (e: FormEvent) => {
     e.preventDefault();
-    if (!actTitle || !actDate) return;
+    if (!actTitle.trim() && !actDesc.trim() && !selectedFile) {
+      alert('يرجى كتابة عنوان أو تفاصيل أو إرفاق صورة للمنشور');
+      return;
+    }
 
     setIsAdding(true);
+    setImageError(null);
+
     try {
+      let fileToUpload = selectedFile;
+      if (fileToUpload) {
+        fileToUpload = await compressAndOptimizeImage(fileToUpload);
+      }
+
+      const formData = new FormData();
+      formData.append('title', actTitle);
+      formData.append('date', actDate);
+      formData.append('description', actDesc);
+      if (fileToUpload) {
+        formData.append('image', fileToUpload);
+      }
+
       const res = await fetch('/api/admin/announcements', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          title: actTitle,
-          date: actDate,
-          description: actDesc,
-        }),
+        body: formData,
       });
+
+      const data = await res.json();
 
       if (res.ok) {
         setActTitle('');
         setActDate('');
         setActDesc('');
+        handleRemoveSelectedImage();
         loadActivities();
-        alert('تم إضافة النشاط بنجاح!');
+        alert('تم نشر المنشور بنجاح!');
       } else {
-        alert('حدث خطأ أثناء الإضافة');
+        alert(data.error || 'حدث خطأ أثناء إضافة المنشور');
       }
-    } catch {
+    } catch (err) {
+      console.error(err);
       alert('حدث خطأ في الاتصال بالسيرفر');
     } finally {
       setIsAdding(false);
     }
   };
 
-  const handleDeleteActivity = async (id: number) => {
-    if (!confirm('هل أنت متأكد من حذف هذا النشاط؟')) return;
+  const handleDeleteActivity = async (post: Announcement) => {
+    const confirmMsg = post.image_url
+      ? 'هل أنت متأكد من حذف هذا المنشور؟ سيتم حذف الصورة نهائياً أيضاً.'
+      : 'هل أنت متأكد من حذف هذا المنشور؟';
+
+    if (!confirm(confirmMsg)) return;
 
     try {
-      const res = await fetch(`/api/admin/announcements/${id}`, {
+      const res = await fetch(`/api/admin/announcements/${post.id}`, {
         method: 'DELETE',
       });
 
+      const data = await res.json();
+
       if (res.ok) {
         loadActivities();
+        alert(data.message || 'تم الحذف بنجاح');
       } else {
-        alert('حدث خطأ أثناء الحذف');
+        alert(data.error || 'حدث خطأ أثناء الحذف');
       }
     } catch {
       alert('حدث خطأ في الاتصال بالسيرفر');
+    }
+  };
+
+  // Open Edit Modal
+  const handleOpenEdit = (post: Announcement) => {
+    setEditingPost(post);
+    setEditTitle(post.title || '');
+    setEditDate(post.date || '');
+    setEditDesc(post.description || '');
+    setEditFile(null);
+    setEditImagePreview(null);
+    setRemoveExistingImage(false);
+  };
+
+  const handleCloseEdit = () => {
+    setEditingPost(null);
+    setEditFile(null);
+    if (editImagePreview) {
+      URL.revokeObjectURL(editImagePreview);
+      setEditImagePreview(null);
+    }
+  };
+
+  const handleEditFileSelect = (e: ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files || files.length === 0) return;
+
+    const file = files[0];
+    const validation = validateImageFile(file);
+    if (!validation.valid) {
+      alert(validation.error);
+      return;
+    }
+
+    setEditFile(file);
+    setRemoveExistingImage(false);
+    const objectUrl = URL.createObjectURL(file);
+    setEditImagePreview(objectUrl);
+  };
+
+  const handleSaveEdit = async (e: FormEvent) => {
+    e.preventDefault();
+    if (!editingPost) return;
+
+    setIsSavingEdit(true);
+    try {
+      let fileToUpload = editFile;
+      if (fileToUpload) {
+        fileToUpload = await compressAndOptimizeImage(fileToUpload);
+      }
+
+      const formData = new FormData();
+      formData.append('title', editTitle);
+      formData.append('date', editDate);
+      formData.append('description', editDesc);
+      if (removeExistingImage) {
+        formData.append('remove_image', 'true');
+      }
+      if (fileToUpload) {
+        formData.append('image', fileToUpload);
+      }
+
+      const res = await fetch(`/api/admin/announcements/${editingPost.id}`, {
+        method: 'PUT',
+        body: formData,
+      });
+
+      const data = await res.json();
+
+      if (res.ok) {
+        handleCloseEdit();
+        loadActivities();
+        alert('تم تحديث المنشور بنجاح!');
+      } else {
+        alert(data.error || 'حدث خطأ أثناء التحديث');
+      }
+    } catch {
+      alert('حدث خطأ في الاتصال بالسيرفر');
+    } finally {
+      setIsSavingEdit(false);
     }
   };
 
@@ -188,7 +334,7 @@ export default function AdminPage() {
   };
 
   return (
-    <div style={{ backgroundColor: '#f8f9fa', minHeight: '100vh' }}>
+    <div style={{ backgroundColor: 'var(--bg-page)', color: 'var(--text-main)', minHeight: '100vh' }}>
       <header className="admin-header shadow-sm">
         <div className="container d-flex justify-content-between align-items-center">
           <div className="d-flex align-items-center">
@@ -204,7 +350,7 @@ export default function AdminPage() {
               />
             </Link>
             <h4 className="mb-0 text-white">
-              <i className="fas fa-cogs me-2"></i> لوحة تحكم الأنشطة
+              <i className="fas fa-cogs me-2"></i> لوحة تحكم الخدام والمنشورات
             </h4>
           </div>
           {isLoggedIn && (
@@ -267,100 +413,176 @@ export default function AdminPage() {
         ) : (
           /* Dashboard Section */
           <div className="row">
-            {/* Add New Activity Form */}
+            {/* Create Post / Activity Form */}
             <div className="col-md-5 mb-4">
               <div className="admin-card card p-4">
                 <h5 className="mb-4 text-primary fw-bold">
-                  <i className="fas fa-plus-circle me-2"></i> إضافة نشاط جديد
+                  <i className="fas fa-plus-circle me-2"></i> إنشاء منشور / إعلان جديد
                 </h5>
                 <form onSubmit={handleAddActivity}>
                   <div className="mb-3">
                     <label className="form-label">
-                      العنوان (مثل: ندوة حوارية)
+                      عنوان المنشور (اختياري)
                     </label>
                     <input
                       type="text"
                       className="form-control"
+                      placeholder="مثال: مؤتمر الشباب الصيفي"
                       value={actTitle}
                       onChange={(e) => setActTitle(e.target.value)}
-                      required
                     />
                   </div>
+
                   <div className="mb-3">
                     <label className="form-label">
-                      التاريخ (مثل: الجمعة، 15 أغسطس)
+                      التاريخ / التوقيت (اختياري - سيُنشأ تلقائياً إذا تُرك فارغاً)
                     </label>
                     <input
                       type="text"
                       className="form-control"
+                      placeholder="مثال: الجمعة، 15 أغسطس"
                       value={actDate}
                       onChange={(e) => setActDate(e.target.value)}
-                      required
                     />
                   </div>
+
                   <div className="mb-3">
-                    <label className="form-label">الوصف / التفاصيل</label>
+                    <label className="form-label">محتوى المنشور / التفاصيل</label>
                     <textarea
                       className="form-control"
-                      rows={3}
+                      rows={4}
+                      placeholder="اكتب تفاصيل المنشور هنا..."
                       value={actDesc}
                       onChange={(e) => setActDesc(e.target.value)}
-                      required
                     ></textarea>
                   </div>
+
+                  {/* Image Attachment & Preview */}
+                  <div className="mb-3">
+                    <label className="form-label fw-bold">
+                      <i className="fas fa-image me-1"></i> إرفاق صورة (اختياري)
+                    </label>
+                    <input
+                      type="file"
+                      className="form-control"
+                      accept="image/jpeg,image/png,image/webp"
+                      onChange={handleImageSelect}
+                    />
+                    <div className="form-text text-muted">
+                      الصيغ المدعومة: JPG, PNG, WEBP (الحد الأقصى 5 ميجابايت). سيتم ضغط الصورة تلقائياً لحفظ المساحة.
+                    </div>
+
+                    {imageError && (
+                      <div className="alert alert-danger mt-2 py-2" role="alert">
+                        {imageError}
+                      </div>
+                    )}
+
+                    {imagePreview && (
+                      <div className="mt-3 position-relative d-inline-block border rounded-3 p-2 bg-dark">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img
+                          src={imagePreview}
+                          alt="معاينة"
+                          style={{ maxHeight: '180px', borderRadius: '8px', objectFit: 'contain' }}
+                        />
+                        <button
+                          type="button"
+                          className="btn btn-danger btn-sm position-absolute top-0 end-0 m-1 rounded-circle"
+                          onClick={handleRemoveSelectedImage}
+                          title="إزالة الصورة"
+                        >
+                          <i className="fas fa-times"></i>
+                        </button>
+                      </div>
+                    )}
+                  </div>
+
                   <button
                     type="submit"
-                    className="btn btn-success w-100 fw-bold py-2"
+                    className="btn btn-success w-100 fw-bold py-2 mt-2"
                     disabled={isAdding}
                   >
                     {isAdding ? (
                       <>
-                        <i className="fas fa-spinner fa-spin me-2"></i> جاري
-                        الإضافة...
+                        <i className="fas fa-spinner fa-spin me-2"></i> جاري النشر والضغط...
                       </>
                     ) : (
-                      'إضافة النشاط'
+                      <>
+                        <i className="fas fa-paper-plane me-2"></i> نشر المنشور
+                      </>
                     )}
                   </button>
                 </form>
               </div>
             </div>
 
-            {/* List of Activities */}
+            {/* List of Posts */}
             <div className="col-md-7 mb-4">
               <div className="admin-card card p-4">
                 <h5 className="mb-4 text-primary fw-bold">
-                  <i className="fas fa-list me-2"></i> الأنشطة الحالية المضافة
-                  للموقع
+                  <i className="fas fa-list me-2"></i> المنشورات الحالية على الموقع
                 </h5>
                 <div className="list-group">
                   {activities.length === 0 ? (
                     <div className="text-center py-4 text-muted">
-                      لا توجد أنشطة مضافة حالياً.
+                      لا توجد منشورات مضافة حالياً.
                     </div>
                   ) : (
                     activities.map((act) => (
                       <div
                         key={act.id}
-                        className="list-group-item d-flex justify-content-between align-items-center"
+                        className="list-group-item d-flex justify-content-between align-items-center flex-wrap gap-2 py-3"
                       >
-                        <div>
-                          <h6 className="mb-1 fw-bold">
-                            {act.title}{' '}
-                            <span className="badge bg-secondary ms-2">
-                              {act.date}
-                            </span>
-                          </h6>
-                          <small className="text-muted">
-                            {act.description.substring(0, 50)}...
-                          </small>
+                        <div className="d-flex align-items-center gap-3">
+                          {act.image_url ? (
+                            /* eslint-disable-next-line @next/next/no-img-element */
+                            <img
+                              src={act.image_url}
+                              alt="مصغرة"
+                              width="60"
+                              height="60"
+                              className="rounded-3"
+                              style={{ objectFit: 'cover' }}
+                            />
+                          ) : (
+                            <div
+                              className="rounded-3 bg-secondary text-white d-flex align-items-center justify-content-center"
+                              style={{ width: '60px', height: '60px' }}
+                            >
+                              <i className="fas fa-file-alt fs-4"></i>
+                            </div>
+                          )}
+
+                          <div>
+                            <h6 className="mb-1 fw-bold">
+                              {act.title || 'منشور بدون عنوان'}{' '}
+                              <span className="badge bg-secondary ms-2">
+                                {act.date}
+                              </span>
+                            </h6>
+                            <small className="text-muted d-block text-truncate" style={{ maxWidth: '300px' }}>
+                              {act.description || (act.image_url ? '[منشور صورة فقط]' : '')}
+                            </small>
+                          </div>
                         </div>
-                        <button
-                          className="btn btn-sm btn-danger"
-                          onClick={() => handleDeleteActivity(act.id)}
-                        >
-                          <i className="fas fa-trash"></i>
-                        </button>
+
+                        <div className="d-flex gap-2">
+                          <button
+                            className="btn btn-sm btn-outline-primary"
+                            onClick={() => handleOpenEdit(act)}
+                            title="تعديل"
+                          >
+                            <i className="fas fa-edit me-1"></i> تعديل
+                          </button>
+                          <button
+                            className="btn btn-sm btn-danger"
+                            onClick={() => handleDeleteActivity(act)}
+                            title="حذف"
+                          >
+                            <i className="fas fa-trash me-1"></i> حذف
+                          </button>
+                        </div>
                       </div>
                     ))
                   )}
@@ -372,8 +594,7 @@ export default function AdminPage() {
             <div className="col-md-12 mb-4">
               <div className="admin-card card p-4">
                 <h5 className="mb-4 text-primary fw-bold">
-                  <i className="fas fa-envelope-open-text me-2"></i> رسائل
-                  وأسئلة الشباب (الفيدباك)
+                  <i className="fas fa-envelope-open-text me-2"></i> رسائل وأسئلة الشباب (الفيدباك)
                 </h5>
                 <div className="table-responsive">
                   <table className="table table-bordered table-hover">
@@ -387,10 +608,7 @@ export default function AdminPage() {
                     <tbody>
                       {inquiries.length === 0 ? (
                         <tr>
-                          <td
-                            colSpan={3}
-                            className="text-center text-muted py-4"
-                          >
+                          <td colSpan={3} className="text-center text-muted py-4">
                             لا توجد رسائل حالياً.
                           </td>
                         </tr>
@@ -400,10 +618,7 @@ export default function AdminPage() {
                             <td>{f.name || 'مجهول'}</td>
                             <td>{f.hymnRequest || '-'}</td>
                             <td>
-                              <p
-                                className="mb-0"
-                                style={{ whiteSpace: 'pre-wrap' }}
-                              >
+                              <p className="mb-0" style={{ whiteSpace: 'pre-wrap' }}>
                                 {f.message}
                               </p>
                             </td>
@@ -420,15 +635,12 @@ export default function AdminPage() {
             <div className="col-md-12">
               <div className="admin-card card p-4 border-primary border-top border-3">
                 <h5 className="mb-4 text-primary fw-bold">
-                  <i className="fas fa-sliders-h me-2"></i> إعدادات الموقع
-                  الأساسية
+                  <i className="fas fa-sliders-h me-2"></i> إعدادات الموقع الأساسية
                 </h5>
                 <form onSubmit={handleSaveSettings}>
                   <div className="row">
                     <div className="col-md-12 mb-3">
-                      <label className="form-label fw-bold">
-                        ميعاد اجتماع الجمعة
-                      </label>
+                      <label className="form-label fw-bold">ميعاد اجتماع الجمعة</label>
                       <input
                         type="text"
                         className="form-control"
@@ -439,12 +651,9 @@ export default function AdminPage() {
                       />
                     </div>
                     <div className="col-md-12 mb-3">
-                      <label className="form-label fw-bold">
-                        جدول النشاط الصيفي (يوم الأحد)
-                      </label>
+                      <label className="form-label fw-bold">جدول النشاط الصيفي (يوم الأحد)</label>
                       <div className="form-text text-muted mb-2">
-                        اكتب كل فقرة في سطر منفصل، وافصل بين (الوقت) و (الفقرة)
-                        و (التفاصيل) بعلامة الشرطة ( - ).
+                        اكتب كل فقرة في سطر منفصل، وافصل بين (الوقت) و (الفقرة) و (التفاصيل) بعلامة الشرطة ( - ).
                       </div>
                       <textarea
                         className="form-control text-end"
@@ -463,13 +672,11 @@ export default function AdminPage() {
                   >
                     {isSavingSettings ? (
                       <>
-                        <i className="fas fa-spinner fa-spin me-2"></i> جاري
-                        الحفظ...
+                        <i className="fas fa-spinner fa-spin me-2"></i> جاري الحفظ...
                       </>
                     ) : (
                       <>
-                        <i className="fas fa-save me-2"></i> حفظ الإعدادات في
-                        الموقع
+                        <i className="fas fa-save me-2"></i> حفظ الإعدادات في الموقع
                       </>
                     )}
                   </button>
@@ -479,6 +686,127 @@ export default function AdminPage() {
           </div>
         )}
       </div>
+
+      {/* Edit Post Modal */}
+      {editingPost && (
+        <div className="modal fade show d-block" tabIndex={-1} style={{ backgroundColor: 'rgba(0,0,0,0.7)', zIndex: 10050 }}>
+          <div className="modal-dialog modal-dialog-centered modal-lg">
+            <div className="modal-content">
+              <div className="modal-header">
+                <h5 className="modal-title fw-bold text-primary">
+                  <i className="fas fa-edit me-2 text-accent"></i> تعديل المنشور
+                </h5>
+                <button type="button" className="btn-close" onClick={handleCloseEdit}></button>
+              </div>
+              <form onSubmit={handleSaveEdit}>
+                <div className="modal-body">
+                  <div className="mb-3">
+                    <label className="form-label fw-bold">العنوان</label>
+                    <input
+                      type="text"
+                      className="form-control"
+                      value={editTitle}
+                      onChange={(e) => setEditTitle(e.target.value)}
+                    />
+                  </div>
+
+                  <div className="mb-3">
+                    <label className="form-label fw-bold">التاريخ</label>
+                    <input
+                      type="text"
+                      className="form-control"
+                      value={editDate}
+                      onChange={(e) => setEditDate(e.target.value)}
+                    />
+                  </div>
+
+                  <div className="mb-3">
+                    <label className="form-label fw-bold">المحتوى / التفاصيل</label>
+                    <textarea
+                      className="form-control"
+                      rows={5}
+                      value={editDesc}
+                      onChange={(e) => setEditDesc(e.target.value)}
+                    ></textarea>
+                  </div>
+
+                  {/* Current Image & Replacement Controls */}
+                  <div className="mb-3">
+                    <label className="form-label fw-bold">الصورة المرفقة</label>
+                    {editingPost.image_url && !removeExistingImage && !editImagePreview && (
+                      <div className="d-flex align-items-center gap-3 mb-2 p-2 border rounded-3 bg-dark">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img
+                          src={editingPost.image_url}
+                          alt="الصورة الحالية"
+                          style={{ maxHeight: '120px', borderRadius: '6px', objectFit: 'contain' }}
+                        />
+                        <button
+                          type="button"
+                          className="btn btn-outline-danger btn-sm"
+                          onClick={() => setRemoveExistingImage(true)}
+                        >
+                          <i className="fas fa-trash me-1"></i> إزالة الصورة الحالية
+                        </button>
+                      </div>
+                    )}
+
+                    {removeExistingImage && (
+                      <div className="alert alert-warning py-2 small mb-2">
+                        سيتم حذف الصورة الحالية نهائياً عند حفظ التعديلات.
+                        <button
+                          type="button"
+                          className="btn btn-link btn-sm p-0 ms-2 text-decoration-none"
+                          onClick={() => setRemoveExistingImage(false)}
+                        >
+                          تراجع
+                        </button>
+                      </div>
+                    )}
+
+                    <div className="mt-2">
+                      <label className="form-label small text-muted">اختر صورة جديدة لاستبدال الصورة الحالية أو لإضافتها:</label>
+                      <input
+                        type="file"
+                        className="form-control"
+                        accept="image/jpeg,image/png,image/webp"
+                        onChange={handleEditFileSelect}
+                      />
+                    </div>
+
+                    {editImagePreview && (
+                      <div className="mt-2 position-relative d-inline-block border rounded-3 p-2 bg-dark">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img
+                          src={editImagePreview}
+                          alt="معاينة جديدة"
+                          style={{ maxHeight: '140px', borderRadius: '6px', objectFit: 'contain' }}
+                        />
+                        <span className="badge bg-success position-absolute top-0 end-0 m-1">صورة جديدة</span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                <div className="modal-footer">
+                  <button type="button" className="btn btn-secondary" onClick={handleCloseEdit}>
+                    إلغاء
+                  </button>
+                  <button type="submit" className="btn btn-primary fw-bold" disabled={isSavingEdit}>
+                    {isSavingEdit ? (
+                      <>
+                        <i className="fas fa-spinner fa-spin me-1"></i> جاري الحفظ...
+                      </>
+                    ) : (
+                      'حفظ التعديلات'
+                    )}
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

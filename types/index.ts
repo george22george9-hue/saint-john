@@ -9,7 +9,10 @@ export interface Announcement {
   title: string;
   date: string;
   description: string;
+  image_url?: string | null;
+  storage_path?: string | null;
   createdAt?: string;
+  updatedAt?: string;
 }
 
 export interface Inquiry {
