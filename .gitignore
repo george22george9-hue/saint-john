@@ -1,4 +1,6 @@
 node_modules/
 db/*.db
 .env
+.env*.local
+.env.local
 .next
