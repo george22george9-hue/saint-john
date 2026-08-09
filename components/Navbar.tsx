@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import ThemeToggle from './ThemeToggle';
 
 export default function Navbar() {
@@ -26,14 +27,14 @@ export default function Navbar() {
       <nav className="navbar navbar-expand-lg fixed-top gsap-nav">
         <div className="container d-flex justify-content-between align-items-center">
           <Link className="navbar-brand d-flex align-items-center" href="/#hero">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
+            <Image
               src="/logo.png"
               alt="شعار"
-              width="45"
-              height="45"
+              width={45}
+              height={45}
               className="me-2 rounded-circle"
               style={{ objectFit: 'cover', border: '2px solid var(--accent)' }}
+              priority
             />
             <span>
               <span className="text-primary">يوحنا</span>{' '}
@@ -116,12 +117,11 @@ export default function Navbar() {
       <div className={`mobile-nav-drawer ${isOpen ? 'show' : ''}`} role="dialog" aria-label="قائمة الملاحة">
         <div className="mobile-drawer-header">
           <Link className="d-flex align-items-center" href="/#hero" onClick={closeMenu}>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
+            <Image
               src="/logo.png"
               alt="شعار"
-              width="38"
-              height="38"
+              width={38}
+              height={38}
               className="me-2 rounded-circle"
               style={{ objectFit: 'cover', border: '2px solid var(--accent)' }}
             />

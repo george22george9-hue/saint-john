@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import Image from 'next/image';
 import { Announcement } from '@/types';
 
 interface NewsProps {
@@ -82,13 +83,13 @@ export default function News({ initialAnnouncements }: NewsProps) {
                         style={{ height: '220px', backgroundColor: 'rgba(0,0,0,0.2)' }}
                         onClick={() => setLightboxImage(ann.image_url || null)}
                       >
-                        {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img
+                        <Image
                           src={ann.image_url!}
                           alt={ann.title || 'صورة المنشور'}
-                          className="w-100 h-100 hover-zoom"
+                          fill
+                          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                          className="hover-zoom"
                           style={{ objectFit: 'cover', transition: 'transform 0.5s ease' }}
-                          loading="lazy"
                         />
                         <div
                           className="position-absolute bottom-0 end-0 m-2 badge bg-dark text-white rounded-circle p-2"

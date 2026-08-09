@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
+import Image from 'next/image';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
@@ -46,8 +47,8 @@ export default function FloatingLogo() {
 
   return (
     <div id="floating-logo" ref={logoRef}>
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img src="/logo.png" alt="الشعار" />
+      <Image src="/logo.png" alt="الشعار" width={120} height={120} priority={false} />
     </div>
   );
 }
+
