@@ -15,6 +15,9 @@ export const metadata: Metadata = {
     'الموقع الرسمي لاجتماع القديس يوحنا الحبيب للشباب، يحتوي على الأخبار، المواعيد، الإعلانات، والتواصل مع الخدمة.',
   applicationName: 'Saint John Youth Meeting',
   category: 'Church',
+  verification: {
+    google: 'RENpYa2yO1eJy9QBGEFRJWz7uB0-lZP0Q3EtuhT4bPo',
+  },
   robots: {
     index: true,
     follow: true,
