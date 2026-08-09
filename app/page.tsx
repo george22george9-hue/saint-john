@@ -1,8 +1,8 @@
 'use client';
 
 import { useState } from 'react';
+import dynamic from 'next/dynamic';
 import ScrollProgress from '@/components/ScrollProgress';
-import ThreeCanvas from '@/components/ThreeCanvas';
 import FloatingLogo from '@/components/FloatingLogo';
 import Navbar from '@/components/Navbar';
 import Hero from '@/components/Hero';
@@ -11,7 +11,14 @@ import Programs from '@/components/Programs';
 import News from '@/components/News';
 import WahshatnaBanner from '@/components/WahshatnaBanner';
 import Footer from '@/components/Footer';
-import QAModal from '@/components/QAModal';
+
+const ThreeCanvas = dynamic(() => import('@/components/ThreeCanvas'), {
+  ssr: false,
+});
+const QAModal = dynamic(() => import('@/components/QAModal'), {
+  ssr: false,
+});
+
 
 export default function Home() {
   const [isModalOpen, setIsModalOpen] = useState(false);

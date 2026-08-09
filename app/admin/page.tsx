@@ -2,6 +2,7 @@
 
 import { useState, useEffect, FormEvent, ChangeEvent } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { Announcement, Inquiry } from '@/types';
 import {
   validateImageFile,
@@ -339,12 +340,11 @@ export default function AdminPage() {
         <div className="container d-flex justify-content-between align-items-center">
           <div className="d-flex align-items-center">
             <Link href="/">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
+              <Image
                 src="/logo.png"
                 alt="شعار"
-                width="40"
-                height="40"
+                width={40}
+                height={40}
                 className="me-3 rounded-circle bg-white p-1"
                 style={{ objectFit: 'cover' }}
               />

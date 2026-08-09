@@ -20,7 +20,7 @@
   --text-main: #0f1c3f;
   --text-muted: #475569;
   --text-inverse: #ffffff;
-  --font-arabic: 'Cairo', sans-serif;
+  --font-arabic: var(--font-cairo), 'Cairo', sans-serif;
   
   --shadow-sm: 0 4px 6px rgba(0, 0, 0, 0.05);
   --shadow-md: 0 10px 30px rgba(15, 28, 63, 0.08);

@@ -1,3 +1,5 @@
+import Image from 'next/image';
+
 export default function About() {
   return (
     <section
@@ -13,13 +15,13 @@ export default function About() {
                 className="fas fa-church text-primary"
                 style={{ fontSize: '8rem', opacity: 0.1 }}
               ></i>
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
+              <Image
                 src="/logo.png"
                 alt="الشعار"
+                width={120}
+                height={120}
                 className="position-absolute top-50 start-50 translate-middle rounded-circle shadow-lg"
-                width="120"
-                style={{ border: '4px solid var(--accent)' }}
+                style={{ border: '4px solid var(--accent)', objectFit: 'cover' }}
               />
             </div>
           </div>
