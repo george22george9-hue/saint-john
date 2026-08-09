@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from 'next';
 import './globals.css';
+import CustomCursor from '@/components/CustomCursor';
 
 export const viewport: Viewport = {
   themeColor: '#0f172a',
@@ -100,6 +101,7 @@ export default function RootLayout({
         />
       </head>
       <body className="cinematic-theme">
+        <CustomCursor />
         {children}
       </body>
     </html>

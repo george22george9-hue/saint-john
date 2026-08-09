@@ -13,10 +13,10 @@ export default function CustomCursor() {
     const follower = followerRef.current;
     if (!cursor || !follower) return;
 
-    let mouseX = 0;
-    let mouseY = 0;
-    let followerX = 0;
-    let followerY = 0;
+    let mouseX = -100;
+    let mouseY = -100;
+    let followerX = -100;
+    let followerY = -100;
     let animationFrameId: number;
 
     const handleMouseMove = (e: MouseEvent) => {
@@ -34,25 +34,28 @@ export default function CustomCursor() {
       animationFrameId = requestAnimationFrame(animate);
     };
 
+    const handleMouseOver = (e: MouseEvent) => {
+      const target = e.target as HTMLElement | null;
+      if (
+        target &&
+        target.closest(
+          'a, button, .hover-magnet, .cursor-pointer, [role="button"], input[type="submit"], input[type="button"], input[type="file"]::file-selector-button'
+        )
+      ) {
+        follower.classList.add('cursor-hover');
+      } else {
+        follower.classList.remove('cursor-hover');
+      }
+    };
+
     window.addEventListener('mousemove', handleMouseMove);
+    window.addEventListener('mouseover', handleMouseOver);
     animationFrameId = requestAnimationFrame(animate);
-
-    const handleMouseEnter = () => follower.classList.add('cursor-hover');
-    const handleMouseLeave = () => follower.classList.remove('cursor-hover');
-
-    const magnets = document.querySelectorAll('a, button, .hover-magnet');
-    magnets.forEach((el) => {
-      el.addEventListener('mouseenter', handleMouseEnter);
-      el.addEventListener('mouseleave', handleMouseLeave);
-    });
 
     return () => {
       window.removeEventListener('mousemove', handleMouseMove);
+      window.removeEventListener('mouseover', handleMouseOver);
       cancelAnimationFrame(animationFrameId);
-      magnets.forEach((el) => {
-        el.removeEventListener('mouseenter', handleMouseEnter);
-        el.removeEventListener('mouseleave', handleMouseLeave);
-      });
     };
   }, []);
 
