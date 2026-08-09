@@ -5,8 +5,9 @@ export default function robots(): MetadataRoute.Robots {
     rules: {
       userAgent: '*',
       allow: '/',
-      disallow: ['/admin', '/api/'],
+      disallow: ['/admin/', '/api/'],
     },
-    sitemap: 'https://saint-john-church.vercel.app/sitemap.xml',
+    sitemap: 'https://saint-john.vercel.app/sitemap.xml',
   };
 }
+
