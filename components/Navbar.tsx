@@ -68,7 +68,7 @@ export default function Navbar() {
               <li className="nav-item">
                 <a
                   className="nav-link text-danger fw-bold hover-magnet"
-                  href="https://george22george9-hue.github.io/eftqad/"
+                  href="https://eftqad.vercel.app/"
                   target="_blank"
                   rel="noreferrer"
                 >
@@ -154,7 +154,7 @@ export default function Navbar() {
           </a>
           <a
             className="mobile-drawer-link text-danger"
-            href="https://george22george9-hue.github.io/eftqad/"
+            href="https://eftqad.vercel.app/"
             target="_blank"
             rel="noreferrer"
             onClick={closeMenu}

@@ -10,7 +10,7 @@ export default function WahshatnaBanner() {
           رسالة حب دافية مستنياك.. اللمة مش بتكمل غير بيك.
         </p>
         <a
-          href="https://george22george9-hue.github.io/eftqad/"
+          href="https://eftqad.vercel.app/"
           target="_blank"
           rel="noreferrer"
           className="btn btn-danger btn-lg w-100 py-3 rounded-3 fw-bold hover-magnet"
