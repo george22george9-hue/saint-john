@@ -681,6 +681,35 @@ html.dark .news-section {
   border-color: rgba(212, 175, 55, 0.8);
 }
 
+.post-link {
+  color: #b3922e;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-color: rgba(179, 146, 46, 0.4);
+  font-weight: 600;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  cursor: pointer !important;
+  transition: all 0.2s ease;
+}
+
+.post-link:hover {
+  color: #8c6f1d;
+  text-decoration-color: #8c6f1d;
+  opacity: 0.9;
+}
+
+html.dark .post-link {
+  color: var(--accent-light, #f5d470);
+  text-decoration-color: rgba(245, 212, 112, 0.4);
+}
+
+html.dark .post-link:hover {
+  color: #ffffff;
+  text-decoration-color: #ffffff;
+  opacity: 1;
+}
+
 /* --- Floating Action Button (FAB) --- */
 .fab-container {
   position: fixed;

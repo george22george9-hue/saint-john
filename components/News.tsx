@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import { Announcement } from '@/types';
+import { formatTextWithLinks } from '@/lib/formatTextWithLinks';
 
 interface NewsProps {
   initialAnnouncements?: Announcement[];
@@ -110,15 +111,25 @@ export default function News({ initialAnnouncements }: NewsProps) {
                       </div>
 
                       {hasTitle && (
-                        <h4 className="mb-3 fw-bold">{ann.title}</h4>
+                        <h4
+                          className="mb-3 fw-bold"
+                          style={{ overflowWrap: 'anywhere', wordBreak: 'break-word' }}
+                        >
+                          {formatTextWithLinks(ann.title)}
+                        </h4>
                       )}
 
                       {hasDescription && (
                         <p
                           className="text-muted dark:text-gray-300 mb-0 flex-grow-1"
-                          style={{ lineHeight: '1.8', whiteSpace: 'pre-wrap' }}
+                          style={{
+                            lineHeight: '1.8',
+                            whiteSpace: 'pre-wrap',
+                            overflowWrap: 'anywhere',
+                            wordBreak: 'break-word',
+                          }}
                         >
-                          {ann.description}
+                          {formatTextWithLinks(ann.description)}
                         </p>
                       )}
                     </div>
