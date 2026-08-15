@@ -2,12 +2,15 @@
 
 import Image from 'next/image';
 import CountdownTimer from './CountdownTimer';
+import { PASTORS_DATA } from '@/lib/pastorsData';
 
 interface HeroProps {
   onOpenModal: () => void;
 }
 
 export default function Hero({ onOpenModal }: HeroProps) {
+  const [bishop, frWessa, frBevnoty] = PASTORS_DATA;
+
   return (
     <section id="hero" className="hero-section">
       <div className="container relative-z">
@@ -19,13 +22,15 @@ export default function Hero({ onOpenModal }: HeroProps) {
               className="hero-pastors-wrapper d-inline-flex align-items-center justify-content-center w-100 mb-4 gsap-fade-up"
               title="رعاة الكنيسة والاجتماع - انقر للتفاصيل"
               aria-label="رعاة الكنيسة والاجتماع"
+              dir="ltr"
             >
+              {/* 1. Fr. Wessa (Left) */}
               <div className="hero-portrait-item priest-item">
                 <Image
-                  src="/abona_bevnoty.jpeg"
-                  alt="القمص بفنوتي"
-                  width={56}
-                  height={56}
+                  src={frWessa.image}
+                  alt={frWessa.nameAr}
+                  width={105}
+                  height={105}
                   className="rounded-circle shadow-md hero-portrait-img"
                   style={{
                     objectFit: 'cover',
@@ -34,12 +39,14 @@ export default function Hero({ onOpenModal }: HeroProps) {
                   }}
                 />
               </div>
+
+              {/* 2. H.G. Bishop Marcos (CENTER / Prominent) */}
               <div className="hero-portrait-item bishop-item">
                 <Image
-                  src="/anba-morcos.jpg"
-                  alt="نيافة الأنبا مرقس"
-                  width={72}
-                  height={72}
+                  src={bishop.image}
+                  alt={bishop.nameAr}
+                  width={130}
+                  height={130}
                   className="rounded-circle shadow-lg hero-portrait-img-lg"
                   style={{
                     objectFit: 'cover',
@@ -47,14 +54,17 @@ export default function Hero({ onOpenModal }: HeroProps) {
                     border: '3px solid var(--accent)',
                     boxShadow: 'var(--shadow-glow)',
                   }}
+                  priority
                 />
               </div>
+
+              {/* 3. Fr. Bevnoty (Right) */}
               <div className="hero-portrait-item priest-item">
                 <Image
-                  src="/abona_wessa.jpeg"
-                  alt="القس وسا"
-                  width={56}
-                  height={56}
+                  src={frBevnoty.image}
+                  alt={frBevnoty.nameAr}
+                  width={105}
+                  height={105}
                   className="rounded-circle shadow-md hero-portrait-img"
                   style={{
                     objectFit: 'cover',
