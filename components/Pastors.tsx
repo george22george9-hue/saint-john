@@ -167,7 +167,7 @@ export default function Pastors() {
                 Fr. Wessa
               </h5>
               <p className="text-muted dark:text-gray-300 fw-semibold mb-1 fs-6">
-                كاهن الكنيسة ورائي الاجتماع
+                كاهن الكنيسة
               </p>
               <p className="text-muted dark:text-gray-400 small mb-0" dir="ltr">
                 Church & Meeting Pastor
@@ -203,7 +203,7 @@ export default function Pastors() {
                 Fr. Bevnoty
               </h5>
               <p className="text-muted dark:text-gray-300 fw-semibold mb-1 fs-6">
-                كاهن الكنيسة ورائي الاجتماع
+                كاهن الكنيسة
               </p>
               <p className="text-muted dark:text-gray-400 small mb-0" dir="ltr">
                 Church & Meeting Pastor
