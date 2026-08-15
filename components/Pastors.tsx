@@ -143,7 +143,7 @@ export default function Pastors() {
               >
                 <Image
                   src="/abona_bevnoty.jpeg"
-                  alt="القمص بفنوتي"
+                  alt="القس بفنوتي عوض"
                   fill
                   sizes="120px"
                   className="rounded-circle shadow-md"
@@ -156,7 +156,7 @@ export default function Pastors() {
               </div>
 
               <h4 className="text-primary fw-extrabold mb-1 fs-4">
-                القمص بفنوتي
+                القس بفنوتي عوض
               </h4>
               <h5 className="text-accent fw-bold fs-6 mb-2" dir="ltr">
                 Fr. Bevnoty
@@ -179,7 +179,7 @@ export default function Pastors() {
               >
                 <Image
                   src="/abona_wessa.jpeg"
-                  alt="القس وسا"
+                  alt="القمص ويصا عزيز"
                   fill
                   sizes="120px"
                   className="rounded-circle shadow-md"
@@ -192,7 +192,7 @@ export default function Pastors() {
               </div>
 
               <h4 className="text-primary fw-extrabold mb-1 fs-4">
-                القس وسا
+                القمص ويصا عزيز
               </h4>
               <h5 className="text-accent fw-bold fs-6 mb-2" dir="ltr">
                 Fr. Wessa

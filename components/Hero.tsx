@@ -16,16 +16,16 @@ export default function Hero({ onOpenModal }: HeroProps) {
             {/* Church Leadership Portraits Group */}
             <a
               href="#pastors"
-              className="hero-pastors-group d-inline-flex align-items-center justify-content-center mb-3 gsap-fade-up hover-magnet"
+              className="hero-pastors-wrapper d-inline-flex align-items-center justify-content-center w-100 mb-4 gsap-fade-up"
               title="رعاة الكنيسة والاجتماع - انقر للتفاصيل"
               aria-label="رعاة الكنيسة والاجتماع"
             >
-              <div className="hero-portrait-item priest-left me-n2 me-sm-n3">
+              <div className="hero-portrait-item priest-item">
                 <Image
                   src="/abona_bevnoty.jpeg"
                   alt="القمص بفنوتي"
-                  width={52}
-                  height={52}
+                  width={56}
+                  height={56}
                   className="rounded-circle shadow-md hero-portrait-img"
                   style={{
                     objectFit: 'cover',
@@ -34,12 +34,12 @@ export default function Hero({ onOpenModal }: HeroProps) {
                   }}
                 />
               </div>
-              <div className="hero-portrait-item bishop-center z-1">
+              <div className="hero-portrait-item bishop-item">
                 <Image
                   src="/anba-morcos.jpg"
                   alt="نيافة الأنبا مرقس"
-                  width={68}
-                  height={68}
+                  width={72}
+                  height={72}
                   className="rounded-circle shadow-lg hero-portrait-img-lg"
                   style={{
                     objectFit: 'cover',
@@ -49,12 +49,12 @@ export default function Hero({ onOpenModal }: HeroProps) {
                   }}
                 />
               </div>
-              <div className="hero-portrait-item priest-right ms-n2 ms-sm-n3">
+              <div className="hero-portrait-item priest-item">
                 <Image
                   src="/abona_wessa.jpeg"
                   alt="القس وسا"
-                  width={52}
-                  height={52}
+                  width={56}
+                  height={56}
                   className="rounded-circle shadow-md hero-portrait-img"
                   style={{
                     objectFit: 'cover',
