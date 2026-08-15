@@ -478,6 +478,40 @@ html.dark .btn-outline-primary:active * {
   z-index: 5;
 }
 
+/* --- Hero Pastors Portraits Group --- */
+.hero-pastors-group {
+  position: relative;
+  cursor: pointer;
+  transition: transform 0.3s ease, filter 0.3s ease;
+  padding: 4px 12px;
+  border-radius: 50px;
+  background: var(--glass-bg);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(212, 175, 55, 0.3);
+  box-shadow: var(--shadow-sm);
+}
+
+.hero-pastors-group:hover {
+  transform: translateY(-4px) scale(1.04);
+  border-color: var(--accent);
+  box-shadow: var(--shadow-gold);
+}
+
+.hero-pastors-group:hover .hero-portrait-img-lg {
+  box-shadow: var(--shadow-gold) !important;
+}
+
+@media (max-width: 576px) {
+  .hero-pastors-group .hero-portrait-img-lg {
+    width: 56px !important;
+    height: 56px !important;
+  }
+  .hero-pastors-group .hero-portrait-img {
+    width: 44px !important;
+    height: 44px !important;
+  }
+}
+
 .hashtag-badge {
   display: inline-block;
   background: var(--glass-bg);

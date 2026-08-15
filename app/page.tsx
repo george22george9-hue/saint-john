@@ -7,6 +7,7 @@ import FloatingLogo from '@/components/FloatingLogo';
 import Navbar from '@/components/Navbar';
 import Hero from '@/components/Hero';
 import About from '@/components/About';
+import Pastors from '@/components/Pastors';
 import Programs from '@/components/Programs';
 import News from '@/components/News';
 import WahshatnaBanner from '@/components/WahshatnaBanner';
@@ -33,6 +34,7 @@ export default function Home() {
       <main>
         <Hero onOpenModal={() => setIsModalOpen(true)} />
         <About />
+        <Pastors />
         <Programs />
         <News />
         <WahshatnaBanner />

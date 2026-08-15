@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import CountdownTimer from './CountdownTimer';
 
 interface HeroProps {
@@ -12,9 +13,63 @@ export default function Hero({ onOpenModal }: HeroProps) {
       <div className="container relative-z">
         <div className="row justify-content-center">
           <div className="col-lg-10 gsap-hero-content">
-            <span className="hashtag-badge mb-3 gsap-fade-up">
-              <i className="fas fa-cross me-1"></i> #عيلة_واحدة
-            </span>
+            {/* Church Leadership Portraits Group */}
+            <a
+              href="#pastors"
+              className="hero-pastors-group d-inline-flex align-items-center justify-content-center mb-3 gsap-fade-up hover-magnet"
+              title="رعاة الكنيسة والاجتماع - انقر للتفاصيل"
+              aria-label="رعاة الكنيسة والاجتماع"
+            >
+              <div className="hero-portrait-item priest-left me-n2 me-sm-n3">
+                <Image
+                  src="/abona_bevnoty.jpeg"
+                  alt="القمص بفنوتي"
+                  width={52}
+                  height={52}
+                  className="rounded-circle shadow-md hero-portrait-img"
+                  style={{
+                    objectFit: 'cover',
+                    objectPosition: 'top center',
+                    border: '2px solid var(--accent)',
+                  }}
+                />
+              </div>
+              <div className="hero-portrait-item bishop-center z-1">
+                <Image
+                  src="/anba-morcos.jpg"
+                  alt="نيافة الأنبا مرقس"
+                  width={68}
+                  height={68}
+                  className="rounded-circle shadow-lg hero-portrait-img-lg"
+                  style={{
+                    objectFit: 'cover',
+                    objectPosition: 'top center',
+                    border: '3px solid var(--accent)',
+                    boxShadow: 'var(--shadow-glow)',
+                  }}
+                />
+              </div>
+              <div className="hero-portrait-item priest-right ms-n2 ms-sm-n3">
+                <Image
+                  src="/abona_wessa.jpeg"
+                  alt="القس وسا"
+                  width={52}
+                  height={52}
+                  className="rounded-circle shadow-md hero-portrait-img"
+                  style={{
+                    objectFit: 'cover',
+                    objectPosition: 'top center',
+                    border: '2px solid var(--accent)',
+                  }}
+                />
+              </div>
+            </a>
+
+            <div>
+              <span className="hashtag-badge mb-3 gsap-fade-up">
+                <i className="fas fa-cross me-1"></i> #عيلة_واحدة
+              </span>
+            </div>
             <h1 className="hero-title mt-2 gsap-title">
               اجتماع القديس يوحنا الحبيب للشباب
             </h1>
