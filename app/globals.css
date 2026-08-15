@@ -482,7 +482,7 @@ html.dark .btn-outline-primary:active * {
 .hero-pastors-wrapper {
   position: relative;
   cursor: pointer;
-  gap: 3.5rem;
+  gap: clamp(14px, 3.8vw, 48px);
   transition: all 0.3s ease;
 }
 
@@ -491,7 +491,7 @@ html.dark .btn-outline-primary:active * {
 }
 
 .hero-portrait-item:hover {
-  transform: translateY(-5px) scale(1.12);
+  transform: translateY(-6px) scale(1.08);
 }
 
 .hero-portrait-item:hover .hero-portrait-img-lg,
@@ -500,29 +500,66 @@ html.dark .btn-outline-primary:active * {
   border-color: var(--accent) !important;
 }
 
-@media (min-width: 1440px) {
-  .hero-pastors-wrapper {
-    gap: 4.5rem;
-  }
+.hero-pastors-wrapper .hero-portrait-img-lg {
+  width: 130px !important;
+  height: 130px !important;
 }
 
-@media (max-width: 991px) {
-  .hero-pastors-wrapper {
-    gap: 2.5rem;
-  }
+.hero-pastors-wrapper .hero-portrait-img {
+  width: 105px !important;
+  height: 105px !important;
 }
 
-@media (max-width: 576px) {
-  .hero-pastors-wrapper {
-    gap: 1.25rem;
-  }
+@media (max-width: 1200px) {
   .hero-pastors-wrapper .hero-portrait-img-lg {
-    width: 54px !important;
-    height: 54px !important;
+    width: 115px !important;
+    height: 115px !important;
   }
   .hero-pastors-wrapper .hero-portrait-img {
-    width: 42px !important;
-    height: 42px !important;
+    width: 92px !important;
+    height: 92px !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .hero-pastors-wrapper {
+    gap: 1.5rem;
+  }
+  .hero-pastors-wrapper .hero-portrait-img-lg {
+    width: 105px !important;
+    height: 105px !important;
+  }
+  .hero-pastors-wrapper .hero-portrait-img {
+    width: 85px !important;
+    height: 85px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero-pastors-wrapper {
+    gap: 0.85rem;
+  }
+  .hero-pastors-wrapper .hero-portrait-img-lg {
+    width: 88px !important;
+    height: 88px !important;
+  }
+  .hero-pastors-wrapper .hero-portrait-img {
+    width: 72px !important;
+    height: 72px !important;
+  }
+}
+
+@media (max-width: 360px) {
+  .hero-pastors-wrapper {
+    gap: 0.6rem;
+  }
+  .hero-pastors-wrapper .hero-portrait-img-lg {
+    width: 80px !important;
+    height: 80px !important;
+  }
+  .hero-pastors-wrapper .hero-portrait-img {
+    width: 66px !important;
+    height: 66px !important;
   }
 }
 

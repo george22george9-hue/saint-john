@@ -134,7 +134,43 @@ export default function Pastors() {
 
         {/* 3. Church & Meeting Pastors Grid */}
         <div className="row g-4 justify-content-center gsap-fade-up">
-          {/* Fr. Bevnoty */}
+          {/* Fr. Wessa (First Priest) */}
+          <div className="col-md-6 col-lg-5">
+            <div className="glass-card text-center p-4 hover-lift h-100">
+              <div
+                className="position-relative d-inline-block mb-3"
+                style={{ width: '120px', height: '120px' }}
+              >
+                <Image
+                  src="/abona_wessa.jpeg"
+                  alt="القمص ويصا"
+                  fill
+                  sizes="120px"
+                  className="rounded-circle shadow-md"
+                  style={{
+                    objectFit: 'cover',
+                    objectPosition: 'top center',
+                    border: '3px solid var(--accent)',
+                  }}
+                />
+              </div>
+
+              <h4 className="text-primary fw-extrabold mb-1 fs-4">
+                القمص ويصا
+              </h4>
+              <h5 className="text-accent fw-bold fs-6 mb-2" dir="ltr">
+                Fr. Wessa
+              </h5>
+              <p className="text-muted dark:text-gray-300 fw-semibold mb-1 fs-6">
+                كاهن الكنيسة ورائي الاجتماع
+              </p>
+              <p className="text-muted dark:text-gray-400 small mb-0" dir="ltr">
+                Church & Meeting Pastor
+              </p>
+            </div>
+          </div>
+
+          {/* Fr. Bevnoty (Second Priest) */}
           <div className="col-md-6 col-lg-5">
             <div className="glass-card text-center p-4 hover-lift h-100">
               <div
@@ -160,42 +196,6 @@ export default function Pastors() {
               </h4>
               <h5 className="text-accent fw-bold fs-6 mb-2" dir="ltr">
                 Fr. Bevnoty
-              </h5>
-              <p className="text-muted dark:text-gray-300 fw-semibold mb-1 fs-6">
-                كاهن الكنيسة ورائي الاجتماع
-              </p>
-              <p className="text-muted dark:text-gray-400 small mb-0" dir="ltr">
-                Church & Meeting Pastor
-              </p>
-            </div>
-          </div>
-
-          {/* Fr. Wessa */}
-          <div className="col-md-6 col-lg-5">
-            <div className="glass-card text-center p-4 hover-lift h-100">
-              <div
-                className="position-relative d-inline-block mb-3"
-                style={{ width: '120px', height: '120px' }}
-              >
-                <Image
-                  src="/abona_wessa.jpeg"
-                  alt="القمص ويصا عزيز"
-                  fill
-                  sizes="120px"
-                  className="rounded-circle shadow-md"
-                  style={{
-                    objectFit: 'cover',
-                    objectPosition: 'top center',
-                    border: '3px solid var(--accent)',
-                  }}
-                />
-              </div>
-
-              <h4 className="text-primary fw-extrabold mb-1 fs-4">
-                القمص ويصا عزيز
-              </h4>
-              <h5 className="text-accent fw-bold fs-6 mb-2" dir="ltr">
-                Fr. Wessa
               </h5>
               <p className="text-muted dark:text-gray-300 fw-semibold mb-1 fs-6">
                 كاهن الكنيسة ورائي الاجتماع
