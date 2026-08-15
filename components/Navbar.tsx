@@ -56,6 +56,11 @@ export default function Navbar() {
                 </a>
               </li>
               <li className="nav-item">
+                <a className="nav-link" href="#pastors">
+                  رعاة الكنيسة
+                </a>
+              </li>
+              <li className="nav-item">
                 <a className="nav-link" href="#programs">
                   برامجنا
                 </a>
@@ -145,6 +150,9 @@ export default function Navbar() {
           </a>
           <a className="mobile-drawer-link" href="#about" onClick={closeMenu}>
             <i className="fas fa-church me-2 text-accent fs-6"></i> من نحن
+          </a>
+          <a className="mobile-drawer-link" href="#pastors" onClick={closeMenu}>
+            <i className="fas fa-user-shield me-2 text-accent fs-6"></i> رعاة الكنيسة
           </a>
           <a className="mobile-drawer-link" href="#programs" onClick={closeMenu}>
             <i className="fas fa-calendar-alt me-2 text-accent fs-6"></i> برامجنا
