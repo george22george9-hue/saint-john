@@ -478,88 +478,45 @@ html.dark .btn-outline-primary:active * {
   z-index: 5;
 }
 
-/* --- Hero Pastors Portraits Group --- */
-.hero-pastors-wrapper {
+/* --- Hero Metropolitan Profile Header --- */
+.hero-bishop-header {
   position: relative;
   cursor: pointer;
-  gap: clamp(14px, 3.8vw, 48px);
-  transition: all 0.3s ease;
+  transition: transform 0.3s ease, filter 0.3s ease;
+  text-decoration: none !important;
 }
 
-.hero-portrait-item {
-  transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), filter 0.3s ease;
+.hero-bishop-header:hover {
+  transform: translateY(-5px) scale(1.03);
 }
 
-.hero-portrait-item:hover {
-  transform: translateY(-6px) scale(1.08);
-}
-
-.hero-portrait-item:hover .hero-portrait-img-lg,
-.hero-portrait-item:hover .hero-portrait-img {
+.hero-bishop-header:hover .hero-bishop-img {
   box-shadow: var(--shadow-gold) !important;
-  border-color: var(--accent) !important;
 }
 
-.hero-pastors-wrapper .hero-portrait-img-lg {
-  width: 130px !important;
-  height: 130px !important;
+.hero-bishop-img {
+  width: 160px !important;
+  height: 160px !important;
+  transition: box-shadow 0.3s ease;
 }
 
-.hero-pastors-wrapper .hero-portrait-img {
-  width: 105px !important;
-  height: 105px !important;
+@media (max-width: 991px) {
+  .hero-bishop-img {
+    width: 140px !important;
+    height: 140px !important;
+  }
 }
 
-@media (max-width: 1200px) {
-  .hero-pastors-wrapper .hero-portrait-img-lg {
+@media (max-width: 576px) {
+  .hero-bishop-img {
     width: 115px !important;
     height: 115px !important;
   }
-  .hero-pastors-wrapper .hero-portrait-img {
-    width: 92px !important;
-    height: 92px !important;
+  .hero-bishop-name {
+    font-size: 1.15rem !important;
   }
-}
-
-@media (max-width: 768px) {
-  .hero-pastors-wrapper {
-    gap: 1.5rem;
-  }
-  .hero-pastors-wrapper .hero-portrait-img-lg {
-    width: 105px !important;
-    height: 105px !important;
-  }
-  .hero-pastors-wrapper .hero-portrait-img {
-    width: 85px !important;
-    height: 85px !important;
-  }
-}
-
-@media (max-width: 480px) {
-  .hero-pastors-wrapper {
-    gap: 0.85rem;
-  }
-  .hero-pastors-wrapper .hero-portrait-img-lg {
-    width: 88px !important;
-    height: 88px !important;
-  }
-  .hero-pastors-wrapper .hero-portrait-img {
-    width: 72px !important;
-    height: 72px !important;
-  }
-}
-
-@media (max-width: 360px) {
-  .hero-pastors-wrapper {
-    gap: 0.6rem;
-  }
-  .hero-pastors-wrapper .hero-portrait-img-lg {
-    width: 80px !important;
-    height: 80px !important;
-  }
-  .hero-pastors-wrapper .hero-portrait-img {
-    width: 66px !important;
-    height: 66px !important;
+  .hero-bishop-title {
+    font-size: 0.9rem !important;
   }
 }
 

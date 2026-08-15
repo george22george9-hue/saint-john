@@ -138,19 +138,24 @@ export default function Pastors() {
           <div className="col-md-6 col-lg-5">
             <div className="glass-card text-center p-4 hover-lift h-100">
               <div
-                className="position-relative d-inline-block mb-3"
-                style={{ width: '120px', height: '120px' }}
+                className="position-relative d-inline-block rounded-circle overflow-hidden shadow-md mb-3"
+                style={{
+                  width: '120px',
+                  height: '120px',
+                  border: '3px solid var(--accent)',
+                }}
               >
                 <Image
                   src="/abona_wessa.jpeg"
                   alt="القمص ويصا"
                   fill
                   sizes="120px"
-                  className="rounded-circle shadow-md"
+                  className="rounded-circle"
                   style={{
                     objectFit: 'cover',
-                    objectPosition: 'top center',
-                    border: '3px solid var(--accent)',
+                    objectPosition: 'center 15%',
+                    transform: 'scale(0.88)',
+                    transformOrigin: 'center center',
                   }}
                 />
               </div>

@@ -16,38 +16,20 @@ export default function Hero({ onOpenModal }: HeroProps) {
       <div className="container relative-z">
         <div className="row justify-content-center">
           <div className="col-lg-10 gsap-hero-content">
-            {/* Church Leadership Portraits Group */}
+            {/* Hero Metropolitan Profile Header */}
             <a
               href="#pastors"
-              className="hero-pastors-wrapper d-inline-flex align-items-center justify-content-center w-100 mb-4 gsap-fade-up"
+              className="hero-bishop-header d-inline-block text-center mb-4 gsap-fade-up hover-magnet"
               title="رعاة الكنيسة والاجتماع - انقر للتفاصيل"
-              aria-label="رعاة الكنيسة والاجتماع"
-              dir="ltr"
+              aria-label="نيافة الأنبا مرقس"
             >
-              {/* 1. Fr. Wessa (Left) */}
-              <div className="hero-portrait-item priest-item">
-                <Image
-                  src={frWessa.image}
-                  alt={frWessa.nameAr}
-                  width={105}
-                  height={105}
-                  className="rounded-circle shadow-md hero-portrait-img"
-                  style={{
-                    objectFit: 'cover',
-                    objectPosition: 'top center',
-                    border: '2px solid var(--accent)',
-                  }}
-                />
-              </div>
-
-              {/* 2. H.G. Bishop Marcos (CENTER / Prominent) */}
-              <div className="hero-portrait-item bishop-item">
+              <div className="position-relative d-inline-block mb-2">
                 <Image
                   src={bishop.image}
                   alt={bishop.nameAr}
-                  width={130}
-                  height={130}
-                  className="rounded-circle shadow-lg hero-portrait-img-lg"
+                  width={160}
+                  height={160}
+                  className="rounded-circle shadow-lg hero-bishop-img"
                   style={{
                     objectFit: 'cover',
                     objectPosition: 'top center',
@@ -57,22 +39,12 @@ export default function Hero({ onOpenModal }: HeroProps) {
                   priority
                 />
               </div>
-
-              {/* 3. Fr. Bevnoty (Right) */}
-              <div className="hero-portrait-item priest-item">
-                <Image
-                  src={frBevnoty.image}
-                  alt={frBevnoty.nameAr}
-                  width={105}
-                  height={105}
-                  className="rounded-circle shadow-md hero-portrait-img"
-                  style={{
-                    objectFit: 'cover',
-                    objectPosition: 'top center',
-                    border: '2px solid var(--accent)',
-                  }}
-                />
-              </div>
+              <h3 className="hero-bishop-name text-main dark:text-white fw-extrabold mb-1 fs-4">
+                {bishop.nameAr}
+              </h3>
+              <p className="hero-bishop-title text-accent fw-bold mb-0 fs-6">
+                مطرانية شبرا الخيمة وتوابعها
+              </p>
             </a>
 
             <div>
