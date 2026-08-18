@@ -3,11 +3,13 @@
 import { useState, useEffect, FormEvent, ChangeEvent } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { Announcement, Inquiry } from '@/types';
+import { Announcement, Inquiry, DynamicActivity } from '@/types';
 import {
   validateImageFile,
   compressAndOptimizeImage,
 } from '@/lib/clientImageOptimizer';
+
+type FeedbackFilter = 'الكل' | 'تحت المراجعة' | 'جاري التنفيذ' | 'تم التنفيذ' | 'مرفوض';
 
 export default function AdminPage() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -16,13 +18,40 @@ export default function AdminPage() {
   const [loginError, setLoginError] = useState('');
   const [isLoggingIn, setIsLoggingIn] = useState(false);
 
-  // Dashboard state
+  // Posts / Announcements state
   const [activities, setActivities] = useState<Announcement[]>([]);
+  
+  // Feedback / Inquiries state
   const [inquiries, setInquiries] = useState<Inquiry[]>([]);
+  const [feedbackFilter, setFeedbackFilter] = useState<FeedbackFilter>('الكل');
+  const [deletingInquiry, setDeletingInquiry] = useState<Inquiry | null>(null);
+  const [isDeletingInquiry, setIsDeletingInquiry] = useState(false);
+  const [updatingInquiryId, setUpdatingInquiryId] = useState<number | null>(null);
+
+  // Settings state (Friday & Sunday)
   const [fridayTime, setFridayTime] = useState('');
   const [sundaySchedule, setSundaySchedule] = useState('');
+  const [isSavingSettings, setIsSavingSettings] = useState(false);
 
-  // Add post / activity form state
+  // Dynamic Activities state
+  const [dynamicActivities, setDynamicActivities] = useState<DynamicActivity[]>([]);
+  const [showDynamicModal, setShowDynamicModal] = useState(false);
+  const [editingDynamicItem, setEditingDynamicItem] = useState<DynamicActivity | null>(null);
+  const [deletingDynamicItem, setDeletingDynamicItem] = useState<DynamicActivity | null>(null);
+  const [isDeletingDynamicItem, setIsDeletingDynamicItem] = useState(false);
+  const [isSavingDynamicItem, setIsSavingDynamicItem] = useState(false);
+
+  // Dynamic Activity Form state
+  const [dynTitle, setDynTitle] = useState('');
+  const [dynSubtitle, setDynSubtitle] = useState('');
+  const [dynCategory, setDynCategory] = useState('نشاط');
+  const [dynContent, setDynContent] = useState('');
+  const [dynDate, setDynDate] = useState('');
+  const [dynTime, setDynTime] = useState('');
+  const [dynIsActive, setDynIsActive] = useState(true);
+  const [dynDisplayOrder, setDynDisplayOrder] = useState(0);
+
+  // Create post / announcement form state
   const [actTitle, setActTitle] = useState('');
   const [actDate, setActDate] = useState('');
   const [actDesc, setActDesc] = useState('');
@@ -31,7 +60,7 @@ export default function AdminPage() {
   const [imageError, setImageError] = useState<string | null>(null);
   const [isAdding, setIsAdding] = useState(false);
 
-  // Edit Modal State
+  // Edit Post Modal State
   const [editingPost, setEditingPost] = useState<Announcement | null>(null);
   const [editTitle, setEditTitle] = useState('');
   const [editDate, setEditDate] = useState('');
@@ -40,9 +69,6 @@ export default function AdminPage() {
   const [editImagePreview, setEditImagePreview] = useState<string | null>(null);
   const [removeExistingImage, setRemoveExistingImage] = useState(false);
   const [isSavingEdit, setIsSavingEdit] = useState(false);
-
-  // Settings form state
-  const [isSavingSettings, setIsSavingSettings] = useState(false);
 
   // Check auth status on mount
   useEffect(() => {
@@ -59,6 +85,7 @@ export default function AdminPage() {
 
         loadActivities();
         loadSettings();
+        loadDynamicActivities();
       } else {
         setIsLoggedIn(false);
       }
@@ -75,7 +102,7 @@ export default function AdminPage() {
         setActivities(data);
       }
     } catch (err) {
-      console.error('Failed to load activities', err);
+      console.error('Failed to load announcements', err);
     }
   };
 
@@ -89,6 +116,18 @@ export default function AdminPage() {
       }
     } catch (err) {
       console.error('Failed to load settings', err);
+    }
+  };
+
+  const loadDynamicActivities = async () => {
+    try {
+      const res = await fetch('/api/admin/activities');
+      if (res.ok) {
+        const data = await res.json();
+        setDynamicActivities(data);
+      }
+    } catch (err) {
+      console.error('Failed to load dynamic activities', err);
     }
   };
 
@@ -127,7 +166,7 @@ export default function AdminPage() {
     }
   };
 
-  // Image File Picker Change Handler
+  // --- Image Handlers ---
   const handleImageSelect = (e: ChangeEvent<HTMLInputElement>) => {
     setImageError(null);
     const files = e.target.files;
@@ -154,6 +193,7 @@ export default function AdminPage() {
     setImageError(null);
   };
 
+  // --- Announcement Handlers ---
   const handleAddActivity = async (e: FormEvent) => {
     e.preventDefault();
     if (!actTitle.trim() && !actDesc.trim() && !selectedFile) {
@@ -228,7 +268,6 @@ export default function AdminPage() {
     }
   };
 
-  // Open Edit Modal
   const handleOpenEdit = (post: Announcement) => {
     setEditingPost(post);
     setEditTitle(post.title || '');
@@ -308,6 +347,58 @@ export default function AdminPage() {
     }
   };
 
+  // --- Feedback / Inquiry Handlers ---
+  const handleUpdateInquiryStatus = async (id: number, newStatus: string) => {
+    setUpdatingInquiryId(id);
+    try {
+      const res = await fetch(`/api/admin/inquiries/${id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status: newStatus }),
+      });
+
+      if (res.ok) {
+        const data = await res.json();
+        setInquiries((prev) =>
+          prev.map((item) =>
+            item.id === id ? { ...item, status: data.inquiry?.status || newStatus } : item
+          )
+        );
+      } else {
+        const data = await res.json();
+        alert(data.error || 'حدث خطأ أثناء تحديث حالة الرسالة');
+      }
+    } catch {
+      alert('حدث خطأ في الاتصال بالسيرفر');
+    } finally {
+      setUpdatingInquiryId(null);
+    }
+  };
+
+  const handleDeleteInquiryConfirm = async () => {
+    if (!deletingInquiry) return;
+    setIsDeletingInquiry(true);
+
+    try {
+      const res = await fetch(`/api/admin/inquiries/${deletingInquiry.id}`, {
+        method: 'DELETE',
+      });
+
+      if (res.ok) {
+        setInquiries((prev) => prev.filter((item) => item.id !== deletingInquiry.id));
+        setDeletingInquiry(null);
+      } else {
+        const data = await res.json();
+        alert(data.error || 'حدث خطأ أثناء حذف الرسالة');
+      }
+    } catch {
+      alert('حدث خطأ في الاتصال بالسيرفر');
+    } finally {
+      setIsDeletingInquiry(false);
+    }
+  };
+
+  // --- Settings Handlers ---
   const handleSaveSettings = async (e: FormEvent) => {
     e.preventDefault();
     setIsSavingSettings(true);
@@ -334,8 +425,165 @@ export default function AdminPage() {
     }
   };
 
+  // --- Dynamic Activities Handlers ---
+  const handleOpenAddDynamicModal = () => {
+    setEditingDynamicItem(null);
+    setDynTitle('');
+    setDynSubtitle('');
+    setDynCategory('نشاط');
+    setDynContent('');
+    setDynDate('');
+    setDynTime('');
+    setDynIsActive(true);
+    setDynDisplayOrder(0);
+    setShowDynamicModal(true);
+  };
+
+  const handleOpenEditDynamicModal = (item: DynamicActivity) => {
+    setEditingDynamicItem(item);
+    setDynTitle(item.title || '');
+    setDynSubtitle(item.subtitle || '');
+    setDynCategory(item.category || 'نشاط');
+    setDynContent(item.content || '');
+    setDynDate(item.date || '');
+    setDynTime(item.time || '');
+    setDynIsActive(item.is_active ?? true);
+    setDynDisplayOrder(item.display_order || 0);
+    setShowDynamicModal(true);
+  };
+
+  const handleSaveDynamicActivity = async (e: FormEvent) => {
+    e.preventDefault();
+    if (!dynTitle.trim()) {
+      alert('يرجى إدخال عنوان القسم أو النشاط');
+      return;
+    }
+
+    setIsSavingDynamicItem(true);
+    try {
+      const payload = {
+        title: dynTitle,
+        subtitle: dynSubtitle,
+        category: dynCategory,
+        content: dynContent,
+        date: dynDate,
+        time: dynTime,
+        is_active: dynIsActive,
+        display_order: dynDisplayOrder,
+      };
+
+      let res: Response;
+      if (editingDynamicItem) {
+        res = await fetch(`/api/admin/activities/${editingDynamicItem.id}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        });
+      } else {
+        res = await fetch('/api/admin/activities', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        });
+      }
+
+      const data = await res.json();
+
+      if (res.ok) {
+        setShowDynamicModal(false);
+        setEditingDynamicItem(null);
+        loadDynamicActivities();
+        alert(editingDynamicItem ? 'تم تحديث النشاط بنجاح!' : 'تم إضافة النشاط الجديد بنجاح!');
+      } else {
+        alert(data.error || 'حدث خطأ أثناء حفظ النشاط');
+      }
+    } catch {
+      alert('حدث خطأ في الاتصال بالسيرفر');
+    } finally {
+      setIsSavingDynamicItem(false);
+    }
+  };
+
+  const handleToggleDynamicActive = async (item: DynamicActivity) => {
+    try {
+      const res = await fetch(`/api/admin/activities/${item.id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ is_active: !item.is_active }),
+      });
+
+      if (res.ok) {
+        setDynamicActivities((prev) =>
+          prev.map((act) => (act.id === item.id ? { ...act, is_active: !act.is_active } : act))
+        );
+      } else {
+        alert('فشل تغيير حالة التفعيل');
+      }
+    } catch {
+      alert('حدث خطأ في الاتصال بالسيرفر');
+    }
+  };
+
+  const handleDeleteDynamicConfirm = async () => {
+    if (!deletingDynamicItem) return;
+    setIsDeletingDynamicItem(true);
+
+    try {
+      const res = await fetch(`/api/admin/activities/${deletingDynamicItem.id}`, {
+        method: 'DELETE',
+      });
+
+      if (res.ok) {
+        setDynamicActivities((prev) =>
+          prev.filter((act) => act.id !== deletingDynamicItem.id)
+        );
+        setDeletingDynamicItem(null);
+      } else {
+        const data = await res.json();
+        alert(data.error || 'حدث خطأ أثناء حذف النشاط');
+      }
+    } catch {
+      alert('حدث خطأ في الاتصال بالسيرفر');
+    } finally {
+      setIsDeletingDynamicItem(false);
+    }
+  };
+
+  // Filtering Feedback Logic & Statistics
+  const getInquiryStatus = (inq: Inquiry): string => {
+    return inq.status && inq.status.trim().length > 0 ? inq.status : 'تحت المراجعة';
+  };
+
+  const counts = {
+    الكل: inquiries.length,
+    'تحت المراجعة': inquiries.filter((i) => getInquiryStatus(i) === 'تحت المراجعة').length,
+    'جاري التنفيذ': inquiries.filter((i) => getInquiryStatus(i) === 'جاري التنفيذ').length,
+    'تم التنفيذ': inquiries.filter((i) => getInquiryStatus(i) === 'تم التنفيذ').length,
+    مرفوض: inquiries.filter((i) => getInquiryStatus(i) === 'مرفوض').length,
+  };
+
+  const filteredInquiries = inquiries.filter((inq) => {
+    if (feedbackFilter === 'الكل') return true;
+    return getInquiryStatus(inq) === feedbackFilter;
+  });
+
+  const getStatusBadge = (statusStr: string) => {
+    switch (statusStr) {
+      case 'تحت المراجعة':
+        return <span className="badge bg-warning text-dark px-3 py-2 fw-bold"><i className="fas fa-hourglass-half me-1"></i> تحت المراجعة</span>;
+      case 'جاري التنفيذ':
+        return <span className="badge bg-info text-dark px-3 py-2 fw-bold"><i className="fas fa-spinner fa-spin me-1"></i> جاري التنفيذ</span>;
+      case 'تم التنفيذ':
+        return <span className="badge bg-success px-3 py-2 fw-bold"><i className="fas fa-check-circle me-1"></i> تم التنفيذ</span>;
+      case 'مرفوض':
+        return <span className="badge bg-danger px-3 py-2 fw-bold"><i className="fas fa-times-circle me-1"></i> مرفوض</span>;
+      default:
+        return <span className="badge bg-warning text-dark px-3 py-2 fw-bold"><i className="fas fa-hourglass-half me-1"></i> تحت المراجعة</span>;
+    }
+  };
+
   return (
-    <div style={{ backgroundColor: 'var(--bg-page)', color: 'var(--text-main)', minHeight: '100vh' }}>
+    <div style={{ backgroundColor: 'var(--bg-page)', color: 'var(--text-main)', minHeight: '100vh' }} dir="rtl">
       <header className="admin-header shadow-sm">
         <div className="container d-flex justify-content-between align-items-center">
           <div className="d-flex align-items-center">
@@ -356,9 +604,9 @@ export default function AdminPage() {
           {isLoggedIn && (
             <button
               onClick={handleLogout}
-              className="btn btn-outline-light btn-sm"
+              className="btn btn-outline-light btn-sm fw-bold"
             >
-              تسجيل الخروج
+              <i className="fas fa-sign-out-alt me-1"></i> تسجيل الخروج
             </button>
           )}
         </div>
@@ -413,7 +661,158 @@ export default function AdminPage() {
         ) : (
           /* Dashboard Section */
           <div className="row">
-            {/* Create Post / Activity Form */}
+
+            {/* SECTION 1: Dynamic Content & Activities ("إعدادات الموقع الأساسية والأنشطة Dynamic") */}
+            <div className="col-md-12 mb-4 mt-4">
+              <div className="admin-card card p-4 border-primary border-top border-3">
+                <div className="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-4">
+                  <div>
+                    <h5 className="mb-1 text-primary fw-bold">
+                      <i className="fas fa-layer-group me-2"></i> إدارة الأنشطة والأقسام الديناميكية (Dynamic Sections)
+                    </h5>
+                    <small className="text-muted">
+                      أضف أو عدل أي نشاط جديد (اجتماع خاص، مؤتمر، رحلة، نهضة، مسابقة، كورس، جدول جديد) ليتحدث على الموقع مباشرة دون تعديل كود.
+                    </small>
+                  </div>
+                  <button
+                    className="btn btn-success fw-bold px-4 py-2"
+                    onClick={handleOpenAddDynamicModal}
+                  >
+                    <i className="fas fa-plus-circle me-1"></i> + إضافة قسم / نشاط جديد
+                  </button>
+                </div>
+
+                {/* List of Dynamic Activities */}
+                <div className="table-responsive">
+                  <table className="table table-bordered table-hover align-middle mb-0">
+                    <thead className="table-light">
+                      <tr>
+                        <th style={{ width: '60px' }}>الترتيب</th>
+                        <th>العنوان والنوع</th>
+                        <th>التفاصيل والمحتوى</th>
+                        <th>الموعد والتوقيت</th>
+                        <th>الحالة</th>
+                        <th style={{ width: '180px' }}>الإجراءات</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {dynamicActivities.length === 0 ? (
+                        <tr>
+                          <td colSpan={6} className="text-center text-muted py-4">
+                            لا توجد أنشطة ديناميكية مضافة حالياً. اضغط على زر &quot;+ إضافة قسم / نشاط جديد&quot; لإضافة أول نشاط!
+                          </td>
+                        </tr>
+                      ) : (
+                        dynamicActivities.map((item) => (
+                          <tr key={item.id} className={!item.is_active ? 'opacity-50 bg-light' : ''}>
+                            <td className="text-center fw-bold">{item.display_order}</td>
+                            <td>
+                              <div className="fw-bold">{item.title}</div>
+                              {item.subtitle && <small className="text-muted d-block">{item.subtitle}</small>}
+                              <span className="badge bg-secondary mt-1">{item.category || 'نشاط'}</span>
+                            </td>
+                            <td>
+                              <p className="mb-0 small" style={{ whiteSpace: 'pre-wrap', maxHeight: '80px', overflowY: 'auto' }}>
+                                {item.content || '-'}
+                              </p>
+                            </td>
+                            <td>
+                              {item.date && <div className="small"><i className="far fa-calendar-alt me-1 text-primary"></i> {item.date}</div>}
+                              {item.time && <div className="small text-muted"><i className="far fa-clock me-1"></i> {item.time}</div>}
+                              {!item.date && !item.time && <span className="text-muted small">-</span>}
+                            </td>
+                            <td>
+                              <button
+                                type="button"
+                                className={`btn btn-sm ${item.is_active ? 'btn-success' : 'btn-outline-secondary'}`}
+                                onClick={() => handleToggleDynamicActive(item)}
+                                title="اضغط لتغيير الحالة"
+                              >
+                                {item.is_active ? (
+                                  <><i className="fas fa-check me-1"></i> مفعل</>
+                                ) : (
+                                  <><i className="fas fa-ban me-1"></i> غير مفعل</>
+                                )}
+                              </button>
+                            </td>
+                            <td>
+                              <div className="d-flex gap-2">
+                                <button
+                                  className="btn btn-sm btn-outline-primary"
+                                  onClick={() => handleOpenEditDynamicModal(item)}
+                                  title="تعديل"
+                                >
+                                  <i className="fas fa-edit me-1"></i> تعديل
+                                </button>
+                                <button
+                                  className="btn btn-sm btn-outline-danger"
+                                  onClick={() => setDeletingDynamicItem(item)}
+                                  title="حذف"
+                                >
+                                  <i className="fas fa-trash me-1"></i> حذف
+                                </button>
+                              </div>
+                            </td>
+                          </tr>
+                        ))
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+
+                {/* Hardcoded Settings Form (Friday Time & Sunday Schedule preserved) */}
+                <hr className="my-4" />
+                <h6 className="mb-3 text-primary fw-bold">
+                  <i className="fas fa-sliders-h me-2"></i> المواعيد الأساسية الحالية للموقع
+                </h6>
+                <form onSubmit={handleSaveSettings}>
+                  <div className="row">
+                    <div className="col-md-12 mb-3">
+                      <label className="form-label fw-bold">ميعاد اجتماع الجمعة</label>
+                      <input
+                        type="text"
+                        className="form-control"
+                        placeholder="مثال: كل يوم جمعة الساعة 7:00 مساءً"
+                        value={fridayTime}
+                        onChange={(e) => setFridayTime(e.target.value)}
+                        required
+                      />
+                    </div>
+                    <div className="col-md-12 mb-3">
+                      <label className="form-label fw-bold">جدول النشاط الصيفي (يوم الأحد)</label>
+                      <div className="form-text text-muted mb-2">
+                        اكتب كل فقرة في سطر منفصل، وافصل بين (الوقت) و (الفقرة) و (التفاصيل) بعلامة الشرطة ( - ).
+                      </div>
+                      <textarea
+                        className="form-control text-end"
+                        rows={6}
+                        dir="rtl"
+                        placeholder={`مثال:\n5 دقائق - صلاة الافتتاح - البدء بالصلاة وطلب بركة الروح القدس.\n15 دقيقة - فقرة تنشيطية - لعب سوا لخلق جو من البهجة.`}
+                        value={sundaySchedule}
+                        onChange={(e) => setSundaySchedule(e.target.value)}
+                      ></textarea>
+                    </div>
+                  </div>
+                  <button
+                    type="submit"
+                    className="btn btn-primary px-5 py-2 fw-bold"
+                    disabled={isSavingSettings}
+                  >
+                    {isSavingSettings ? (
+                      <>
+                        <i className="fas fa-spinner fa-spin me-2"></i> جاري الحفظ...
+                      </>
+                    ) : (
+                      <>
+                        <i className="fas fa-save me-2"></i> حفظ المواعيد الأساسية
+                      </>
+                    )}
+                  </button>
+                </form>
+              </div>
+            </div>
+
+            {/* SECTION 2: Posts & Announcements ("المنشورات والإعلانات الحالية") */}
             <div className="col-md-5 mb-4">
               <div className="admin-card card p-4">
                 <h5 className="mb-4 text-primary fw-bold">
@@ -517,7 +916,6 @@ export default function AdminPage() {
               </div>
             </div>
 
-            {/* List of Posts */}
             <div className="col-md-7 mb-4">
               <div className="admin-card card p-4">
                 <h5 className="mb-4 text-primary fw-bold">
@@ -590,40 +988,121 @@ export default function AdminPage() {
               </div>
             </div>
 
-            {/* Feedbacks Section */}
+            {/* SECTION 3: Upgraded Feedback & Inquiries Management System ("رسائل وأسئلة الشباب (الفيدباك)") */}
             <div className="col-md-12 mb-4">
               <div className="admin-card card p-4">
-                <h5 className="mb-4 text-primary fw-bold">
-                  <i className="fas fa-envelope-open-text me-2"></i> رسائل وأسئلة الشباب (الفيدباك)
-                </h5>
+                <div className="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+                  <h5 className="mb-0 text-primary fw-bold">
+                    <i className="fas fa-envelope-open-text me-2"></i> نظام إدارة رسائل وأسئلة الشباب (الفيدباك)
+                  </h5>
+                  <span className="badge bg-primary fs-6 px-3 py-2">
+                    إجمالي الرسائل: {inquiries.length}
+                  </span>
+                </div>
+
+                {/* Filter Tabs with Live Status Counts */}
+                <div className="d-flex flex-wrap gap-2 mb-4 border-bottom pb-3">
+                  {(['الكل', 'تحت المراجعة', 'جاري التنفيذ', 'تم التنفيذ', 'مرفوض'] as FeedbackFilter[]).map((tab) => {
+                    const isActive = feedbackFilter === tab;
+                    const count = counts[tab];
+                    return (
+                      <button
+                        key={tab}
+                        type="button"
+                        className={`btn btn-sm rounded-pill px-3 py-2 fw-bold d-flex align-items-center gap-2 ${
+                          isActive
+                            ? 'btn-primary shadow-sm'
+                            : 'btn-outline-secondary'
+                        }`}
+                        onClick={() => setFeedbackFilter(tab)}
+                      >
+                        <span>{tab}</span>
+                        <span className={`badge ${isActive ? 'bg-white text-primary' : 'bg-secondary text-white'}`}>
+                          {count}
+                        </span>
+                      </button>
+                    );
+                  })}
+                </div>
+
+                {/* Feedback Table */}
                 <div className="table-responsive">
-                  <table className="table table-bordered table-hover">
+                  <table className="table table-bordered table-hover align-middle">
                     <thead className="table-light">
                       <tr>
-                        <th>الاسم</th>
-                        <th>اقتراح ترنيمة</th>
+                        <th style={{ width: '130px' }}>الاسم</th>
+                        <th style={{ width: '150px' }}>اقتراح ترنيمة / ترفيهي</th>
                         <th>الرسالة / السؤال</th>
+                        <th style={{ width: '140px' }}>الحالة</th>
+                        <th style={{ width: '220px' }}>إدارة الحالة والأوامر</th>
                       </tr>
                     </thead>
                     <tbody>
-                      {inquiries.length === 0 ? (
+                      {filteredInquiries.length === 0 ? (
                         <tr>
-                          <td colSpan={3} className="text-center text-muted py-4">
-                            لا توجد رسائل حالياً.
+                          <td colSpan={5} className="text-center text-muted py-4">
+                            {feedbackFilter === 'الكل'
+                              ? 'لا توجد رسائل حالياً.'
+                              : `لا توجد رسائل بحالة "${feedbackFilter}".`}
                           </td>
                         </tr>
                       ) : (
-                        inquiries.map((f) => (
-                          <tr key={f.id}>
-                            <td>{f.name || 'مجهول'}</td>
-                            <td>{f.hymnRequest || '-'}</td>
-                            <td>
-                              <p className="mb-0" style={{ whiteSpace: 'pre-wrap' }}>
-                                {f.message}
-                              </p>
-                            </td>
-                          </tr>
-                        ))
+                        filteredInquiries.map((f) => {
+                          const currentStatus = getInquiryStatus(f);
+                          const isUpdating = updatingInquiryId === f.id;
+
+                          return (
+                            <tr key={f.id}>
+                              <td className="fw-bold">{f.name || 'مجهول'}</td>
+                              <td className="text-muted">{f.hymnRequest || '-'}</td>
+                              <td>
+                                <p className="mb-0" style={{ whiteSpace: 'pre-wrap', lineHeight: '1.6' }}>
+                                  {f.message}
+                                </p>
+                                {f.createdAt && (
+                                  <small className="text-muted d-block mt-1">
+                                    <i className="far fa-clock me-1"></i>
+                                    {new Date(f.createdAt).toLocaleDateString('ar-EG', {
+                                      year: 'numeric',
+                                      month: 'short',
+                                      day: 'numeric',
+                                      hour: '2-digit',
+                                      minute: '2-digit',
+                                    })}
+                                  </small>
+                                )}
+                              </td>
+                              <td className="text-center">
+                                {getStatusBadge(currentStatus)}
+                              </td>
+                              <td>
+                                <div className="d-flex flex-column gap-2">
+                                  {/* Quick Status Dropdown */}
+                                  <select
+                                    className="form-select form-select-sm fw-bold"
+                                    value={currentStatus}
+                                    disabled={isUpdating}
+                                    onChange={(e) => handleUpdateInquiryStatus(f.id, e.target.value)}
+                                  >
+                                    <option value="تحت المراجعة">تحت المراجعة</option>
+                                    <option value="جاري التنفيذ">جاري التنفيذ</option>
+                                    <option value="تم التنفيذ">تم التنفيذ</option>
+                                    <option value="مرفوض">مرفوض</option>
+                                  </select>
+
+                                  {/* Quick Delete Action */}
+                                  <button
+                                    type="button"
+                                    className="btn btn-outline-danger btn-sm fw-bold w-100"
+                                    onClick={() => setDeletingInquiry(f)}
+                                  >
+                                    <i className="fas fa-trash me-1"></i> حذف نهائي
+                                  </button>
+                                </div>
+                              </td>
+                            </tr>
+                          );
+                        })
                       )}
                     </tbody>
                   </table>
@@ -631,63 +1110,11 @@ export default function AdminPage() {
               </div>
             </div>
 
-            {/* Site Settings Section */}
-            <div className="col-md-12">
-              <div className="admin-card card p-4 border-primary border-top border-3">
-                <h5 className="mb-4 text-primary fw-bold">
-                  <i className="fas fa-sliders-h me-2"></i> إعدادات الموقع الأساسية
-                </h5>
-                <form onSubmit={handleSaveSettings}>
-                  <div className="row">
-                    <div className="col-md-12 mb-3">
-                      <label className="form-label fw-bold">ميعاد اجتماع الجمعة</label>
-                      <input
-                        type="text"
-                        className="form-control"
-                        placeholder="مثال: كل يوم جمعة الساعة 7:00 مساءً"
-                        value={fridayTime}
-                        onChange={(e) => setFridayTime(e.target.value)}
-                        required
-                      />
-                    </div>
-                    <div className="col-md-12 mb-3">
-                      <label className="form-label fw-bold">جدول النشاط الصيفي (يوم الأحد)</label>
-                      <div className="form-text text-muted mb-2">
-                        اكتب كل فقرة في سطر منفصل، وافصل بين (الوقت) و (الفقرة) و (التفاصيل) بعلامة الشرطة ( - ).
-                      </div>
-                      <textarea
-                        className="form-control text-end"
-                        rows={8}
-                        dir="rtl"
-                        placeholder={`مثال:\n5 دقائق - صلاة الافتتاح - البدء بالصلاة وطلب بركة الروح القدس.\n15 دقيقة - فقرة تنشيطية - لعب سوا لخلق جو من البهجة.`}
-                        value={sundaySchedule}
-                        onChange={(e) => setSundaySchedule(e.target.value)}
-                      ></textarea>
-                    </div>
-                  </div>
-                  <button
-                    type="submit"
-                    className="btn btn-primary px-5 py-2 fw-bold"
-                    disabled={isSavingSettings}
-                  >
-                    {isSavingSettings ? (
-                      <>
-                        <i className="fas fa-spinner fa-spin me-2"></i> جاري الحفظ...
-                      </>
-                    ) : (
-                      <>
-                        <i className="fas fa-save me-2"></i> حفظ الإعدادات في الموقع
-                      </>
-                    )}
-                  </button>
-                </form>
-              </div>
-            </div>
           </div>
         )}
       </div>
 
-      {/* Edit Post Modal */}
+      {/* MODAL 1: Edit Post Announcement Modal */}
       {editingPost && (
         <div className="modal fade show d-block" tabIndex={-1} style={{ backgroundColor: 'rgba(0,0,0,0.7)', zIndex: 10050 }}>
           <div className="modal-dialog modal-dialog-centered modal-lg">
@@ -807,6 +1234,246 @@ export default function AdminPage() {
           </div>
         </div>
       )}
+
+      {/* MODAL 2: Add/Edit Dynamic Activity Modal */}
+      {showDynamicModal && (
+        <div className="modal fade show d-block" tabIndex={-1} style={{ backgroundColor: 'rgba(0,0,0,0.7)', zIndex: 10050 }}>
+          <div className="modal-dialog modal-dialog-centered modal-lg">
+            <div className="modal-content">
+              <div className="modal-header">
+                <h5 className="modal-title fw-bold text-primary">
+                  <i className="fas fa-layer-group me-2 text-accent"></i>
+                  {editingDynamicItem ? 'تعديل قسم / نشاط ديناميكي' : '+ إضافة قسم / نشاط جديد'}
+                </h5>
+                <button type="button" className="btn-close" onClick={() => setShowDynamicModal(false)}></button>
+              </div>
+              <form onSubmit={handleSaveDynamicActivity}>
+                <div className="modal-body">
+                  <div className="row g-3">
+                    <div className="col-md-8">
+                      <label className="form-label fw-bold">العنوان الرئيس <span className="text-danger">*</span></label>
+                      <input
+                        type="text"
+                        className="form-control"
+                        placeholder="مثال: مؤتمر الشباب / رحلة العائلات / كورس العقيدة"
+                        value={dynTitle}
+                        onChange={(e) => setDynTitle(e.target.value)}
+                        required
+                      />
+                    </div>
+
+                    <div className="col-md-4">
+                      <label className="form-label fw-bold">النوع / القسم</label>
+                      <select
+                        className="form-select"
+                        value={dynCategory}
+                        onChange={(e) => setDynCategory(e.target.value)}
+                      >
+                        <option value="نشاط الأحد">نشاط الأحد</option>
+                        <option value="اجتماع خاص">اجتماع خاص</option>
+                        <option value="مؤتمر">مؤتمر</option>
+                        <option value="رحلة">رحلة</option>
+                        <option value="نهضة">نهضة</option>
+                        <option value="مسابقة">مسابقة</option>
+                        <option value="كورس">كورس</option>
+                        <option value="تنبيه">تنبيه</option>
+                        <option value="جدول جديد">جدول جديد</option>
+                        <option value="نشاط">نشاط عام</option>
+                      </select>
+                    </div>
+
+                    <div className="col-md-12">
+                      <label className="form-label fw-bold">العنوان الفرعي (اختياري)</label>
+                      <input
+                        type="text"
+                        className="form-control"
+                        placeholder="مثال: تحت رعاية الأنبا... / تفاصيل ومواعيد"
+                        value={dynSubtitle}
+                        onChange={(e) => setDynSubtitle(e.target.value)}
+                      />
+                    </div>
+
+                    <div className="col-md-6">
+                      <label className="form-label fw-bold">التاريخ (اختياري)</label>
+                      <input
+                        type="text"
+                        className="form-control"
+                        placeholder="مثال: الجمعة 25 سبتمبر 2026"
+                        value={dynDate}
+                        onChange={(e) => setDynDate(e.target.value)}
+                      />
+                    </div>
+
+                    <div className="col-md-6">
+                      <label className="form-label fw-bold">الوقت / التوقيت (اختياري)</label>
+                      <input
+                        type="text"
+                        className="form-control"
+                        placeholder="مثال: من 6 مساءً إلى 9 مساءً"
+                        value={dynTime}
+                        onChange={(e) => setDynTime(e.target.value)}
+                      />
+                    </div>
+
+                    <div className="col-md-12">
+                      <label className="form-label fw-bold">المحتوى / التفاصيل</label>
+                      <textarea
+                        className="form-control"
+                        rows={4}
+                        placeholder="اكتب تفاصيل وشروط وساعات هذا النشاط أو البرنامج..."
+                        value={dynContent}
+                        onChange={(e) => setDynContent(e.target.value)}
+                      ></textarea>
+                    </div>
+
+                    <div className="col-md-6">
+                      <label className="form-label fw-bold">ترتيب العرض</label>
+                      <input
+                        type="number"
+                        className="form-control"
+                        value={dynDisplayOrder}
+                        onChange={(e) => setDynDisplayOrder(Number(e.target.value))}
+                      />
+                      <small className="text-muted">الأرقام الأقل تظهر أولاً على الموقع.</small>
+                    </div>
+
+                    <div className="col-md-6 d-flex align-items-center">
+                      <div className="form-check form-switch mt-3">
+                        <input
+                          className="form-check-input"
+                          type="checkbox"
+                          id="dynActiveSwitch"
+                          checked={dynIsActive}
+                          onChange={(e) => setDynIsActive(e.target.checked)}
+                        />
+                        <label className="form-check-input-label fw-bold me-2" htmlFor="dynActiveSwitch">
+                          تفعيل وعرض على الموقع الرسمي
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="modal-footer">
+                  <button type="button" className="btn btn-secondary" onClick={() => setShowDynamicModal(false)}>
+                    إلغاء
+                  </button>
+                  <button type="submit" className="btn btn-success fw-bold px-4" disabled={isSavingDynamicItem}>
+                    {isSavingDynamicItem ? (
+                      <>
+                        <i className="fas fa-spinner fa-spin me-2"></i> جاري الحفظ...
+                      </>
+                    ) : (
+                      <>
+                        <i className="fas fa-save me-2"></i> حفظ النشاط
+                      </>
+                    )}
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* MODAL 3: Deletion Confirmation Dialog for Feedback */}
+      {deletingInquiry && (
+        <div className="modal fade show d-block" tabIndex={-1} style={{ backgroundColor: 'rgba(0,0,0,0.7)', zIndex: 10060 }}>
+          <div className="modal-dialog modal-dialog-centered">
+            <div className="modal-content">
+              <div className="modal-header bg-danger text-white">
+                <h5 className="modal-title fw-bold">
+                  <i className="fas fa-exclamation-triangle me-2"></i> تأكيد حذف الاقتراح
+                </h5>
+                <button type="button" className="btn-close btn-close-white" onClick={() => setDeletingInquiry(null)}></button>
+              </div>
+              <div className="modal-body text-center py-4">
+                <p className="fs-5 fw-bold text-dark mb-2">
+                  هل أنت متأكد من حذف هذا الاقتراح؟ لا يمكن التراجع عن هذا الإجراء.
+                </p>
+                <div className="p-3 bg-light rounded border text-start my-3">
+                  <div className="fw-bold text-primary mb-1">صاحب الرسالة: {deletingInquiry.name || 'مجهول'}</div>
+                  <div className="small text-muted">{deletingInquiry.message}</div>
+                </div>
+              </div>
+              <div className="modal-footer justify-content-center">
+                <button
+                  type="button"
+                  className="btn btn-secondary px-4"
+                  onClick={() => setDeletingInquiry(null)}
+                  disabled={isDeletingInquiry}
+                >
+                  إلغاء
+                </button>
+                <button
+                  type="button"
+                  className="btn btn-danger fw-bold px-4"
+                  onClick={handleDeleteInquiryConfirm}
+                  disabled={isDeletingInquiry}
+                >
+                  {isDeletingInquiry ? (
+                    <>
+                      <i className="fas fa-spinner fa-spin me-1"></i> جاري الحذف...
+                    </>
+                  ) : (
+                    'تأكيد الحذف النهائي'
+                  )}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* MODAL 4: Deletion Confirmation Dialog for Dynamic Activity */}
+      {deletingDynamicItem && (
+        <div className="modal fade show d-block" tabIndex={-1} style={{ backgroundColor: 'rgba(0,0,0,0.7)', zIndex: 10060 }}>
+          <div className="modal-dialog modal-dialog-centered">
+            <div className="modal-content">
+              <div className="modal-header bg-danger text-white">
+                <h5 className="modal-title fw-bold">
+                  <i className="fas fa-exclamation-triangle me-2"></i> تأكيد حذف النشاط
+                </h5>
+                <button type="button" className="btn-close btn-close-white" onClick={() => setDeletingDynamicItem(null)}></button>
+              </div>
+              <div className="modal-body text-center py-4">
+                <p className="fs-5 fw-bold text-dark mb-2">
+                  هل أنت متأكد من حذف هذا النشاط؟ لا يمكن التراجع عن هذا الإجراء.
+                </p>
+                <div className="p-3 bg-light rounded border text-start my-3">
+                  <div className="fw-bold text-primary mb-1">{deletingDynamicItem.title}</div>
+                  <div className="small text-muted">{deletingDynamicItem.content}</div>
+                </div>
+              </div>
+              <div className="modal-footer justify-content-center">
+                <button
+                  type="button"
+                  className="btn btn-secondary px-4"
+                  onClick={() => setDeletingDynamicItem(null)}
+                  disabled={isDeletingDynamicItem}
+                >
+                  إلغاء
+                </button>
+                <button
+                  type="button"
+                  className="btn btn-danger fw-bold px-4"
+                  onClick={handleDeleteDynamicConfirm}
+                  disabled={isDeletingDynamicItem}
+                >
+                  {isDeletingDynamicItem ? (
+                    <>
+                      <i className="fas fa-spinner fa-spin me-1"></i> جاري الحذف...
+                    </>
+                  ) : (
+                    'تأكيد الحذف النهائي'
+                  )}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
     </div>
   );
 }
