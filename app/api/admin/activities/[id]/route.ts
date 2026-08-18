@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { supabase } from '@/lib/supabase';
+import { supabaseAdmin } from '@/lib/supabaseAdmin';
+import { supabase as supabasePublic } from '@/lib/supabase';
 import { getAuthUser } from '@/lib/auth';
+
+const client = supabaseAdmin || supabasePublic;
 
 export async function PUT(
   req: NextRequest,
@@ -27,22 +30,36 @@ export async function PUT(
     if (is_active !== undefined) updateData.is_active = Boolean(is_active);
     if (display_order !== undefined) updateData.display_order = Number(display_order);
 
-    const { data, error } = await supabase
+    const { data, error } = await client
       .from('dynamic_activities')
       .update(updateData)
       .eq('id', Number(id))
       .select();
 
-    if (error) throw error;
+    if (error) {
+      console.error('[Admin Dynamic Activity PUT Error]:', {
+        message: error.message,
+        code: error.code,
+        details: error.details,
+      });
+      return NextResponse.json(
+        {
+          error: 'فشل في تحديث بيانات النشاط',
+          details: error.message,
+          code: error.code,
+        },
+        { status: 500 }
+      );
+    }
 
     return NextResponse.json({
       message: 'تم تحديث البيانات بنجاح',
       item: data[0],
     });
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error updating dynamic activity:', error);
     return NextResponse.json(
-      { error: 'فشل في تحديث بيانات النشاط' },
+      { error: 'فشل في تحديث بيانات النشاط', details: error?.message },
       { status: 500 }
     );
   }
@@ -59,18 +76,32 @@ export async function DELETE(
 
   try {
     const { id } = await params;
-    const { error } = await supabase
+    const { error } = await client
       .from('dynamic_activities')
       .delete()
       .eq('id', Number(id));
 
-    if (error) throw error;
+    if (error) {
+      console.error('[Admin Dynamic Activity DELETE Error]:', {
+        message: error.message,
+        code: error.code,
+        details: error.details,
+      });
+      return NextResponse.json(
+        {
+          error: 'فشل في حذف النشاط',
+          details: error.message,
+          code: error.code,
+        },
+        { status: 500 }
+      );
+    }
 
     return NextResponse.json({ message: 'تم حذف النشاط بنجاح' });
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error deleting dynamic activity:', error);
     return NextResponse.json(
-      { error: 'فشل في حذف النشاط' },
+      { error: 'فشل في حذف النشاط', details: error?.message },
       { status: 500 }
     );
   }

@@ -11,6 +11,12 @@ import {
 
 type FeedbackFilter = 'الكل' | 'تحت المراجعة' | 'جاري التنفيذ' | 'تم التنفيذ' | 'مرفوض';
 
+interface SupabaseErrorInfo {
+  message: string;
+  details?: string;
+  code?: string;
+}
+
 export default function AdminPage() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [email, setEmail] = useState('');
@@ -27,6 +33,7 @@ export default function AdminPage() {
   const [deletingInquiry, setDeletingInquiry] = useState<Inquiry | null>(null);
   const [isDeletingInquiry, setIsDeletingInquiry] = useState(false);
   const [updatingInquiryId, setUpdatingInquiryId] = useState<number | null>(null);
+  const [inquiryError, setInquiryError] = useState<SupabaseErrorInfo | null>(null);
 
   // Settings state (Friday & Sunday)
   const [fridayTime, setFridayTime] = useState('');
@@ -40,6 +47,8 @@ export default function AdminPage() {
   const [deletingDynamicItem, setDeletingDynamicItem] = useState<DynamicActivity | null>(null);
   const [isDeletingDynamicItem, setIsDeletingDynamicItem] = useState(false);
   const [isSavingDynamicItem, setIsSavingDynamicItem] = useState(false);
+  const [dynError, setDynError] = useState<SupabaseErrorInfo | null>(null);
+  const [tableMissingWarning, setTableMissingWarning] = useState(false);
 
   // Dynamic Activity Form state
   const [dynTitle, setDynTitle] = useState('');
@@ -124,7 +133,16 @@ export default function AdminPage() {
       const res = await fetch('/api/admin/activities');
       if (res.ok) {
         const data = await res.json();
-        setDynamicActivities(data);
+        if (Array.isArray(data)) {
+          setDynamicActivities(data);
+          setTableMissingWarning(false);
+        }
+      } else {
+        const errorData = await res.json();
+        console.warn('Admin activities GET non-ok response:', errorData);
+        if (errorData.code === '42P01' || (errorData.error && errorData.error.includes('dynamic_activities'))) {
+          setTableMissingWarning(true);
+        }
       }
     } catch (err) {
       console.error('Failed to load dynamic activities', err);
@@ -350,6 +368,7 @@ export default function AdminPage() {
   // --- Feedback / Inquiry Handlers ---
   const handleUpdateInquiryStatus = async (id: number, newStatus: string) => {
     setUpdatingInquiryId(id);
+    setInquiryError(null);
     try {
       const res = await fetch(`/api/admin/inquiries/${id}`, {
         method: 'PATCH',
@@ -357,19 +376,25 @@ export default function AdminPage() {
         body: JSON.stringify({ status: newStatus }),
       });
 
+      const data = await res.json();
+
       if (res.ok) {
-        const data = await res.json();
         setInquiries((prev) =>
           prev.map((item) =>
             item.id === id ? { ...item, status: data.inquiry?.status || newStatus } : item
           )
         );
       } else {
-        const data = await res.json();
-        alert(data.error || 'حدث خطأ أثناء تحديث حالة الرسالة');
+        console.error('[Supabase Inquiry PATCH Error Details]:', data);
+        setInquiryError({
+          message: data.error || 'حدث خطأ أثناء تحديث حالة الرسالة',
+          details: data.details,
+          code: data.code,
+        });
       }
-    } catch {
-      alert('حدث خطأ في الاتصال بالسيرفر');
+    } catch (err: any) {
+      console.error('[Inquiry Status Catch Error]:', err);
+      setInquiryError({ message: 'حدث خطأ في الاتصال بالسيرفر' });
     } finally {
       setUpdatingInquiryId(null);
     }
@@ -378,21 +403,29 @@ export default function AdminPage() {
   const handleDeleteInquiryConfirm = async () => {
     if (!deletingInquiry) return;
     setIsDeletingInquiry(true);
+    setInquiryError(null);
 
     try {
       const res = await fetch(`/api/admin/inquiries/${deletingInquiry.id}`, {
         method: 'DELETE',
       });
 
+      const data = await res.json();
+
       if (res.ok) {
         setInquiries((prev) => prev.filter((item) => item.id !== deletingInquiry.id));
         setDeletingInquiry(null);
       } else {
-        const data = await res.json();
-        alert(data.error || 'حدث خطأ أثناء حذف الرسالة');
+        console.error('[Supabase Inquiry DELETE Error Details]:', data);
+        setInquiryError({
+          message: data.error || 'حدث خطأ أثناء حذف الرسالة',
+          details: data.details,
+          code: data.code,
+        });
       }
-    } catch {
-      alert('حدث خطأ في الاتصال بالسيرفر');
+    } catch (err: any) {
+      console.error('[Delete Inquiry Catch Error]:', err);
+      setInquiryError({ message: 'حدث خطأ في الاتصال بالسيرفر' });
     } finally {
       setIsDeletingInquiry(false);
     }
@@ -436,6 +469,7 @@ export default function AdminPage() {
     setDynTime('');
     setDynIsActive(true);
     setDynDisplayOrder(0);
+    setDynError(null);
     setShowDynamicModal(true);
   };
 
@@ -449,16 +483,18 @@ export default function AdminPage() {
     setDynTime(item.time || '');
     setDynIsActive(item.is_active ?? true);
     setDynDisplayOrder(item.display_order || 0);
+    setDynError(null);
     setShowDynamicModal(true);
   };
 
   const handleSaveDynamicActivity = async (e: FormEvent) => {
     e.preventDefault();
     if (!dynTitle.trim()) {
-      alert('يرجى إدخال عنوان القسم أو النشاط');
+      setDynError({ message: 'يرجى إدخال عنوان القسم أو النشاط' });
       return;
     }
 
+    setDynError(null);
     setIsSavingDynamicItem(true);
     try {
       const payload = {
@@ -492,13 +528,26 @@ export default function AdminPage() {
       if (res.ok) {
         setShowDynamicModal(false);
         setEditingDynamicItem(null);
+        setDynError(null);
+        setTableMissingWarning(false);
         loadDynamicActivities();
-        alert(editingDynamicItem ? 'تم تحديث النشاط بنجاح!' : 'تم إضافة النشاط الجديد بنجاح!');
       } else {
-        alert(data.error || 'حدث خطأ أثناء حفظ النشاط');
+        console.error('[Supabase Dynamic Activity Save Error Details]:', {
+          error: data.error,
+          code: data.code,
+          details: data.details,
+          hint: data.hint,
+        });
+
+        setDynError({
+          message: data.error || 'حدث خطأ أثناء حفظ النشاط',
+          details: data.details,
+          code: data.code,
+        });
       }
-    } catch {
-      alert('حدث خطأ في الاتصال بالسيرفر');
+    } catch (err: any) {
+      console.error('[Save Dynamic Activity Catch Error]:', err);
+      setDynError({ message: 'حدث خطأ في الاتصال بالسيرفر' });
     } finally {
       setIsSavingDynamicItem(false);
     }
@@ -517,7 +566,9 @@ export default function AdminPage() {
           prev.map((act) => (act.id === item.id ? { ...act, is_active: !act.is_active } : act))
         );
       } else {
-        alert('فشل تغيير حالة التفعيل');
+        const errorData = await res.json();
+        console.error('[Toggle Active Error Details]:', errorData);
+        alert(errorData.error || 'فشل تغيير حالة التفعيل');
       }
     } catch {
       alert('حدث خطأ في الاتصال بالسيرفر');
@@ -540,6 +591,7 @@ export default function AdminPage() {
         setDeletingDynamicItem(null);
       } else {
         const data = await res.json();
+        console.error('[Delete Activity Error Details]:', data);
         alert(data.error || 'حدث خطأ أثناء حذف النشاط');
       }
     } catch {
@@ -681,6 +733,19 @@ export default function AdminPage() {
                     <i className="fas fa-plus-circle me-1"></i> + إضافة قسم / نشاط جديد
                   </button>
                 </div>
+
+                {/* Database Schema Warning Banner */}
+                {tableMissingWarning && (
+                  <div className="alert alert-warning border-warning d-flex align-items-center gap-3 mb-4 p-3 rounded-3" role="alert">
+                    <i className="fas fa-database fs-3 text-warning"></i>
+                    <div>
+                      <h6 className="fw-bold mb-1">ملاحظة هامة لإعداد قاعدة البيانات (Supabase SQL Migration Required)</h6>
+                      <p className="mb-0 small text-dark">
+                        يرجى تنفيذ ملف Migration المسمى <code>supabase_migration.sql</code> الموجود في المجلد الرئيسي للمشروع في <strong>Supabase SQL Editor</strong> لإنشاء جدول <code>dynamic_activities</code> وتحديث جدول الرسائل.
+                      </p>
+                    </div>
+                  </div>
+                )}
 
                 {/* List of Dynamic Activities */}
                 <div className="table-responsive">
@@ -1000,6 +1065,13 @@ export default function AdminPage() {
                   </span>
                 </div>
 
+                {inquiryError && (
+                  <div className="alert alert-danger mb-3" role="alert">
+                    <i className="fas fa-exclamation-circle me-2"></i> {inquiryError.message}
+                    {inquiryError.details && <div className="small text-muted mt-1">{inquiryError.details}</div>}
+                  </div>
+                )}
+
                 {/* Filter Tabs with Live Status Counts */}
                 <div className="d-flex flex-wrap gap-2 mb-4 border-bottom pb-3">
                   {(['الكل', 'تحت المراجعة', 'جاري التنفيذ', 'تم التنفيذ', 'مرفوض'] as FeedbackFilter[]).map((tab) => {
@@ -1249,6 +1321,26 @@ export default function AdminPage() {
               </div>
               <form onSubmit={handleSaveDynamicActivity}>
                 <div className="modal-body">
+
+                  {/* Rich Error Alert Component */}
+                  {dynError && (
+                    <div className="alert alert-danger p-3 mb-4 rounded-3 border-danger" role="alert">
+                      <div className="fw-bold fs-6 mb-1">
+                        <i className="fas fa-exclamation-triangle me-2"></i> {dynError.message}
+                      </div>
+                      {dynError.details && (
+                        <div className="small text-muted border-top border-danger pt-2 mt-2 font-monospace text-start dir-ltr">
+                          Supabase Error Details: {dynError.details} {dynError.code ? `(Code: ${dynError.code})` : ''}
+                        </div>
+                      )}
+                      {(dynError.code === '42P01' || dynError.message.includes('supabase_migration.sql')) && (
+                        <div className="mt-2 p-2 bg-dark text-white rounded-3 small dir-ltr text-start font-monospace">
+                          <strong>Fix Action Required:</strong> Run <code>supabase_migration.sql</code> in Supabase SQL Editor.
+                        </div>
+                      )}
+                    </div>
+                  )}
+
                   <div className="row g-3">
                     <div className="col-md-8">
                       <label className="form-label fw-bold">العنوان الرئيس <span className="text-danger">*</span></label>
@@ -1413,7 +1505,7 @@ export default function AdminPage() {
                 >
                   {isDeletingInquiry ? (
                     <>
-                      <i className="fas fa-spinner fa-spin me-1"></i> جاري الحذف...
+                      <i className="fas fa-spinner fa-spin me-1"></i> جاري الحفظ...
                     </>
                   ) : (
                     'تأكيد الحذف النهائي'
