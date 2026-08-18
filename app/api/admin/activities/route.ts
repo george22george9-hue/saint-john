@@ -6,6 +6,10 @@ import { getAuthUser } from '@/lib/auth';
 // Use supabaseAdmin if service role is configured, otherwise fallback to standard client
 const client = supabaseAdmin || supabasePublic;
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
+
 export async function GET(req: NextRequest) {
   const user = await getAuthUser(req);
   if (!user) {

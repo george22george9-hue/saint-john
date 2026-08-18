@@ -9,7 +9,6 @@ import Hero from '@/components/Hero';
 import About from '@/components/About';
 import Pastors from '@/components/Pastors';
 import Programs from '@/components/Programs';
-import DynamicActivities from '@/components/DynamicActivities';
 import News from '@/components/News';
 import WahshatnaBanner from '@/components/WahshatnaBanner';
 import Footer from '@/components/Footer';
@@ -37,10 +36,10 @@ export default function Home() {
         <About />
         <Pastors />
         <Programs />
-        <DynamicActivities />
         <News />
         <WahshatnaBanner />
       </main>
+
 
       <Footer />
 
