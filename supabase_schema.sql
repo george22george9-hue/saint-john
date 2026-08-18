@@ -21,21 +21,36 @@ CREATE TABLE inquiries (
     name TEXT,
     "hymnRequest" TEXT,
     message TEXT NOT NULL,
+    status TEXT DEFAULT 'تحت المراجعة',
     "createdAt" TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now())
 );
 
--- 4. Table for Website Settings
+-- 4. Table for Dynamic Site Activities & Sections
+CREATE TABLE dynamic_activities (
+    id SERIAL PRIMARY KEY,
+    title TEXT NOT NULL,
+    subtitle TEXT,
+    category TEXT DEFAULT 'نشاط',
+    content TEXT,
+    date TEXT,
+    time TEXT,
+    is_active BOOLEAN DEFAULT true,
+    display_order INTEGER DEFAULT 0,
+    "createdAt" TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now())
+);
+
+-- 5. Table for Website Settings
 CREATE TABLE settings (
     id SERIAL PRIMARY KEY,
     key TEXT UNIQUE NOT NULL,
     value TEXT NOT NULL
 );
 
--- 5. Seed Default Admin User (Password is 'admin123' encrypted with bcrypt)
+-- 6. Seed Default Admin User (Password is 'admin123' encrypted with bcrypt)
 INSERT INTO users (email, "passwordHash", role) 
 VALUES ('admin@example.com', '$2a$10$tZ2.Q8nZ6.U1w1L1oX3L2eM9z1H1I8T6.Y7Y2z/rU7qGqR3wY1r1O', 'admin');
 
--- 6. Seed Default Settings
+-- 7. Seed Default Settings
 INSERT INTO settings (key, value) VALUES 
 ('friday_time', 'كل يوم جمعة الساعة 7:00 مساءً'),
 ('sunday_schedule', '5 دقائق - صلاة الافتتاح - البدء بالصلاة وطلب بركة الروح القدس.
@@ -45,3 +60,4 @@ INSERT INTO settings (key, value) VALUES
 15 دقيقة - استراحة - ضيافة.
 30 دقيقة - محاضرة مهارات - تطوير المهارات الشخصية.
 15 دقيقة - فقرة ترفيهية - ألعاب ختامية.');
+
