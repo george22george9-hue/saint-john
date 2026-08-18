@@ -130,8 +130,9 @@ export default function AdminPage() {
 
   const loadDynamicActivities = async () => {
     try {
-      const res = await fetch('/api/admin/activities');
+      const res = await fetch('/api/admin/activities', { cache: 'no-store' });
       if (res.ok) {
+
         const data = await res.json();
         if (Array.isArray(data)) {
           setDynamicActivities(data);
