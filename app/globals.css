@@ -1418,3 +1418,155 @@ html.dark .modal-content .btn-secondary {
 html.dark .modal-content .btn-secondary:hover {
   background-color: #475569 !important;
 }
+
+/* --- PAIZO Section Custom Utilities & Animations --- */
+.text-gradient-gold {
+  background: linear-gradient(135deg, #f5d470 0%, #d4af37 50%, #fcd34d 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Strict Removal of All Text Underlines Across PAIZO Links and Typography */
+.dir-rtl a,
+.dir-rtl a:hover,
+.dir-rtl a:focus,
+.dir-rtl a:active,
+.dir-rtl a:visited,
+.paizo-game-card,
+.paizo-game-card *,
+.paizo-stagger-item,
+.paizo-stagger-item *,
+.paizo-btn-cta,
+.paizo-btn-cta * {
+  text-decoration: none !important;
+}
+
+@keyframes paizoStaggerUp {
+  0% {
+    opacity: 0;
+    transform: translateY(70px) scale(0.96);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.paizo-stagger-item {
+  animation: paizoStaggerUp 0.75s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  opacity: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .paizo-stagger-item {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
+
+/* Premium High-Contrast PAIZO Game Details Button CTA */
+.paizo-btn-cta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  width: 100%;
+  min-height: 46px;
+  padding: 0.75rem 1.25rem;
+  border-radius: 0.875rem;
+  background: linear-gradient(135deg, #d4af37 0%, #fcd34d 50%, #d4af37 100%);
+  color: #070e24 !important;
+  font-weight: 900;
+  font-size: 0.95rem;
+  border: 1px solid rgba(253, 224, 71, 0.6);
+  box-shadow: 0 4px 15px rgba(212, 175, 55, 0.35);
+  transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+  text-decoration: none !important;
+  cursor: pointer;
+}
+
+.paizo-btn-cta:hover {
+  background: linear-gradient(135deg, #fcd34d 0%, #fef08a 50%, #fcd34d 100%);
+  color: #000000 !important;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(212, 175, 55, 0.6);
+  text-decoration: none !important;
+}
+
+.paizo-btn-cta .cta-arrow {
+  transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.paizo-btn-cta:hover .cta-arrow {
+  transform: translateX(-4px);
+}
+
+.bg-gradient-gold,
+.btn-gradient-gold {
+  background: linear-gradient(135deg, #d4af37 0%, #fcd34d 50%, #d4af37 100%) !important;
+  color: #070e24 !important;
+  font-weight: 900 !important;
+  text-decoration: none !important;
+}
+
+.bg-gradient-gold:hover,
+.btn-gradient-gold:hover {
+  background: linear-gradient(135deg, #fcd34d 0%, #fef08a 50%, #fcd34d 100%) !important;
+  color: #000000 !important;
+  text-decoration: none !important;
+}
+
+/* --- Dedicated High-Contrast WhatsApp CTA Button --- */
+.paizo-whatsapp-btn,
+a.paizo-whatsapp-btn,
+button.paizo-whatsapp-btn {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 0.75rem !important;
+  min-height: 52px !important;
+  padding: 0.875rem 1.75rem !important;
+  border-radius: 0.875rem !important;
+  background: linear-gradient(135deg, #25D366 0%, #128C7E 100%) !important;
+  color: #ffffff !important;
+  font-weight: 900 !important;
+  font-size: 1.05rem !important;
+  border: 1px solid rgba(255, 255, 255, 0.3) !important;
+  box-shadow: 0 4px 20px rgba(37, 211, 102, 0.45) !important;
+  transition: all 0.2s cubic-bezier(0.22, 1, 0.36, 1) !important;
+  text-decoration: none !important;
+  cursor: pointer !important;
+  opacity: 1 !important;
+  filter: none !important;
+  width: auto !important;
+}
+
+.paizo-whatsapp-btn *,
+.paizo-whatsapp-btn i,
+.paizo-whatsapp-btn span {
+  color: #ffffff !important;
+  opacity: 1 !important;
+  text-decoration: none !important;
+}
+
+.paizo-whatsapp-btn:hover,
+a.paizo-whatsapp-btn:hover,
+button.paizo-whatsapp-btn:hover {
+  background: linear-gradient(135deg, #34e075 0%, #16a090 100%) !important;
+  color: #ffffff !important;
+  transform: translateY(-2px) scale(1.01) !important;
+  box-shadow: 0 8px 30px rgba(37, 211, 102, 0.65) !important;
+  text-decoration: none !important;
+}
+
+.paizo-whatsapp-btn:active,
+a.paizo-whatsapp-btn:active,
+button.paizo-whatsapp-btn:active {
+  transform: scale(0.98) !important;
+}
+
+
+
+
+
