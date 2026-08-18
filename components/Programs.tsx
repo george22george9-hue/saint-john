@@ -1,44 +1,29 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Settings, DynamicActivity } from '@/types';
-import { formatTextWithLinks } from '@/lib/formatTextWithLinks';
+import { Settings } from '@/types';
 
 interface ProgramsProps {
   initialSettings?: Settings;
 }
 
 export default function Programs({ initialSettings }: ProgramsProps) {
-  const [activeTab, setActiveTab] = useState<'friday' | 'sunday' | 'dynamic'>('friday');
+  const [activeTab, setActiveTab] = useState<'friday' | 'sunday'>('friday');
   const [settings, setSettings] = useState<Settings>(initialSettings || {});
-  const [dynamicActivities, setDynamicActivities] = useState<DynamicActivity[]>([]);
   const [loading, setLoading] = useState(!initialSettings);
 
   useEffect(() => {
-    // Fetch settings
-    if (!initialSettings || Object.keys(initialSettings).length === 0) {
-      fetch('/api/settings')
-        .then((res) => res.json())
-        .then((data) => {
-          setSettings(data);
-          setLoading(false);
-        })
-        .catch((err) => {
-          console.error('Error fetching settings:', err);
-          setLoading(false);
-        });
-    }
+    if (initialSettings && Object.keys(initialSettings).length > 0) return;
 
-    // Fetch dynamic active activities
-    fetch('/api/activities')
+    fetch('/api/settings')
       .then((res) => res.json())
       .then((data) => {
-        if (Array.isArray(data)) {
-          setDynamicActivities(data);
-        }
+        setSettings(data);
+        setLoading(false);
       })
       .catch((err) => {
-        console.error('Error fetching dynamic activities:', err);
+        console.error('Error fetching settings:', err);
+        setLoading(false);
       });
   }, [initialSettings]);
 
@@ -66,7 +51,8 @@ export default function Programs({ initialSettings }: ProgramsProps) {
                     type="button"
                     onClick={() => setActiveTab('friday')}
                   >
-                    <i className="fas fa-cross me-2 text-accent"></i> اجتماع يوم الجمعة
+                    <i className="fas fa-cross me-2 text-accent"></i> اجتماع يوم
+                    الجمعة
                   </button>
                 </li>
                 <li className="nav-item" role="presentation">
@@ -75,20 +61,10 @@ export default function Programs({ initialSettings }: ProgramsProps) {
                     type="button"
                     onClick={() => setActiveTab('sunday')}
                   >
-                    <i className="fas fa-sun me-2 text-accent"></i> النشاط الصيفي (الأحد)
+                    <i className="fas fa-sun me-2 text-accent"></i> النشاط الصيفي
+                    (الأحد)
                   </button>
                 </li>
-                {dynamicActivities.length > 0 && (
-                  <li className="nav-item" role="presentation">
-                    <button
-                      className={`nav-link ${activeTab === 'dynamic' ? 'active' : ''}`}
-                      type="button"
-                      onClick={() => setActiveTab('dynamic')}
-                    >
-                      <i className="fas fa-star me-2 text-accent"></i> الأنشطة والفعاليات الخاصة ({dynamicActivities.length})
-                    </button>
-                  </li>
-                )}
               </ul>
 
               {/* Tabs Content */}
@@ -236,50 +212,6 @@ export default function Programs({ initialSettings }: ProgramsProps) {
                     </div>
                   </div>
                 )}
-
-                {/* Dynamic Activities Tab */}
-                {activeTab === 'dynamic' && (
-                  <div className="tab-pane fade show active" role="tabpanel">
-                    <div className="text-center mb-4">
-                      <h4 className="text-primary fw-bold">الأنشطة والفعاليات الخاصة القادمة</h4>
-                      <p className="text-muted dark:text-gray-300">
-                        تابع أحدث الرحلات والمؤتمرات والكورسات والاجتماعات الخاصة
-                      </p>
-                    </div>
-                    <div className="row g-4">
-                      {dynamicActivities.map((act) => (
-                        <div key={act.id} className="col-md-6">
-                          <div className="card h-100 p-4 border-0 shadow-sm rounded-4" style={{ backgroundColor: 'var(--bg-surface)', border: 'var(--glass-border)' }}>
-                            <div className="d-flex justify-content-between align-items-start mb-2">
-                              <span className="badge bg-accent text-dark fw-bold px-3 py-2 rounded-pill">
-                                {act.category || 'نشاط'}
-                              </span>
-                              {act.date && (
-                                <span className="text-muted small">
-                                  <i className="far fa-calendar-alt me-1"></i> {act.date}
-                                </span>
-                              )}
-                            </div>
-                            <h5 className="fw-bold text-primary dark:text-white mt-2 mb-1">{act.title}</h5>
-                            {act.subtitle && (
-                              <h6 className="text-accent small fw-bold mb-3">{act.subtitle}</h6>
-                            )}
-                            {act.time && (
-                              <div className="small text-muted mb-2">
-                                <i className="far fa-clock me-1"></i> {act.time}
-                              </div>
-                            )}
-                            {act.content && (
-                              <p className="text-muted dark:text-gray-300 mb-0" style={{ whiteSpace: 'pre-wrap', lineHeight: '1.7' }}>
-                                {formatTextWithLinks(act.content)}
-                              </p>
-                            )}
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
               </div>
             </div>
           </div>
@@ -288,4 +220,3 @@ export default function Programs({ initialSettings }: ProgramsProps) {
     </section>
   );
 }
-
