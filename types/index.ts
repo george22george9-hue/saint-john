@@ -20,6 +20,20 @@ export interface Inquiry {
   name: string | null;
   hymnRequest: string | null;
   message: string;
+  status?: string | null;
+  createdAt?: string;
+}
+
+export interface DynamicActivity {
+  id: number;
+  title: string;
+  subtitle?: string | null;
+  category?: string | null;
+  content?: string | null;
+  date?: string | null;
+  time?: string | null;
+  is_active: boolean;
+  display_order: number;
   createdAt?: string;
 }
 
@@ -28,3 +42,4 @@ export interface Settings {
   sunday_schedule?: string;
   [key: string]: string | undefined;
 }
+
