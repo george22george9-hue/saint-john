@@ -71,6 +71,11 @@ export default function Navbar() {
                 </a>
               </li>
               <li className="nav-item">
+                <Link className="nav-link fw-bold text-accent hover-magnet d-inline-flex align-items-center gap-1" href="/paizo">
+                  <span className="badge bg-amber-500 text-dark me-1 font-mono text-xs">NEW</span> PAIZO
+                </Link>
+              </li>
+              <li className="nav-item">
                 <a
                   className="nav-link text-danger fw-bold hover-magnet"
                   href="https://eftqad.vercel.app/"
@@ -160,6 +165,9 @@ export default function Navbar() {
           <a className="mobile-drawer-link" href="#news" onClick={closeMenu}>
             <i className="fas fa-newspaper me-2 text-accent fs-6"></i> أحدث الفعاليات
           </a>
+          <Link className="mobile-drawer-link text-accent fw-bold" href="/paizo" onClick={closeMenu}>
+            <i className="fas fa-star me-2 text-amber-400 fs-6"></i> PAIZO (ألعاب ودراسات)
+          </Link>
           <a
             className="mobile-drawer-link text-danger"
             href="https://eftqad.vercel.app/"

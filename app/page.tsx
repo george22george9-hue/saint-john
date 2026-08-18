@@ -10,6 +10,7 @@ import About from '@/components/About';
 import Pastors from '@/components/Pastors';
 import Programs from '@/components/Programs';
 import News from '@/components/News';
+import PaizoPromoCard from '@/components/paizo/PaizoPromoCard';
 import WahshatnaBanner from '@/components/WahshatnaBanner';
 import Footer from '@/components/Footer';
 
@@ -36,6 +37,7 @@ export default function Home() {
         <About />
         <Pastors />
         <Programs />
+        <PaizoPromoCard />
         <News />
         <WahshatnaBanner />
       </main>

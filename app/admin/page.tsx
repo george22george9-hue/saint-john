@@ -4,6 +4,7 @@ import { useState, useEffect, FormEvent, ChangeEvent } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Announcement, Inquiry, DynamicActivity } from '@/types';
+import { PaizoDesignRequest } from '@/lib/paizoData';
 import {
   validateImageFile,
   compressAndOptimizeImage,
@@ -34,6 +35,10 @@ export default function AdminPage() {
   const [isDeletingInquiry, setIsDeletingInquiry] = useState(false);
   const [updatingInquiryId, setUpdatingInquiryId] = useState<number | null>(null);
   const [inquiryError, setInquiryError] = useState<SupabaseErrorInfo | null>(null);
+
+  // PAIZO Design Requests state
+  const [paizoRequests, setPaizoRequests] = useState<PaizoDesignRequest[]>([]);
+  const [updatingPaizoId, setUpdatingPaizoId] = useState<number | null>(null);
 
   // Settings state (Friday & Sunday)
   const [fridayTime, setFridayTime] = useState('');
@@ -95,11 +100,64 @@ export default function AdminPage() {
         loadActivities();
         loadSettings();
         loadDynamicActivities();
+        loadPaizoRequests();
       } else {
         setIsLoggedIn(false);
       }
     } catch {
       setIsLoggedIn(false);
+    }
+  };
+
+  const loadPaizoRequests = async () => {
+    try {
+      const res = await fetch('/api/paizo/requests', { cache: 'no-store' });
+      if (res.ok) {
+        const data = await res.json();
+        if (Array.isArray(data)) {
+          setPaizoRequests(data);
+        }
+      }
+    } catch (err) {
+      console.error('Failed to load PAIZO requests:', err);
+    }
+  };
+
+  const handleUpdatePaizoStatus = async (id: number, newStatus: string) => {
+    setUpdatingPaizoId(id);
+    try {
+      const res = await fetch(`/api/paizo/requests/${id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status: newStatus }),
+      });
+      if (res.ok) {
+        setPaizoRequests((prev) =>
+          prev.map((req) => (req.id === id ? { ...req, status: newStatus } : req))
+        );
+      } else {
+        alert('حدث خطأ أثناء تعديل حالة الطلب.');
+      }
+    } catch {
+      alert('حدث خطأ في الاتصال بالسيرفر.');
+    } finally {
+      setUpdatingPaizoId(null);
+    }
+  };
+
+  const handleDeletePaizoRequest = async (id: number) => {
+    if (!confirm('هل أنت متأكد من حذف هذا الطلب نهائياً؟')) return;
+    try {
+      const res = await fetch(`/api/paizo/requests/${id}`, {
+        method: 'DELETE',
+      });
+      if (res.ok) {
+        setPaizoRequests((prev) => prev.filter((req) => req.id !== id));
+      } else {
+        alert('حدث خطأ أثناء حذف الطلب.');
+      }
+    } catch {
+      alert('حدث خطأ في الاتصال بالسيرفر.');
     }
   };
 
@@ -1176,6 +1234,89 @@ export default function AdminPage() {
                             </tr>
                           );
                         })
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+
+            {/* SECTION 4: PAIZO Custom Design Requests Management ("طلبات تصاميم PAIZO ديزاينات وتنفيذ ++") */}
+            <div className="col-md-12 mb-4">
+              <div className="admin-card card p-4 border-warning border-top border-3">
+                <div className="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+                  <h5 className="mb-0 text-primary fw-bold">
+                    <i className="fas fa-magic text-accent me-2"></i> إدارة طلبات تصاميم PAIZO (ديزاينات وتنفيذ)
+                  </h5>
+                  <span className="badge bg-warning text-dark fs-6 px-3 py-2 fw-bold">
+                    طلبات التصميم: {paizoRequests.length}
+                  </span>
+                </div>
+
+                <div className="table-responsive rounded-3 border">
+                  <table className="table table-custom mb-0 align-middle">
+                    <thead className="table-light">
+                      <tr>
+                        <th>الاسم والهاتف</th>
+                        <th>نوع الطلب / المناسبة</th>
+                        <th>التفاصيل والملاحظات</th>
+                        <th>التاريخ المطلوب</th>
+                        <th>الحالة</th>
+                        <th className="text-center" style={{ width: '220px' }}>التحكم بالحالة والحذف</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {paizoRequests.length === 0 ? (
+                        <tr>
+                          <td colSpan={6} className="text-center text-muted py-4">
+                            لا توجد طلبات تصميم مسجلة حالياً.
+                          </td>
+                        </tr>
+                      ) : (
+                        paizoRequests.map((req) => (
+                          <tr key={req.id || req.name}>
+                            <td>
+                              <div className="fw-bold text-primary">{req.name}</div>
+                              <div className="small text-muted font-mono"><i className="fas fa-phone-alt me-1"></i>{req.phone}</div>
+                            </td>
+                            <td>
+                              <span className="badge bg-amber-500 text-dark me-1 fw-bold">{req.requestType}</span>
+                              {req.eventName && <div className="small text-muted mt-1">المناسبة: {req.eventName}</div>}
+                            </td>
+                            <td>
+                              <div className="small text-dark fw-bold mb-1">{req.description}</div>
+                              {req.notes && <div className="small text-muted">ملاحظات: {req.notes}</div>}
+                            </td>
+                            <td>
+                              <span className="small text-muted">{req.targetDate || 'غير محدد'}</span>
+                            </td>
+                            <td>
+                              {getStatusBadge(req.status || 'تحت المراجعة')}
+                            </td>
+                            <td>
+                              <div className="d-flex flex-column gap-1">
+                                <select
+                                  className="form-select form-select-sm fw-bold text-center"
+                                  value={req.status || 'تحت المراجعة'}
+                                  disabled={updatingPaizoId === req.id}
+                                  onChange={(e) => req.id && handleUpdatePaizoStatus(req.id, e.target.value)}
+                                >
+                                  <option value="تحت المراجعة">تحت المراجعة</option>
+                                  <option value="جاري التنفيذ">جاري التنفيذ</option>
+                                  <option value="تم التنفيذ">تم التنفيذ</option>
+                                  <option value="مرفوض">مرفوض</option>
+                                </select>
+                                <button
+                                  type="button"
+                                  className="btn btn-outline-danger btn-sm fw-bold"
+                                  onClick={() => req.id && handleDeletePaizoRequest(req.id)}
+                                >
+                                  <i className="fas fa-trash me-1"></i> حذف الطلب
+                                </button>
+                              </div>
+                            </td>
+                          </tr>
+                        ))
                       )}
                     </tbody>
                   </table>
