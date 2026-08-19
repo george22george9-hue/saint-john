@@ -163,7 +163,10 @@ export default function PaizoNavbar() {
               className="rounded-lg border border-amber-400/30 object-contain"
               style={{ objectFit: 'contain' }}
             />
-            <span className="fw-black fs-5 text-gradient-gold">PAIZO</span>
+            <div className="d-inline-flex align-items-center gap-2">
+              <span className="fw-black fs-5 text-gradient-gold">PAIZO</span>
+              <span className="paizo-new-badge">NEW</span>
+            </div>
           </Link>
           <button className="mobile-drawer-close" onClick={closeMenu} aria-label="إغلاق">
             <i className="fas fa-times fs-5 text-accent"></i>

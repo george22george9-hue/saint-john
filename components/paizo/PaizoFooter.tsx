@@ -51,7 +51,7 @@ export default function PaizoFooter() {
                 <i className="fas fa-chart-pie me-1 text-accent"></i> الإنفو جرافيك
               </Link>
               <Link href="/paizo/designs" className="text-slate-300 hover:text-accent font-semibold transition-colors">
-                <i className="fas fa-magic me-1 text-accent"></i> الطلبات ++
+                <i className="fas fa-magic me-1 text-accent"></i> الطلبات
               </Link>
             </div>
           </div>

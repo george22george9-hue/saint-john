@@ -1097,21 +1097,73 @@ html, body {
   margin-bottom: 24px;
 }
 
+.mobile-drawer-link,
+.mobile-drawer-link:hover,
+.mobile-drawer-link:focus,
+.mobile-drawer-link:active,
+.mobile-drawer-link:visited,
+.mobile-drawer-header a,
+.mobile-drawer-header a:hover,
+.mobile-drawer-header a:focus,
+.mobile-drawer-header a:visited {
+  text-decoration: none !important;
+}
+
 .mobile-drawer-link {
   color: var(--drawer-text);
   font-size: 1.1rem;
   font-weight: 700;
   display: flex;
   align-items: center;
+  justify-content: space-between;
   padding: 10px 14px;
   border-radius: 12px;
   transition: background-color 0.2s ease, color 0.2s ease;
+  text-decoration: none !important;
 }
 
 .mobile-drawer-link:hover, .mobile-drawer-link.active {
   background-color: rgba(212, 175, 55, 0.15);
   color: var(--accent);
+  text-decoration: none !important;
 }
+
+/* Premium PAIZO NEW Badge for Mobile Navigation */
+.paizo-new-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #f5d470 0%, #d4af37 100%);
+  color: #070e24 !important;
+  font-weight: 900;
+  font-size: 0.65rem;
+  letter-spacing: 0.05em;
+  padding: 0.15rem 0.5rem;
+  border-radius: 9999px;
+  white-space: nowrap;
+  box-shadow: 0 0 10px rgba(212, 175, 55, 0.4);
+  animation: paizoBadgePulse 2.5s infinite ease-in-out;
+  text-decoration: none !important;
+  margin-right: 0.5rem;
+}
+
+@keyframes paizoBadgePulse {
+  0%, 100% {
+    transform: scale(1);
+    box-shadow: 0 0 8px rgba(212, 175, 55, 0.4);
+  }
+  50% {
+    transform: scale(1.08);
+    box-shadow: 0 0 14px rgba(253, 224, 71, 0.7);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .paizo-new-badge {
+    animation: none !important;
+  }
+}
+
 
 .mobile-drawer-footer {
   margin-top: auto;
