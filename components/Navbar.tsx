@@ -165,8 +165,17 @@ export default function Navbar() {
           <a className="mobile-drawer-link" href="#news" onClick={closeMenu}>
             <i className="fas fa-newspaper me-2 text-accent fs-6"></i> أحدث الفعاليات
           </a>
-          <Link className="mobile-drawer-link text-accent fw-bold" href="/paizo" onClick={closeMenu}>
-            <i className="fas fa-star me-2 text-amber-400 fs-6"></i> PAIZO (ألعاب ودراسات)
+          <Link
+            className="mobile-drawer-link text-accent fw-bold no-underline"
+            href="/paizo"
+            onClick={closeMenu}
+            style={{ textDecoration: 'none' }}
+          >
+            <div className="d-inline-flex align-items-center gap-2">
+              <i className="fas fa-star text-amber-400 fs-6"></i>
+              <span>PAIZO (ألعاب ودراسات)</span>
+            </div>
+            <span className="paizo-new-badge">NEW</span>
           </Link>
           <a
             className="mobile-drawer-link text-danger"
