@@ -1,6 +1,9 @@
 import { NextResponse } from 'next/server';
 import { supabase } from '@/lib/supabase';
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 export async function GET() {
   try {
     const { data: announcements, error } = await supabase
@@ -11,7 +14,7 @@ export async function GET() {
     if (error) throw error;
     return NextResponse.json(announcements || [], {
       headers: {
-        'Cache-Control': 'public, s-maxage=60, stale-while-revalidate=300',
+        'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
       },
     });
   } catch (error) {
@@ -22,3 +25,4 @@ export async function GET() {
     );
   }
 }
+

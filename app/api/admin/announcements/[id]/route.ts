@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { revalidatePath } from 'next/cache';
 import { supabaseAdmin } from '@/lib/supabaseAdmin';
 import { getAuthUser } from '@/lib/auth';
 
@@ -13,6 +14,9 @@ export async function DELETE(
 
   try {
     const { id } = await params;
+    if (!id) {
+      return NextResponse.json({ error: 'معرف المنشور غير صحيح' }, { status: 400 });
+    }
 
     // 1. Fetch post to get storage_path
     const { data: post, error: fetchError } = await supabaseAdmin
@@ -23,23 +27,23 @@ export async function DELETE(
 
     if (fetchError || !post) {
       return NextResponse.json(
-        { error: 'المنشور غير موجود' },
+        { error: 'المنشور غير موجود أو تم حذفه بالفعل' },
         { status: 404 }
       );
     }
 
-    // 2. Permanently delete image object from Supabase Storage if storage_path exists
+    // 2. Safely attempt deleting image object from Supabase Storage if storage_path exists
     if (post.storage_path) {
-      const { error: storageError } = await supabaseAdmin.storage
-        .from('post-images')
-        .remove([post.storage_path]);
+      try {
+        const { error: storageError } = await supabaseAdmin.storage
+          .from('post-images')
+          .remove([post.storage_path]);
 
-      if (storageError) {
-        console.error('Detailed Supabase Storage Delete Error:', storageError);
-        return NextResponse.json(
-          { error: `فشل حذف الصورة من مجلد التخزين: ${storageError.message}` },
-          { status: 500 }
-        );
+        if (storageError) {
+          console.warn('Supabase Storage Removal Warning (continuing DB deletion):', storageError);
+        }
+      } catch (stErr) {
+        console.warn('Storage removal exception (continuing DB deletion):', stErr);
       }
     }
 
@@ -57,8 +61,16 @@ export async function DELETE(
       );
     }
 
+    // 4. Revalidate cache for public site and endpoints
+    try {
+      revalidatePath('/');
+      revalidatePath('/api/announcements');
+    } catch (e) {
+      console.warn('Revalidation warning:', e);
+    }
+
     return NextResponse.json({
-      message: 'تم حذف المنشور والصورة بنجاح',
+      message: 'تم حذف المنشور بنجاح',
     });
   } catch (error: any) {
     console.error('Error deleting announcement:', error);
@@ -80,6 +92,9 @@ export async function PUT(
 
   try {
     const { id } = await params;
+    if (!id) {
+      return NextResponse.json({ error: 'معرف المنشور غير صحيح' }, { status: 400 });
+    }
 
     // Fetch current post record
     const { data: currentPost, error: fetchError } = await supabaseAdmin
@@ -132,11 +147,7 @@ export async function PUT(
           .remove([currentPost.storage_path]);
 
         if (removeErr) {
-          console.error('Error removing storage file during image removal:', removeErr);
-          return NextResponse.json(
-            { error: `فشل حذف الصورة من مجلد التخزين: ${removeErr.message}` },
-            { status: 500 }
-          );
+          console.warn('Error removing storage file during image removal:', removeErr);
         }
       }
       finalImageUrl = null;
@@ -208,8 +219,16 @@ export async function PUT(
         .remove([currentPost.storage_path]);
 
       if (oldDeleteErr) {
-        console.error('Warning: Failed to remove old storage file after replacement:', oldDeleteErr);
+        console.warn('Warning: Failed to remove old storage file after replacement:', oldDeleteErr);
       }
+    }
+
+    // Revalidate cache for public site and endpoints
+    try {
+      revalidatePath('/');
+      revalidatePath('/api/announcements');
+    } catch (e) {
+      console.warn('Revalidation warning:', e);
     }
 
     return NextResponse.json({
@@ -224,3 +243,4 @@ export async function PUT(
     );
   }
 }
+

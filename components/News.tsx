@@ -20,7 +20,7 @@ export default function News({ initialAnnouncements }: NewsProps) {
   useEffect(() => {
     if (initialAnnouncements && initialAnnouncements.length > 0) return;
 
-    fetch('/api/announcements')
+    fetch('/api/announcements', { cache: 'no-store' })
       .then((res) => {
         if (!res.ok) throw new Error('Failed to fetch');
         return res.json();
