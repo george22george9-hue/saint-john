@@ -31,22 +31,28 @@ export default function QAModal({ isOpen, onClose }: QAModalProps) {
         body: JSON.stringify({ name, hymnRequest, message }),
       });
 
-      if (!response.ok) throw new Error('Failed to submit');
+      const data = await response.json().catch(() => ({}));
+
+      if (!response.ok) {
+        throw new Error(
+          data.error || data.details || 'عذراً، حدث خطأ أثناء إرسال الرسالة. يرجى المحاولة لاحقاً.'
+        );
+      }
 
       setIsSubmitted(true);
+      setName('');
+      setHymnRequest('');
+      setMessage('');
 
       setTimeout(() => {
         onClose();
         setTimeout(() => {
-          setName('');
-          setHymnRequest('');
-          setMessage('');
           setIsSubmitted(false);
         }, 300);
       }, 3000);
-    } catch (err) {
-      console.error(err);
-      setErrorMsg('عذراً، حدث خطأ أثناء إرسال الرسالة. يرجى المحاولة لاحقاً.');
+    } catch (err: any) {
+      console.error('[QAModal Error]:', err);
+      setErrorMsg(err.message || 'عذراً، حدث خطأ أثناء إرسال الرسالة. يرجى المحاولة لاحقاً.');
     } finally {
       setIsSubmitting(false);
     }
@@ -79,7 +85,8 @@ export default function QAModal({ isOpen, onClose }: QAModalProps) {
             </p>
 
             {errorMsg && (
-              <div className="alert alert-danger mb-3" role="alert">
+              <div className="alert alert-danger mb-3 text-start" role="alert">
+                <i className="fas fa-exclamation-triangle me-2"></i>
                 {errorMsg}
               </div>
             )}
@@ -151,7 +158,7 @@ export default function QAModal({ isOpen, onClose }: QAModalProps) {
                 className="alert alert-success mt-4 text-center rounded-3 border-0 shadow-sm"
                 role="alert"
               >
-                <i className="fas fa-check-circle fs-2 mb-2"></i>
+                <i className="fas fa-check-circle fs-2 mb-2 text-success"></i>
                 <br />
                 <strong>تم إرسال رسالتك بنجاح!</strong>
                 <br /> شكراً لتواصلك معانا.
