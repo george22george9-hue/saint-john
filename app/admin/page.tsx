@@ -89,12 +89,37 @@ export default function AdminPage() {
     loadDashboardData();
   }, []);
 
-  const loadDashboardData = async () => {
+  const loadInquiries = async () => {
     try {
-      const res = await fetch('/api/admin/inquiries');
+      const res = await fetch('/api/admin/inquiries', { cache: 'no-store' });
       if (res.ok) {
         const inqData = await res.json();
-        setInquiries(inqData);
+        setInquiries(Array.isArray(inqData) ? inqData : []);
+        setInquiryError(null);
+        return true;
+      } else {
+        const errData = await res.json().catch(() => ({}));
+        setInquiryError({
+          message: errData.error || 'فشل في جلب رسائل الشباب',
+          details: errData.details,
+          code: errData.code,
+        });
+        return false;
+      }
+    } catch (err: any) {
+      console.error('[loadInquiries Error]:', err);
+      setInquiryError({ message: 'حدث خطأ في الاتصال بالسيرفر أثناء جلب الرسائل' });
+      return false;
+    }
+  };
+
+  const loadDashboardData = async () => {
+    try {
+      const res = await fetch('/api/admin/inquiries', { cache: 'no-store' });
+      if (res.ok) {
+        const inqData = await res.json();
+        setInquiries(Array.isArray(inqData) ? inqData : []);
+        setInquiryError(null);
         setIsLoggedIn(true);
 
         loadActivities();
@@ -1119,9 +1144,19 @@ export default function AdminPage() {
                   <h5 className="mb-0 text-primary fw-bold">
                     <i className="fas fa-envelope-open-text me-2"></i> نظام إدارة رسائل وأسئلة الشباب (الفيدباك)
                   </h5>
-                  <span className="badge bg-primary fs-6 px-3 py-2">
-                    إجمالي الرسائل: {inquiries.length}
-                  </span>
+                  <div className="d-flex align-items-center gap-2">
+                    <button
+                      type="button"
+                      className="btn btn-outline-primary btn-sm rounded-pill fw-bold px-3"
+                      onClick={() => loadInquiries()}
+                      title="تحديث قائمة الرسائل"
+                    >
+                      <i className="fas fa-sync-alt me-1"></i> تحديث
+                    </button>
+                    <span className="badge bg-primary fs-6 px-3 py-2">
+                      إجمالي الرسائل: {inquiries.length}
+                    </span>
+                  </div>
                 </div>
 
                 {inquiryError && (
