@@ -7,13 +7,28 @@ CREATE TABLE users (
 );
 
 -- 2. Table for Announcements
-CREATE TABLE announcements (
+CREATE TABLE IF NOT EXISTS announcements (
     id SERIAL PRIMARY KEY,
     title TEXT NOT NULL,
     date TEXT NOT NULL,
     description TEXT,
-    "createdAt" TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now())
+    image_url TEXT,
+    storage_path TEXT,
+    "createdAt" TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()),
+    "updatedAt" TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now())
 );
+
+-- RLS Policies for Announcements
+ALTER TABLE announcements ENABLE ROW LEVEL SECURITY;
+
+DROP POLICY IF EXISTS "Public announcements are viewable by everyone" ON announcements;
+CREATE POLICY "Public announcements are viewable by everyone" 
+ON announcements FOR SELECT USING (true);
+
+DROP POLICY IF EXISTS "Admins have full access to announcements" ON announcements;
+CREATE POLICY "Admins have full access to announcements" 
+ON announcements FOR ALL USING (true) WITH CHECK (true);
+
 
 -- 3. Table for Youth Inquiries
 CREATE TABLE inquiries (

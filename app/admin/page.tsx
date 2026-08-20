@@ -83,6 +83,7 @@ export default function AdminPage() {
   const [editImagePreview, setEditImagePreview] = useState<string | null>(null);
   const [removeExistingImage, setRemoveExistingImage] = useState(false);
   const [isSavingEdit, setIsSavingEdit] = useState(false);
+  const [deletingActivityId, setDeletingActivityId] = useState<number | null>(null);
 
   // Check auth status on mount
   useEffect(() => {
@@ -188,7 +189,7 @@ export default function AdminPage() {
 
   const loadActivities = async () => {
     try {
-      const res = await fetch('/api/announcements');
+      const res = await fetch(`/api/announcements?t=${Date.now()}`, { cache: 'no-store' });
       if (res.ok) {
         const data = await res.json();
         setActivities(data);
@@ -332,26 +333,32 @@ export default function AdminPage() {
         setActDate('');
         setActDesc('');
         handleRemoveSelectedImage();
-        loadActivities();
+        if (data.data) {
+          setActivities((prev) => [data.data, ...prev]);
+        }
+        await loadActivities();
         alert('تم نشر المنشور بنجاح!');
       } else {
+        console.error('[Add Post Error Details]:', data);
         alert(data.error || 'حدث خطأ أثناء إضافة المنشور');
       }
     } catch (err) {
-      console.error(err);
-      alert('حدث خطأ في الاتصال بالسيرفر');
+      console.error('[Add Post Catch Error]:', err);
+      alert('حدث خطأ في الاتصال بالسيرفر أثناء إنشاء المنشور');
     } finally {
       setIsAdding(false);
     }
   };
 
   const handleDeleteActivity = async (post: Announcement) => {
+    if (!post.id) return;
     const confirmMsg = post.image_url
       ? 'هل أنت متأكد من حذف هذا المنشور؟ سيتم حذف الصورة نهائياً أيضاً.'
       : 'هل أنت متأكد من حذف هذا المنشور؟';
 
     if (!confirm(confirmMsg)) return;
 
+    setDeletingActivityId(post.id);
     try {
       const res = await fetch(`/api/admin/announcements/${post.id}`, {
         method: 'DELETE',
@@ -360,13 +367,18 @@ export default function AdminPage() {
       const data = await res.json();
 
       if (res.ok) {
-        loadActivities();
+        setActivities((prev) => prev.filter((item) => item.id !== post.id));
+        await loadActivities();
         alert(data.message || 'تم الحذف بنجاح');
       } else {
+        console.error('[Delete Post Error Details]:', data);
         alert(data.error || 'حدث خطأ أثناء الحذف');
       }
-    } catch {
-      alert('حدث خطأ في الاتصال بالسيرفر');
+    } catch (err) {
+      console.error('[Delete Post Catch Error]:', err);
+      alert('حدث خطأ في الاتصال بالسيرفر أثناء حذف المنشور');
+    } finally {
+      setDeletingActivityId(null);
     }
   };
 
@@ -437,13 +449,18 @@ export default function AdminPage() {
 
       if (res.ok) {
         handleCloseEdit();
-        loadActivities();
+        if (data.data) {
+          setActivities((prev) => prev.map((p) => (p.id === editingPost.id ? data.data : p)));
+        }
+        await loadActivities();
         alert('تم تحديث المنشور بنجاح!');
       } else {
+        console.error('[Edit Post Error Details]:', data);
         alert(data.error || 'حدث خطأ أثناء التحديث');
       }
-    } catch {
-      alert('حدث خطأ في الاتصال بالسيرفر');
+    } catch (err) {
+      console.error('[Edit Post Catch Error]:', err);
+      alert('حدث خطأ في الاتصال بالسيرفر أثناء حفظ التعديلات');
     } finally {
       setIsSavingEdit(false);
     }
@@ -1118,6 +1135,7 @@ export default function AdminPage() {
                           <button
                             className="btn btn-sm btn-outline-primary"
                             onClick={() => handleOpenEdit(act)}
+                            disabled={deletingActivityId === act.id}
                             title="تعديل"
                           >
                             <i className="fas fa-edit me-1"></i> تعديل
@@ -1125,9 +1143,18 @@ export default function AdminPage() {
                           <button
                             className="btn btn-sm btn-danger"
                             onClick={() => handleDeleteActivity(act)}
+                            disabled={deletingActivityId === act.id}
                             title="حذف"
                           >
-                            <i className="fas fa-trash me-1"></i> حذف
+                            {deletingActivityId === act.id ? (
+                              <>
+                                <i className="fas fa-spinner fa-spin me-1"></i> جاري الحذف...
+                              </>
+                            ) : (
+                              <>
+                                <i className="fas fa-trash me-1"></i> حذف
+                              </>
+                            )}
                           </button>
                         </div>
                       </div>

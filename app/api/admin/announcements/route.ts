@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { revalidatePath } from 'next/cache';
 import { supabaseAdmin, isServiceRoleConfigured } from '@/lib/supabaseAdmin';
 import { getAuthUser } from '@/lib/auth';
 
@@ -132,6 +133,13 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    try {
+      revalidatePath('/');
+      revalidatePath('/api/announcements');
+    } catch (e) {
+      console.warn('Revalidation warning:', e);
+    }
+
     return NextResponse.json(
       { id: data[0]?.id, message: 'تم إضافة المنشور بنجاح', data: data[0] },
       { status: 201 }
@@ -144,3 +152,4 @@ export async function POST(req: NextRequest) {
     );
   }
 }
+
