@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { revalidatePath } from 'next/cache';
 import { supabaseAdmin } from '@/lib/supabaseAdmin';
 import { supabase as supabasePublic } from '@/lib/supabase';
 import { getAuthUser } from '@/lib/auth';
@@ -52,6 +53,13 @@ export async function PUT(
       );
     }
 
+    try {
+      revalidatePath('/api/activities');
+      revalidatePath('/');
+    } catch (e) {
+      console.warn('revalidatePath error:', e);
+    }
+
     return NextResponse.json({
       message: 'تم تحديث البيانات بنجاح',
       item: data[0],
@@ -95,6 +103,13 @@ export async function DELETE(
         },
         { status: 500 }
       );
+    }
+
+    try {
+      revalidatePath('/api/activities');
+      revalidatePath('/');
+    } catch (e) {
+      console.warn('revalidatePath error:', e);
     }
 
     return NextResponse.json({ message: 'تم حذف النشاط بنجاح' });

@@ -40,7 +40,13 @@ export default function Programs({ initialSettings }: ProgramsProps) {
 
   const fetchDynamicActivities = async () => {
     try {
-      const res = await fetch('/api/activities', { cache: 'no-store' });
+      const res = await fetch(`/api/activities?t=${Date.now()}`, {
+        cache: 'no-store',
+        headers: {
+          'Pragma': 'no-cache',
+          'Cache-Control': 'no-cache',
+        },
+      });
       if (res.ok) {
         const data = await res.json();
         if (Array.isArray(data)) {
@@ -83,25 +89,27 @@ export default function Programs({ initialSettings }: ProgramsProps) {
     const handleFocus = () => fetchDynamicActivities();
     window.addEventListener('focus', handleFocus);
 
+    // Fallback polling interval to ensure dynamic updates reflect reliably
+    const pollInterval = setInterval(() => {
+      fetchDynamicActivities();
+    }, 4000);
+
     return () => {
       supabase.removeChannel(channel);
       window.removeEventListener('focus', handleFocus);
+      clearInterval(pollInterval);
     };
   }, [initialSettings]);
 
   // Active Tab Safety Check: Fallback to 'friday' if current dynamic tab is disabled/deleted
   useEffect(() => {
-    if (activeTab !== 'friday' && activeTab !== 'sunday') {
+    if (activeTab !== 'friday') {
       const exists = dynamicActivities.some((act) => act.id.toString() === activeTab);
       if (!exists) {
         setActiveTab('friday');
       }
     }
   }, [dynamicActivities, activeTab]);
-
-  const sundayScheduleLines = settings.sunday_schedule
-    ? settings.sunday_schedule.split('\n')
-    : [];
 
   const activeDynamicItem = dynamicActivities.find(
     (act) => act.id.toString() === activeTab
@@ -130,15 +138,6 @@ export default function Programs({ initialSettings }: ProgramsProps) {
                       onClick={() => setActiveTab('friday')}
                     >
                       <i className="fas fa-cross me-2 text-accent"></i> اجتماع يوم الجمعة
-                    </button>
-                  </li>
-                  <li className="nav-item" role="presentation">
-                    <button
-                      className={`nav-link ${activeTab === 'sunday' ? 'active' : ''}`}
-                      type="button"
-                      onClick={() => setActiveTab('sunday')}
-                    >
-                      <i className="fas fa-sun me-2 text-accent"></i> النشاط الصيفي (الأحد)
                     </button>
                   </li>
 
@@ -240,66 +239,6 @@ export default function Programs({ initialSettings }: ProgramsProps) {
                           </div>
                         </div>
                       </div>
-                    </div>
-                  </div>
-                )}
-
-                {/* Sunday Tab */}
-                {activeTab === 'sunday' && (
-                  <div className="tab-pane fade show active" role="tabpanel">
-                    <div className="text-center mb-4">
-                      <h4 className="text-primary fw-bold">
-                        النشاط الصيفي التكاملي (170 دقيقة)
-                      </h4>
-                      <p className="text-muted dark:text-gray-300">
-                        برنامج يجمع بين المعرفة اللاهوتية وتطوير المهارات.
-                      </p>
-                    </div>
-                    <div className="table-responsive rounded-3 border bg-white">
-                      <table className="table table-custom mb-0 text-center bg-white">
-                        <tbody id="sunday-schedule">
-                          {loading ? (
-                            <tr>
-                              <td
-                                colSpan={3}
-                                className="text-muted text-center py-4"
-                                style={{ color: '#475569' }}
-                              >
-                                <div className="spinner-border spinner-border-sm text-primary me-2"></div>
-                                جاري تحميل الجدول...
-                              </td>
-                            </tr>
-                          ) : sundayScheduleLines.length === 0 ? (
-                            <tr>
-                              <td
-                                colSpan={3}
-                                className="text-center text-muted py-4"
-                                style={{ color: '#475569' }}
-                              >
-                                لم يتم إضافة جدول بعد.
-                              </td>
-                            </tr>
-                          ) : (
-                            sundayScheduleLines.map((line, idx) => {
-                              const parts = line.split('-').map((p) => p.trim());
-                              if (parts.length < 3) return null;
-                              return (
-                                <tr key={idx} className="bg-white">
-                                  <td className="fw-bold fs-5" style={{ color: '#0f172a' }}>
-                                    {parts[0]}
-                                  </td>
-                                  <td className="fw-bold fs-5" style={{ color: '#0f1c3f' }}>
-                                    {parts[1]}
-                                  </td>
-                                  <td className="text-start" style={{ color: '#475569' }}>
-                                    {parts.slice(2).join(' - ')}
-                                  </td>
-                                </tr>
-                              );
-                            })
-                          )}
-                        </tbody>
-                      </table>
                     </div>
                   </div>
                 )}

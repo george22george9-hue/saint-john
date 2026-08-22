@@ -690,6 +690,7 @@ export default function AdminPage() {
           prev.filter((act) => act.id !== deletingDynamicItem.id)
         );
         setDeletingDynamicItem(null);
+        await loadDynamicActivities();
       } else {
         const data = await res.json();
         console.error('[Delete Activity Error Details]:', data);
