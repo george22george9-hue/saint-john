@@ -43,7 +43,7 @@ export default function Hero({ onOpenModal }: HeroProps) {
                 {bishop.nameAr}
               </h3>
               <p className="hero-bishop-title text-accent fw-bold mb-0 fs-6">
-                مطرانية شبرا الخيمة وتوابعها
+                {bishop.titleAr}
               </p>
             </a>
 
@@ -52,12 +52,15 @@ export default function Hero({ onOpenModal }: HeroProps) {
                 <i className="fas fa-cross me-1"></i> #عيلة_واحدة
               </span>
             </div>
-            <h1 className="hero-title mt-2 gsap-title">
-              اجتماع القديس يوحنا الحبيب للشباب
+            <h1 className="hero-church-heading mt-2 gsap-title">
+              مطرانية شبرا الخيمة وتوابعها
             </h1>
-            <h2 className="hero-subtitle gsap-subtitle">
-              كنيسة الشهيد العظيم مارجرجس بسندبيس
+            <h2 className="hero-title gsap-subtitle">
+              اجتماع القديس يوحنا الحبيب للشباب
             </h2>
+            <h3 className="hero-subtitle gsap-fade-up">
+              كنيسة الشهيد العظيم مارجرجس بسندبيس
+            </h3>
             <p className="lead text-muted dark:text-gray-300 mb-4 fw-bold gsap-fade-up">
               بنمو روحي، معرفي، ومهاري في محبة المسيح وكنيسته الأرثوذكسية.
               <br />
