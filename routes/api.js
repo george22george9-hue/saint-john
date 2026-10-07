@@ -16,7 +16,7 @@ router.get('/announcements', async (req, res) => {
       .from('announcements')
       .select('*')
       .order('createdAt', { ascending: false });
-      
+
     if (error) throw error;
     res.json(announcements);
   } catch (error) {
@@ -28,7 +28,7 @@ router.get('/announcements', async (req, res) => {
 // Submit Inquiry/Feedback
 router.post('/inquiries', async (req, res) => {
   const { name, hymnRequest, message } = req.body;
-  
+
   if (!message) {
     return res.status(400).json({ error: 'Message field is required.' });
   }
@@ -38,7 +38,7 @@ router.post('/inquiries', async (req, res) => {
       .from('inquiries')
       .insert([{ name: name || null, hymnRequest: hymnRequest || null, message }])
       .select();
-      
+
     if (error) throw error;
     res.status(201).json({ id: data[0].id, message: 'Inquiry submitted successfully!' });
   } catch (error) {
@@ -53,9 +53,9 @@ router.get('/settings', async (req, res) => {
     const { data: settingsRows, error } = await supabase
       .from('settings')
       .select('*');
-      
+
     if (error) throw error;
-    
+
     const settings = {};
     settingsRows.forEach(row => {
       settings[row.key] = row.value;
@@ -68,6 +68,7 @@ router.get('/settings', async (req, res) => {
 });
 
 // Admin Login
+// Admin Login
 router.post('/auth/login', async (req, res) => {
   const { email, password } = req.body;
 
@@ -76,22 +77,41 @@ router.post('/auth/login', async (req, res) => {
   }
 
   try {
+    console.log('--- LOGIN ATTEMPT STARTED ---');
+    console.log('Email received:', email);
+
     const { data: users, error } = await supabase
       .from('users')
       .select('*')
       .eq('email', email)
       .limit(1);
-      
-    if (error) throw error;
-    
+
+    if (error) {
+      console.error('Supabase DB Error:', error);
+      throw error;
+    }
+
     const user = users[0];
     if (!user) {
+      console.log('User not found in database.');
       return res.status(401).json({ error: 'Invalid email or password' });
     }
 
-    const isValid = bcrypt.compareSync(password, user.passwordHash);
+    console.log('User found! Password field exists:', !!user.passwordHash);
+
+    // استخدام النسخة الـ Async أحسن للسيرفر
+    // حطينا || '' عشان لو العمود اسمه غلط ميوقعش السيرفر ويطبعلك إيرور واضح
+    const isValid = await bcrypt.compare(password, user.passwordHash || '');
+
     if (!isValid) {
+      console.log('Password mismatch.');
       return res.status(401).json({ error: 'Invalid email or password' });
+    }
+
+    console.log('Password is correct. Checking JWT_SECRET...');
+
+    if (!JWT_SECRET) {
+      throw new Error('JWT_SECRET is UNDEFINED! Check your ../middleware/auth file exports.');
     }
 
     const token = jwt.sign(
@@ -100,14 +120,17 @@ router.post('/auth/login', async (req, res) => {
       { expiresIn: '24h' }
     );
 
+    console.log('--- LOGIN SUCCESSFUL ---');
     res.json({ token, email: user.email });
+
   } catch (error) {
-    console.error(error);
+    console.error('========== LOGIN ROUTE ERROR ==========');
+    console.error('Error Message:', error.message);
+    console.error('Full Error Object:', error);
+    console.error('=======================================');
     res.status(500).json({ error: 'Server error during login' });
   }
 });
-
-
 // ==========================================
 // PROTECTED ROUTES (Requires Admin Token)
 // ==========================================
@@ -125,7 +148,7 @@ router.post('/admin/announcements', verifyToken, async (req, res) => {
       .from('announcements')
       .insert([{ title, date, description: description || '' }])
       .select();
-      
+
     if (error) throw error;
     res.status(201).json({ id: data[0].id, message: 'Announcement created successfully' });
   } catch (error) {
@@ -137,13 +160,13 @@ router.post('/admin/announcements', verifyToken, async (req, res) => {
 // Delete Announcement
 router.delete('/admin/announcements/:id', verifyToken, async (req, res) => {
   const { id } = req.params;
-  
+
   try {
     const { error } = await supabase
       .from('announcements')
       .delete()
       .eq('id', id);
-      
+
     if (error) throw error;
     res.json({ message: 'Announcement deleted successfully' });
   } catch (error) {
@@ -159,7 +182,7 @@ router.get('/admin/inquiries', verifyToken, async (req, res) => {
       .from('inquiries')
       .select('*')
       .order('createdAt', { ascending: false });
-      
+
     if (error) throw error;
     res.json(inquiries);
   } catch (error) {
